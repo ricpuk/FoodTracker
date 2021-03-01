@@ -10,7 +10,7 @@ import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizat
 
 export default () => (
     <Layout>
-        <AuthorizeRoute exact path='/' component={Home} />
+        <Route exact path='/' component={Home} />
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
     </Layout>
 );

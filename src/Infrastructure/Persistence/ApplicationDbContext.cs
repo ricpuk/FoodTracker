@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Domain.Common;
+using FoodTracker.Domain.Entities;
 using FoodTracker.Infrastructure.Identity;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -29,6 +30,8 @@ namespace FoodTracker.Infrastructure.Persistence
             _domainEventService = domainEventService;
             _dateTime = dateTime;
         }
+
+        public DbSet<Product> Products { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

@@ -79,7 +79,7 @@ namespace FoodTracker.WebUI
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000")
+                    policy.WithOrigins("http://localhost:3000", "http://*.ngrok.io")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
