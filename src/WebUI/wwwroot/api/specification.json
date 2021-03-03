@@ -110,7 +110,7 @@
         }
       }
     },
-    "/api/Products/${barCode}": {
+    "/api/Products/{barCode}": {
       "get": {
         "tags": [
           "Products"
@@ -118,31 +118,23 @@
         "operationId": "Products_GetByBarCode",
         "parameters": [
           {
-            "name": "Page",
+            "name": "barCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "page",
             "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 1
-          },
-          {
-            "name": "BarCode",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
             "x-position": 2
-          },
-          {
-            "name": "barCode",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 3
           }
         ],
         "responses": {

@@ -17,9 +17,14 @@ namespace FoodTracker.WebUI.Controllers
             return Ok(await Mediator.Send(query));
         }
 
-        [HttpGet]
-        public async Task<ActionResult<PaginatedList<ProductDto>>> GetByBarCode([FromQuery] GetProductsByBarCodeQuery query)
+        [HttpGet("{barCode}")]
+        public async Task<ActionResult<PaginatedList<ProductDto>>> GetByBarCode(string barCode, [FromQuery]int page)
         {
+            var query = new GetProductsByBarCodeQuery
+            {
+                BarCode = barCode,
+                Page = page
+            };
             return Ok(await Mediator.Send(query));
         }
 
