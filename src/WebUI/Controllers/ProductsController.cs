@@ -6,6 +6,8 @@ using FoodTracker.Application.Products.Queries.GetProductsWithPagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using FoodTracker.Application.Products.Commands.CreateProduct;
+using FoodTracker.Application.Products.Commands.UpdateProduct;
 
 namespace FoodTracker.WebUI.Controllers
 {

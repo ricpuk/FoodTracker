@@ -1,11 +1,12 @@
-﻿using FoodTracker.Application.Common.Exceptions;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using FoodTracker.Application.Common.Exceptions;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Domain.Entities;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace FoodTracker.Application.Products.Commands
+namespace FoodTracker.Application.Products.Commands.UpdateProduct
 {
     public class UpdateProductCommand : IRequest
     {
@@ -37,11 +38,18 @@ namespace FoodTracker.Application.Products.Commands
             }
 
             entity.BarCode = request.BarCode;
-            entity.Calories = request.Calories;
-            entity.Protein = request.Protein;
-            entity.Carbohydrates = request.Carbohydrates;
-            entity.Fats = request.Fats;
-            entity.Sodium = request.Sodium;
+            entity.ProductServings = new List<ProductServing>
+            {
+                new()
+                {
+                    Calories = request.Calories,
+                    Protein = request.Protein,
+                    Carbohydrates = request.Carbohydrates,
+                    Fats = request.Fats,
+                    Sodium = request.Sodium
+                }
+
+            };
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 

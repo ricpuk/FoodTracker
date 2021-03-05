@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
-using FluentValidation.Results;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
+using FluentValidation.Results;
 using FoodTracker.Application.Common.Exceptions;
+using NUnit.Framework;
 
-namespace CleanArchitecture.Application.UnitTests.Common.Exceptions
+namespace FoodTracker.Application.UnitTests.Common.Exceptions
 {
     public class ValidationExceptionTests
     {

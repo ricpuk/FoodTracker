@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
+using FoodTracker.Application.Products;
+using FoodTracker.Domain.Entities;
 
 namespace FoodTracker.Application.Common.Mappings
 {
@@ -10,6 +12,11 @@ namespace FoodTracker.Application.Common.Mappings
         public MappingProfile()
         {
             ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+            CreateMap<Product, ProductDto>()
+                .ForMember(p => p.Servings, 
+                    opt => opt.MapFrom(e => e.ProductServings));
+            CreateMap<ProductServing, ProductServingDto>();
+            CreateMap<ProductServingDto, ProductServing>();
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)

@@ -1,10 +1,10 @@
-﻿using AutoMapper;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using AutoMapper;
 using FoodTracker.Application.Common.Mappings;
+using NUnit.Framework;
 
-namespace CleanArchitecture.Application.UnitTests.Common.Mappings
+namespace FoodTracker.Application.UnitTests.Common.Mappings
 {
     public class MappingTests
     {

@@ -6,10 +6,9 @@ namespace FoodTracker.Application.Products.Commands.CreateProduct
     {
         public CreateProductCommandValidator()
         {
-            RuleFor(p => p.Carbohydrates).NotEmpty();
-            RuleFor(p => p.Calories).NotEmpty();
-            RuleFor(p => p.Protein).NotEmpty();
-            RuleFor(p => p.Fats).NotEmpty();
+            RuleFor(p => p.BarCode).NotEmpty();
+            RuleFor(p => p.Name).NotEmpty();
+            RuleFor(p => p.Servings).NotEmpty();
         }
 
     }

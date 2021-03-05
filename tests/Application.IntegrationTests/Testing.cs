@@ -17,7 +17,7 @@ using Npgsql;
 using NUnit.Framework;
 using Respawn;
 
-namespace CleanArchitecture.Application.IntegrationTests
+namespace FoodTracker.Application.IntegrationTests
 {
     [SetUpFixture]
     public class Testing

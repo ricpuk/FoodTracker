@@ -8,12 +8,13 @@ using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodTracker.Application.Products.Queries.GetProductsWithPagination
 {
     public class GetProductsWithPaginationQuery : IRequest<PaginatedList<ProductDto>>
     {
-        public int Page { get; set; } = 0;
+        public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 25;
     }
 
@@ -32,6 +33,7 @@ namespace FoodTracker.Application.Products.Queries.GetProductsWithPagination
         {
             var products = await _dbContext.Products
                 .OrderByDescending(p => p.Created)
+                .Include(x => x.ProductServings)
                 .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.Page, request.PageSize);
 

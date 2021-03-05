@@ -3,70 +3,23 @@ using System;
 using FoodTracker.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FoodTracker.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210304043832_AddProductsTable")]
+    partial class AddProductsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .UseIdentityByDefaultColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.2");
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.Diary", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("Diary");
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.DiaryEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
-
-                    b.Property<int?>("DiaryId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DiaryId");
-
-                    b.ToTable("DiaryEntry");
-                });
 
             modelBuilder.Entity("FoodTracker.Domain.Entities.Product", b =>
                 {
@@ -78,35 +31,8 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                     b.Property<string>("BarCode")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.ProductServing", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
-
-                    b.Property<double>("Calories")
-                        .HasColumnType("double precision");
+                    b.Property<int>("Calories")
+                        .HasColumnType("integer");
 
                     b.Property<double>("Carbohydrates")
                         .HasColumnType("double precision");
@@ -129,26 +55,15 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
                     b.Property<double>("Protein")
                         .HasColumnType("double precision");
-
-                    b.Property<double>("ServingSize")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("ServingSizeUnit")
-                        .HasColumnType("text");
 
                     b.Property<double>("Sodium")
                         .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductServing");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("FoodTracker.Infrastructure.Identity.ApplicationUser", b =>
@@ -452,29 +367,6 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("FoodTracker.Domain.Entities.Diary", b =>
-                {
-                    b.HasOne("FoodTracker.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany("Diaries")
-                        .HasForeignKey("ApplicationUserId");
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.DiaryEntry", b =>
-                {
-                    b.HasOne("FoodTracker.Domain.Entities.Diary", null)
-                        .WithMany("Type")
-                        .HasForeignKey("DiaryId");
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.ProductServing", b =>
-                {
-                    b.HasOne("FoodTracker.Domain.Entities.Product", null)
-                        .WithMany("ProductServings")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -524,21 +416,6 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.Diary", b =>
-                {
-                    b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.Product", b =>
-                {
-                    b.Navigation("ProductServings");
-                });
-
-            modelBuilder.Entity("FoodTracker.Infrastructure.Identity.ApplicationUser", b =>
-                {
-                    b.Navigation("Diaries");
                 });
 #pragma warning restore 612, 618
         }

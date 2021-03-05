@@ -1,20 +1,19 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Domain.Entities;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace FoodTracker.Application.Products.Commands
+namespace FoodTracker.Application.Products.Commands.CreateProduct
 {
     public class CreateProductCommand : IRequest<ProductDto>
     {
         public string BarCode { get; set; }
-        public int Calories { get; set; }
-        public double Protein { get; set; }
-        public double Carbohydrates { get; set; }
-        public double Fats { get; set; }
-        public double Sodium { get; set; }
+        public string Name { get; set; }
+        public IList<ProductServingDto> Servings { get; set; }
     }
 
     public class CreateProductsCommandHandler : IRequestHandler<CreateProductCommand, ProductDto>
@@ -33,11 +32,7 @@ namespace FoodTracker.Application.Products.Commands
             var product = new Product
             {
                 BarCode = request.BarCode,
-                Calories = request.Calories,
-                Protein = request.Protein,
-                Carbohydrates = request.Carbohydrates,
-                Fats = request.Fats,
-                Sodium = request.Sodium
+                ProductServings = _mapper.Map<IList<ProductServingDto>, IList<ProductServing>>(request.Servings)
             };
 
             await _dbContext.Products.AddAsync(product, cancellationToken);

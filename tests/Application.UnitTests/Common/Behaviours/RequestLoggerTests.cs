@@ -1,12 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Threading.Tasks;
+using FoodTracker.Application.Common.Interfaces;
 using Moq;
 using NUnit.Framework;
-using System.Threading;
-using System.Threading.Tasks;
-using FoodTracker.Application.Common.Behaviours;
-using FoodTracker.Application.Common.Interfaces;
 
-namespace CleanArchitecture.Application.UnitTests.Common.Behaviours
+namespace FoodTracker.Application.UnitTests.Common.Behaviours
 {
     public class RequestLoggerTests
     {
