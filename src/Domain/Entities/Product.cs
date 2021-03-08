@@ -1,5 +1,4 @@
-﻿using System;
-using FoodTracker.Domain.Common;
+﻿using FoodTracker.Domain.Common;
 using System.Collections.Generic;
 
 namespace FoodTracker.Domain.Entities
