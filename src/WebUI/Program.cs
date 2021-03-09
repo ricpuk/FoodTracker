@@ -34,6 +34,7 @@ namespace FoodTracker.WebUI
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                     await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
+                    await ApplicationDbContextSeed.SeedDummyUsersAsync(userManager, roleManager);
                 }
                 catch (Exception ex)
                 {

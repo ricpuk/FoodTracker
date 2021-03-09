@@ -25,5 +25,34 @@ namespace FoodTracker.Infrastructure.Persistence
                 await userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });
             }
         }
+
+        public static async Task SeedDummyUsersAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            var role = new IdentityRole("User");
+
+            if (roleManager.Roles.All(r => r.Name != role.Name))
+            {
+                await roleManager.CreateAsync(role);
+            }
+
+            var users = new Dictionary<string, string>
+            {
+                {"jake","jake@foo.bar"},
+                {"tim", "tim@foo.bar"},
+                {"ed", "ed@foo.bar"},
+                {"ben", "ben@foo.bar"},
+                {"timmy", "timmy@foo.bar"}
+            };
+
+            foreach (var userkvp in users)
+            {
+                var user = new ApplicationUser { UserName = userkvp.Key, Email = userkvp.Value };
+                if (userManager.Users.All(u => u.UserName != user.UserName))
+                {
+                    await userManager.CreateAsync(user, "User1!");
+                    await userManager.AddToRolesAsync(user, new[] { role.Name });
+                }
+            }
+        }
     }
 }
