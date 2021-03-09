@@ -2,6 +2,7 @@
 using FoodTracker.Infrastructure.Identity;
 using FoodTracker.Infrastructure.Persistence;
 using FoodTracker.Infrastructure.Services;
+using FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,8 @@ namespace FoodTracker.Infrastructure
 
             services.AddScoped<IDomainEventService, DomainEventService>();
 
+            services.AddHttpClient<OpenFoodFactsClient>();
+
             services
                 .AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
@@ -41,6 +44,7 @@ namespace FoodTracker.Infrastructure
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IDataService, OpenFoodFactsDataService>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();

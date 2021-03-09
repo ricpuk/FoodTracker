@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using FoodTracker.Application.Products.Commands.CreateProduct;
 using FoodTracker.Application.Products.Commands.UpdateProduct;
+using FoodTracker.Application.Products.Queries.GetProductsBySearch;
 
 namespace FoodTracker.WebUI.Controllers
 {
@@ -25,6 +26,17 @@ namespace FoodTracker.WebUI.Controllers
             var query = new GetProductsByBarCodeQuery
             {
                 BarCode = barCode,
+                Page = page
+            };
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("search/{query}")]
+        public async Task<ActionResult<PaginatedList<ProductDto>>> GetBySearch(string searchQ, [FromQuery] int page)
+        {
+            var query = new GetProductsBySearchQuery
+            {
+                Query = searchQ,
                 Page = page
             };
             return Ok(await Mediator.Send(query));

@@ -21,6 +21,14 @@ namespace FoodTracker.Application.Common.Models
             Items = items;
         }
 
+        public PaginatedList(T item)
+        {
+            Items = new List<T> {item};
+            PageIndex = 1;
+            TotalCount = 1;
+            TotalPages = 1;
+        }
+
         public bool HasPreviousPage => PageIndex > 1;
 
         public bool HasNextPage => PageIndex < TotalPages;

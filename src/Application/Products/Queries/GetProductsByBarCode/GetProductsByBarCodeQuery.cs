@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FoodTracker.Application.Common.Exceptions;
 using FoodTracker.Application.Common.Interfaces;
@@ -21,19 +22,18 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
     {
         private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private IDataService _dataService;
 
-        public GetProductQueryHandler(IApplicationDbContext dbContext, IMapper mapper)
+        public GetProductQueryHandler(IApplicationDbContext dbContext, IMapper mapper, IDataService dataService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _dataService = dataService;
         }
 
         public async Task<PaginatedList<ProductDto>> Handle(GetProductsByBarCodeQuery request, CancellationToken cancellationToken)
         {
-            var products = await _dbContext.Products
-                .Where(x => x.BarCode == request.BarCode)
-                .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(request.Page, 10);
+            var products = await FetchProducts(request.BarCode, request.Page);
 
             if (products.TotalCount == 0)
             {
@@ -41,6 +41,23 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
             }
 
             return products;
+        }
+
+        private async Task<PaginatedList<ProductDto>> FetchProducts(string barCode, int page)
+        {
+            var products = _dbContext.Products
+                .Where(x => x.BarCode == barCode)
+                .ProjectTo<ProductDto>(_mapper.ConfigurationProvider);
+            
+            if (products.Any())
+            {
+                return await products.PaginatedListAsync(page, 10);
+            }
+
+            var dsProduct = await _dataService.FetchProduct(barCode);
+            var productDto = _mapper.Map<ProductDto>(dsProduct);
+
+            return new PaginatedList<ProductDto>(productDto);
         }
     }
 }

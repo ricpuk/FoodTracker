@@ -9,7 +9,7 @@ namespace FoodTracker.Domain.Entities
     {
         public int Id { get; set; }
         public bool IsCompleted { get; set; }
-        public IList<DiaryEntry> Entries { get; set; }
+        public IList<DiaryEntry> Entries { get; set; } = new List<DiaryEntry>();
 
         [Column(TypeName = "date")]
         public DateTime Date { get; set; }
