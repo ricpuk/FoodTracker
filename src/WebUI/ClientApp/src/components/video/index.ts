@@ -1,3 +1,6 @@
-import Video from './video';
+export default () => {
 
-export default Video;
+}
+// import Video from './video';
+
+// export default Video;
