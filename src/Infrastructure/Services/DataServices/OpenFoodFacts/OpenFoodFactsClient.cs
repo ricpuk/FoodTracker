@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
 using System.Threading.Tasks;
 using FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts.Classes;
 
@@ -22,10 +18,18 @@ namespace FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts
 
         public async Task<GetProductResponse> GetProduct(string barCode)
         {
-            var responseRaw = await Client.GetAsync($"{BaseUrl}{barCode}{Extension}");
-            //response.EnsureSuccessStatusCode();
-            var response = await responseRaw.Content.ReadFromJsonAsync<GetProductResponse>();
-            return response;
+            try
+            {
+                var response = await Client.GetFromJsonAsync<GetProductResponse>($"{BaseUrl}{barCode}{Extension}");
+                return response;
+            }
+            catch
+            {
+                return new GetProductResponse
+                {
+                    Status = OpenFoodFactsStatusCode.NotFound
+                };
+            }
 
         }
     }

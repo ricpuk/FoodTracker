@@ -1,20 +1,21 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
+using FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts.Utils;
 
 namespace FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts.Classes
 {
     public class GetProductResponse
     {
-        [JsonProperty("product")]
+        [JsonPropertyName("product")]
         public OpenFoodFactsProduct Product { get; set; }
 
-        [JsonProperty("status")]
-        public Int32 Status { get; set; }
+        [JsonPropertyName("status")]
+        public OpenFoodFactsStatusCode Status { get; set; }
 
-        [JsonProperty("code")]
+        [JsonPropertyName("code")]
         public string Code { get; set; }
 
-        [JsonProperty("status_verbose")]
+        [JsonPropertyName("status_verbose")]
+        [JsonConverter(typeof(OpenFoodFactsProductStringConverter))]
         public string StatusVerbose { get; set; }
     }
 }

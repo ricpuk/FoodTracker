@@ -1,19 +1,20 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts.Utils
 {
-    public class OpenFoodFactsProductStringConverter : JsonConverter<String>
+    public class OpenFoodFactsProductStringConverter : JsonConverter<string>
     {
-        public override void WriteJson(JsonWriter writer, string value, JsonSerializer serializer)
+        public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            string str = reader.GetString();
+            return str;
         }
 
-        public override string ReadJson(JsonReader reader, Type objectType, string existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
         {
-            string str = (string)reader.Value;
-            return str;
+            throw new NotImplementedException();
         }
     }
 }

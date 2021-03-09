@@ -22,7 +22,7 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
     {
         private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
-        private IDataService _dataService;
+        private readonly IDataService _dataService;
 
         public GetProductQueryHandler(IApplicationDbContext dbContext, IMapper mapper, IDataService dataService)
         {
@@ -37,7 +37,7 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
 
             if (products.TotalCount == 0)
             {
-                throw new NotFoundException($"No products for bar code : ${request.BarCode} have been found.");
+                throw new NotFoundException($"No products for bar code: {request.BarCode} have been found.");
             }
 
             return products;
@@ -55,6 +55,12 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
             }
 
             var dsProduct = await _dataService.FetchProduct(barCode);
+
+            if (dsProduct == null)
+            {
+                return new PaginatedList<ProductDto>();
+            }
+
             var productDto = _mapper.Map<ProductDto>(dsProduct);
 
             return new PaginatedList<ProductDto>(productDto);
