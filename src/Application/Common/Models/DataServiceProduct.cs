@@ -1,10 +1,9 @@
-﻿using FoodTracker.Domain.Entities;
-
-namespace FoodTracker.Application.Common.Models
+﻿namespace FoodTracker.Application.Common.Models
 {
     public class DataServiceProduct
     {
         public string Name { get; set; }
+        public string BarCode { get; set; }
         public DataServiceProductServing Serving { get; set; }
     }
 

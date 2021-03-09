@@ -38,6 +38,7 @@ namespace FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts
             return new DataServiceProduct
             {
                 Name = source.ProductName,
+                BarCode = source.BarCode,
                 Serving = new DataServiceProductServing
                 {
                     Calories = sourceNutritionValues.Calories,

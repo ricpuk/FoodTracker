@@ -63,6 +63,22 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
 
             var productDto = _mapper.Map<ProductDto>(dsProduct);
 
+            var dspServing = dsProduct.Serving;
+            productDto.Servings = new List<ProductServingDto>
+            {
+                new()
+                {
+                    Calories = dspServing.Calories,
+                    Carbohydrates = dspServing.Carbohydrates,
+                    Fats = dspServing.Fats,
+                    Fiber = dspServing.Fiber,
+                    Protein = dspServing.Protein,
+                    ServingSize = dspServing.ServingSize,
+                    ServingSizeUnit = dspServing.ServingSizeUnits,
+                    Sodium = dspServing.Sodium
+                }
+            };
+
             return new PaginatedList<ProductDto>(productDto);
         }
     }
