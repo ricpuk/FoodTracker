@@ -6,6 +6,38 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/Diaries/{date}": {
+      "get": {
+        "tags": [
+          "Diaries"
+        ],
+        "operationId": "Diaries_Index",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiaryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/_configuration/{clientId}": {
       "get": {
         "tags": [
@@ -269,34 +301,66 @@
   },
   "components": {
     "schemas": {
-      "PaginatedListOfProductDto": {
+      "DiaryDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "items": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isCompleted": {
+            "type": "boolean"
+          },
+          "entries": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/ProductDto"
+              "$ref": "#/components/schemas/DiaryEntryDto"
             }
           },
-          "pageIndex": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DiaryEntryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
             "type": "integer",
             "format": "int32"
           },
-          "totalPages": {
+          "diaryId": {
             "type": "integer",
             "format": "int32"
           },
-          "totalCount": {
+          "timeLogged": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "product": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ProductDto"
+              }
+            ]
+          },
+          "servingId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "hasPreviousPage": {
-            "type": "boolean"
+          "waterIntake": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
-          "hasNextPage": {
-            "type": "boolean"
+          "entryType": {
+            "$ref": "#/components/schemas/DiaryEntryType"
           }
         }
       },
@@ -364,6 +428,49 @@
           "sodium": {
             "type": "number",
             "format": "double"
+          }
+        }
+      },
+      "DiaryEntryType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Food",
+          "Water"
+        ],
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "PaginatedListOfProductDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ProductDto"
+            }
+          },
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
           }
         }
       },

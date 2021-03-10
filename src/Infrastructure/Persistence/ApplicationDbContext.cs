@@ -32,6 +32,9 @@ namespace FoodTracker.Infrastructure.Persistence
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductServing> ProductServings { get; set; }
+        public DbSet<Diary> Diaries { get; set; }
+        public DbSet<DiaryEntry> DiaryEntries { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -69,11 +72,11 @@ namespace FoodTracker.Infrastructure.Persistence
         {
             while (true)
             {
-                var domainEventEntity = ChangeTracker.Entries<IHasDomainEvent>()
+                var domainEventEntity = ChangeTracker
+                    .Entries<IHasDomainEvent>()
                     .Select(x => x.Entity.DomainEvents)
                     .SelectMany(x => x)
-                    .Where(domainEvent => !domainEvent.IsPublished)
-                    .FirstOrDefault();
+                    .FirstOrDefault(domainEvent => !domainEvent.IsPublished);
                 if (domainEventEntity == null) break;
 
                 domainEventEntity.IsPublished = true;
