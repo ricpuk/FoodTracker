@@ -36,6 +36,48 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Diaries"
+        ],
+        "operationId": "Diaries_CreateEntry",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDiaryEntryCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiaryDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/_configuration/{clientId}": {
@@ -442,6 +484,20 @@
           0,
           1
         ]
+      },
+      "CreateDiaryEntryCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "entry": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DiaryEntryDto"
+              }
+            ]
+          }
+        }
       },
       "PaginatedListOfProductDto": {
         "type": "object",
