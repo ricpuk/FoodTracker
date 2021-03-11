@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using FoodTracker.Application.Common.Security;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodTracker.WebUI.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public abstract class ApiControllerBase : ControllerBase
     {

@@ -62,7 +62,7 @@ namespace FoodTracker.WebUI
 
             services.AddOpenApiDocument(configure =>
             {
-                configure.Title = "Flux Lab API";
+                configure.Title = "Food Tracker API";
                 configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
                 {
                     Type = OpenApiSecuritySchemeType.ApiKey,

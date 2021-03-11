@@ -27,53 +27,58 @@ namespace FoodTracker.Application.Common.Behaviours
         {
             var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
 
-            if (authorizeAttributes.Any())
+            var attributes = authorizeAttributes as AuthorizeAttribute[] ?? authorizeAttributes.ToArray();
+            if (!attributes.Any()) return await next();
+            // Must be authenticated user
+            if (_currentUserService.UserId == null)
             {
-                // Must be authenticated user
-                if (_currentUserService.UserId == null)
-                {
-                    throw new UnauthorizedAccessException();
-                }
+                throw new UnauthorizedAccessException();
+            }
 
-                // Role-based authorization
-                var authorizeAttributesWithRoles = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles));
+            // Role-based authorization
+            var authorizeAttributesWithRoles = attributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles));
 
-                if (authorizeAttributesWithRoles.Any())
+            var attributesWithRoles = authorizeAttributesWithRoles as AuthorizeAttribute[] ?? authorizeAttributesWithRoles.ToArray();
+            if (attributesWithRoles.Any())
+            {
+                foreach (var roles in attributesWithRoles.Select(a => a.Roles.Split(',')))
                 {
-                    foreach (var roles in authorizeAttributesWithRoles.Select(a => a.Roles.Split(',')))
+                    var authorized = false;
+                    foreach (var role in roles)
                     {
-                        var authorized = false;
-                        foreach (var role in roles)
+                        var isInRole = await _identityService.IsInRoleAsync(_currentUserService.UserId, role.Trim());
+                        if (!isInRole)
                         {
-                            var isInRole = await _identityService.IsInRoleAsync(_currentUserService.UserId, role.Trim());
-                            if (isInRole)
-                            {
-                                authorized = true;
-                                break;
-                            }
+                            continue;
                         }
+                        authorized = true;
+                        break;
+                    }
 
-                        // Must be a member of at least one role in roles
-                        if (!authorized)
-                        {
-                            throw new ForbiddenAccessException();
-                        }
+                    // Must be a member of at least one role in roles
+                    if (!authorized)
+                    {
+                        throw new ForbiddenAccessException();
                     }
                 }
+            }
 
-                // Policy-based authorization
-                var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy));
-                if (authorizeAttributesWithPolicies.Any())
+            // Policy-based authorization
+            var authorizeAttributesWithPolicies = attributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy));
+            var attributesWithPolicies = authorizeAttributesWithPolicies as AuthorizeAttribute[] ?? authorizeAttributesWithPolicies.ToArray();
+            
+            if (!attributesWithPolicies.Any())
+            {
+                return await next();
+            }
+
+            foreach(var policy in attributesWithPolicies.Select(a => a.Policy))
+            {
+                var authorized = await _identityService.AuthorizeAsync(_currentUserService.UserId, policy);
+
+                if (!authorized)
                 {
-                    foreach(var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
-                    {
-                        var authorized = await _identityService.AuthorizeAsync(_currentUserService.UserId, policy);
-
-                        if (!authorized)
-                        {
-                            throw new ForbiddenAccessException();
-                        }
-                    }
+                    throw new ForbiddenAccessException();
                 }
             }
 
