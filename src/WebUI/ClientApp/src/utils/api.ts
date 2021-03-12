@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { debug } from 'console';
-import authService from '../components/api-authorization/AuthorizeService';
+import authService from '../components/api-authorization/AuthorizationService';
 
 const API = axios.create({
 });

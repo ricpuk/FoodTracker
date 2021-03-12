@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Application.Common.Models;
+using FoodTracker.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,15 +14,18 @@ namespace FoodTracker.Infrastructure.Identity
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
         private readonly IAuthorizationService _authorizationService;
+        private readonly ICurrentUserService _currentUserService;
 
         public IdentityService(
             UserManager<ApplicationUser> userManager,
             IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-            IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService,
+            ICurrentUserService currentUserService)
         {
             _userManager = userManager;
             _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
             _authorizationService = authorizationService;
+            _currentUserService = currentUserService;
         }
 
         public async Task<string> GetUserNameAsync(string userId)
@@ -29,6 +33,12 @@ namespace FoodTracker.Infrastructure.Identity
             var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
 
             return user.UserName;
+        }
+
+        public async Task<UserProfile> GetCurrentUserProfileAsync()
+        {
+            var user = await _userManager.Users.FirstAsync(u => u.Id == _currentUserService.UserId);
+            return user.Profile;
         }
 
         public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)

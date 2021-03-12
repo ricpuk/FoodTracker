@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Diaries.Commands;
 using FoodTracker.Application.Diaries.Queries;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FoodTracker.WebUI.Controllers
 {
+    [Authorize]
     public class DiariesController : ApiControllerBase
     {
         [HttpGet("{date}")]

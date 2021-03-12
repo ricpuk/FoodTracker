@@ -1,11 +1,14 @@
 ﻿using System.Threading.Tasks;
 using FoodTracker.Application.Common.Models;
+using FoodTracker.Domain.Entities;
 
 namespace FoodTracker.Application.Common.Interfaces
 {
     public interface IIdentityService
     {
         Task<string> GetUserNameAsync(string userId);
+
+        Task<UserProfile> GetCurrentUserProfileAsync();
 
         Task<bool> IsInRoleAsync(string userId, string role);
 

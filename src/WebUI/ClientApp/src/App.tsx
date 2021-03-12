@@ -5,12 +5,12 @@ import Home from './components/Home';
 
 import './custom.css'
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
-import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants';
+import { AppPaths } from './components/api-authorization/ApiAuthorizationConstants';
 import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
 
 export default () => (
     <Layout>
         <Route exact path='/' component={Home} />
-        <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
+        <Route path={AppPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
     </Layout>
 );

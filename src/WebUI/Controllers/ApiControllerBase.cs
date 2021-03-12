@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FoodTracker.WebUI.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/[controller]")]
     public abstract class ApiControllerBase : ControllerBase
     {

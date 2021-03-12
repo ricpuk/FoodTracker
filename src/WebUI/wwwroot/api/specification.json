@@ -35,7 +35,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Diaries/{diaryId}": {
@@ -79,7 +84,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/_configuration/{clientId}": {
@@ -589,18 +599,17 @@
       }
     },
     "securitySchemes": {
-      "oauth2": {
-        "type": "oauth2",
-        "flows": {
-          "authorizationCode": {
-            "authorizationUrl": "https://localhost:44312/connect/authorize",
-            "tokenUrl": "https://localhost:44312/connect/token",
-            "scopes": {
-              "scope1": "Demo API - full access"
-            }
-          }
-        }
+      "JWT": {
+        "type": "apiKey",
+        "description": "Type into the textbox: Bearer {your JWT token}.",
+        "name": "Authorization",
+        "in": "header"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "JWT": []
+    }
+  ]
 }

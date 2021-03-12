@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import PermissionHandler from '../utils/permissionHandler';
+import Navigation from './navigation';
 
 // const Video = React.lazy(() => import('./video'));
 
@@ -10,9 +11,6 @@ const Home = () => {
   const [ isCameraEnabled, setCameraEnabled ] = React.useState(PermissionHandler.isCameraPermissionGranted());
 
   React.useEffect(() => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia()) {
-      setCameraSupported(true);
-    }
   }, [])
 
   const onCamEnabled = () => {
@@ -22,6 +20,7 @@ const Home = () => {
 
   return (
     <>
+    <Navigation/>
       {isCameraSupported && isCameraEnabled ?
         <React.Suspense fallback={<div>Loading...</div>}>
           {/* <Video/> */}
