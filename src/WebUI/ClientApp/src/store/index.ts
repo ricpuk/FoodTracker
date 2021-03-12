@@ -1,5 +1,6 @@
 import * as Diaries from './Diaries';
 import * as SoundTracks from './SoundTracks';
+import * as Application from './ApplicationParams';
 import { User } from 'oidc-client';
 import {reducer as oidcReducer} from 'redux-oidc';
 
@@ -13,6 +14,7 @@ interface OidcState {
 export interface ApplicationState {
     diaries: Diaries.DiariesState | undefined;
     soundTracks: SoundTracks.SoundTracksState | undefined;
+    application: Application.ApplicationParamsState | undefined;
     oidc: OidcState;
 }
 
@@ -22,6 +24,7 @@ export interface ApplicationState {
 export const reducers = {
     diaries: Diaries.reducer,
     soundTracks: SoundTracks.reducer,
+    application: Application.reducer,
     oidc: oidcReducer
 };
 
