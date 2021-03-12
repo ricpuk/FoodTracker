@@ -1,4 +1,4 @@
-import * as Phrases from './Phrases';
+import * as Diaries from './Diaries';
 import * as SoundTracks from './SoundTracks';
 import { User } from 'oidc-client';
 import {reducer as oidcReducer} from 'redux-oidc';
@@ -11,7 +11,7 @@ interface OidcState {
 
 // The top-level state object
 export interface ApplicationState {
-    phrases: Phrases.PhrasesState | undefined;
+    diaries: Diaries.DiariesState | undefined;
     soundTracks: SoundTracks.SoundTracksState | undefined;
     oidc: OidcState;
 }
@@ -20,7 +20,7 @@ export interface ApplicationState {
 // the reducer with the matching name. It's important that the names match exactly, and that the reducer
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
-    phrases: Phrases.reducer,
+    diaries: Diaries.reducer,
     soundTracks: SoundTracks.reducer,
     oidc: oidcReducer
 };

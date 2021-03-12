@@ -1,72 +1,63 @@
 import { Action, Reducer } from 'redux';
 import API from '../utils/api';
-import { AppThunkAction } from './';
+import { AppThunkAction } from '.';
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
 
-export interface PhrasesState {
+export interface DiariesState {
     isLoading: boolean;
-    page?: number;
-    phrases: Phrase[];
+    diaries: { [date: string] : Diary};
+    date: string;
 }
 
-export interface Phrase {
+export interface Diary {
     id: number;
-    translations: PhraseTranslation[];
+    date: Date;
 }
 
-export interface PhraseTranslation {
-    languageCode: LanguageCode
-    text: string
-}
-
-export enum LanguageCode {
-    LT,
-    EN
-}
-
-const RESOURCE_URL = 'api/phrases'
+const RESOURCE_URL = 'api/diaries'
 
 // -----------------
 // ACTIONS - These are serializable (hence replayable) descriptions of state transitions.
 // They do not themselves have any side-effects; they just describe something that is going to happen.
 
-interface RequestPhrasesAction {
-    type: 'REQUEST_PHRASES';
-    page: number;
+interface RequestDiaryAction {
+    type: 'REQUEST_DIARY';
+    date: string;
 }
 
-interface ReceivePhrasesAction {
-    type: 'RECEIVE_PHRASES';
-    page: number;
-    phrases: Phrase[];
+interface ReceiveDiaryAction {
+    type: 'RECEIVE_DIARY';
+    date: string;
+    diary: Diary;
 }
 
-interface PhrasesResponse {
-    items: Phrase[]   
+interface DiariesResponse {
+    data: Diary
 }
 
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
-type KnownAction = RequestPhrasesAction | ReceivePhrasesAction;
+type KnownAction = RequestDiaryAction | ReceiveDiaryAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 
 export const actionCreators = {
-    requestPhrases: (page: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    requestPhrases: (date: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         // Only load data if it's something we don't already have (and are not already loading)
         const appState = getState();
-        if (appState && appState.phrases && page !== appState.phrases.page) {
-            API.get<PhrasesResponse>(RESOURCE_URL)
+        if (appState && appState.diaries && date !== appState.diaries.date) {
+            API.get<DiariesResponse>(RESOURCE_URL)
                 .then(response => {
                     const {data} = response
-                    dispatch({ type: 'RECEIVE_PHRASES', page: page, phrases: data.items});
+                    const date = new Date(data.data.date).toISOString().slice(0, 10)
+                    dispatch({ type: 'RECEIVE_DIARY', diary: data.data, date: date});
                 });
 
-            dispatch({ type: 'REQUEST_PHRASES', page: page });
+            dispatch({ type: 'REQUEST_DIARY', date: date });
         }
     }
 };
@@ -74,27 +65,28 @@ export const actionCreators = {
 // ----------------
 // REDUCER - For a given state and action, returns the new state. To support time travel, this must not mutate the old state.
 
-const unloadedState: PhrasesState = { phrases: [], isLoading: false};
+const unloadedState: DiariesState = { diaries: {}, date: new Date().toISOString().slice(0, 10), isLoading: false};
 
-export const reducer: Reducer<PhrasesState> = (state: PhrasesState | undefined, incomingAction: Action): PhrasesState => {
+export const reducer: Reducer<DiariesState> = (state: DiariesState | undefined, incomingAction: Action): DiariesState => {
     if (state === undefined) {
         return unloadedState;
     }
 
     const action = incomingAction as KnownAction;
     switch (action.type) {
-        case 'REQUEST_PHRASES':
+        case 'REQUEST_DIARY':
             return {
-                phrases: state.phrases,
-                page: state.page,
+                diaries: state.diaries,
+                date: state.date,
                 isLoading: true,
 
             };
-        case 'RECEIVE_PHRASES':
-            if (action.page === state.page || action.page === 0) {
+        case 'RECEIVE_DIARY':
+            if (action.date === state.date) {
+                state.diaries[action.date] = action.diary
                 return {
-                    phrases: action.phrases,
-                    page: action.page,
+                    diaries: state.diaries,
+                    date: action.date,
                     isLoading: false
                 };
             }
