@@ -1,0 +1,11 @@
+.subtitle {
+  font-size: 10;
+  color: gray;
+}
+
+.nutritional-value {
+  display: flex;
+  text-align: right;
+  flex-direction: column;
+  justify-content: center;
+}

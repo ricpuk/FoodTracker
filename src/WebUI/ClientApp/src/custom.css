@@ -1,5 +1,4 @@
 /* Provide sufficient contrast against white background */
-@import "~antd/dist/antd.css";
 
 a {
   color: #0366d6;

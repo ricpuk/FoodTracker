@@ -4,6 +4,8 @@ import { Container } from "reactstrap";
 import { ApplicationState } from "../store";
 import * as ApplicationParamsStore from "../store/ApplicationParams";
 import NavMenu from "./NavMenu";
+import * as ScreenUtils from "../utils/ScreenUtils";
+import { ScreenSize } from "../utils/screenSize";
 
 type LayoutProps = ApplicationParamsStore.ApplicationParamsState & // ... state we've requested from the Redux store
   typeof ApplicationParamsStore.actionCreators; // ... plus action creators we've requested
@@ -23,21 +25,27 @@ class Layout extends React.PureComponent<
   }
 
   handleWindowSizeChange = () => {
-    if (window.innerWidth > 500 && this.props.isMobile) {
-      this.props.setIsMobile(false);
-      return;
+    const { isMobile, screenSize } = ScreenUtils.getScreenParams();
+    if (this.props.isMobile !== isMobile) {
+      this.props.setIsMobile(isMobile);
     }
-    if (window.innerWidth < 500 && !this.props.isMobile) {
-      this.props.setIsMobile(true);
-      return;
+
+    if (this.props.screenSize !== screenSize) {
+      this.props.setScreenSize(screenSize);
     }
+  };
+
+  isContainerFluid = (): boolean => {
+    return this.props.screenSize <= ScreenSize.lg;
   };
 
   public render() {
     return (
       <React.Fragment>
         <NavMenu isMobile={this.props.isMobile} />
-        <Container>{this.props.children}</Container>
+        <Container fluid={this.isContainerFluid()}>
+          {this.props.children}
+        </Container>
       </React.Fragment>
     );
   }
