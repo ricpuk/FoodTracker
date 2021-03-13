@@ -11,6 +11,7 @@ import {
   TabPane,
   Tooltip,
 } from "reactstrap";
+import DatePicker from "./datePicker/datePicker";
 import DiarySection from "./diarySection/DiarySection";
 
 const Diary = () => {
@@ -72,6 +73,9 @@ const Diary = () => {
   return (
     <div>
       {renderDailySummary()}
+      <div className="my-2">
+        <DatePicker date="2020-01-03" />
+      </div>
       <Nav tabs>
         <NavItem>
           <NavLink
