@@ -13,7 +13,7 @@ export interface DiariesState {
 
 export interface Diary {
     id: number;
-    date: Date;
+    date: string;
 }
 
 const RESOURCE_URL = 'api/diaries'
@@ -50,7 +50,7 @@ export const actionCreators = {
             API.get<Diary>(`${RESOURCE_URL}/${date}`)
                 .then(response => {
                     const {data} = response
-                    const date = new Date(data.date).toISOString().slice(0, 10)
+                    const date = data.date.slice(0, 10)
                     dispatch({ type: 'RECEIVE_DIARY', diary: data, date: date});
                 });
 

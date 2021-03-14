@@ -6,7 +6,6 @@ import {
   NavItem,
   NavLink,
   Progress,
-  Row,
   TabContent,
   TabPane,
   Tooltip,
@@ -15,6 +14,7 @@ import { ApplicationState } from "../store";
 import DatePicker from "./datePicker/datePicker";
 import DiarySection from "./diarySection/DiarySection";
 import * as DiariesStore from "../store/Diaries";
+import Loader from "./loader/Loader";
 
 type DiaryProps = DiariesStore.DiariesState & // ... state we've requested from the Redux store
   typeof DiariesStore.actionCreators; // ... plus action creators we've requested
@@ -74,17 +74,14 @@ const Diary = (props: DiaryProps) => {
       </Tooltip>
     </div>
   );
+  const renderDatePicker = () => (
+    <div className="my-2">
+      <DatePicker date={props.date} dateSelected={onDateSelected} />
+    </div>
+  );
 
-  const onDateSelected = (date: string) => {
-    props.requestDiary(date);
-  };
-
-  return (
+  const renderDiaryContent = () => (
     <div>
-      {renderDailySummary()}
-      <div className="my-2">
-        <DatePicker date={props.date} dateSelected={onDateSelected} />
-      </div>
       <Nav tabs>
         <NavItem>
           <NavLink
@@ -128,6 +125,20 @@ const Diary = (props: DiaryProps) => {
           <DiarySection />
         </TabPane>
       </TabContent>
+    </div>
+  );
+
+  const onDateSelected = (date: string) => {
+    props.requestDiary(date);
+  };
+
+  return (
+    <div>
+      <Loader isLoading={props.isLoading}>
+        {renderDailySummary()}
+        {renderDatePicker()}
+        {renderDiaryContent()}
+      </Loader>
     </div>
   );
 };
