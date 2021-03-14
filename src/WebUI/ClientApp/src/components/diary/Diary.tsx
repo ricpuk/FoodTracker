@@ -1,7 +1,12 @@
 import classnames from "classnames";
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Nav,
   NavItem,
   NavLink,
@@ -10,16 +15,23 @@ import {
   TabPane,
   Tooltip,
 } from "reactstrap";
-import { ApplicationState } from "../store";
-import DatePicker from "./datePicker/datePicker";
-import DiarySection from "./diarySection/DiarySection";
-import * as DiariesStore from "../store/Diaries";
-import Loader from "./loader/Loader";
+import { ApplicationState } from "../../store";
+import DatePicker from "../datePicker/datePicker";
+import DiarySection from "../diarySection/DiarySection";
+import * as DiariesStore from "../../store/Diaries";
+import Loader from "../loader/Loader";
+import "./Diary.css";
 
 type DiaryProps = DiariesStore.DiariesState & // ... state we've requested from the Redux store
   typeof DiariesStore.actionCreators; // ... plus action creators we've requested
 
 const Diary = (props: DiaryProps) => {
+  const [activeTab, setActiveTab] = useState("breakfast");
+  const [proteinOpen, setProteinOpen] = useState(false);
+  const [carbsOpen, setCarbsOpen] = useState(false);
+  const [fatsOpen, setFatsOpen] = useState(false);
+  const [remainingOpen, setRemainingOpen] = useState(false);
+
   React.useEffect(() => {
     if (!props.date) {
       const date = new Date().toISOString().split("T")[0];
@@ -27,13 +39,18 @@ const Diary = (props: DiaryProps) => {
     }
   });
 
-  const [activeTab, setActiveTab] = useState("breakfast");
-  const [proteinOpen, setProteinOpen] = useState(false);
-  const [carbsOpen, setCarbsOpen] = useState(false);
-  const [fatsOpen, setFatsOpen] = useState(false);
-  const [remainingOpen, setRemainingOpen] = useState(false);
+  const isMobile = useSelector((state: ApplicationState) => {
+    if (state.application) {
+      return state.application.isMobile;
+    }
+    return false;
+  });
+
   const toggle = (id: string) => {
     activeTab === id ? setActiveTab("") : setActiveTab(id);
+  };
+  const toggleModal = () => {
+    props.toggleModalState();
   };
 
   const renderDailySummary = () => (
@@ -131,16 +148,19 @@ const Diary = (props: DiaryProps) => {
         <TabPane tabId="breakfast">
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Breakfast)}
+            toggleModal={toggleModal}
           />
         </TabPane>
         <TabPane tabId="lunch">
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Lunch)}
+            toggleModal={toggleModal}
           />
         </TabPane>
         <TabPane tabId="dinner">
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Dinner)}
+            toggleModal={toggleModal}
           />
         </TabPane>
       </TabContent>
@@ -151,6 +171,39 @@ const Diary = (props: DiaryProps) => {
     props.requestDiary(date);
   };
 
+  const renderModals = () => {
+    const classBindings = {
+      "full-screen": isMobile,
+    };
+    return (
+      <Modal
+        isOpen={props.isModalOpen}
+        toggle={toggleModal}
+        className={classnames(classBindings)}
+        fullscreen={"sm"}
+      >
+        <ModalHeader toggle={toggleModal}>Modal title</ModalHeader>
+        <ModalBody>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={toggleModal}>
+            Do Something
+          </Button>
+          <Button color="secondary" onClick={toggleModal}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+    );
+  };
+
   return (
     <div>
       <Loader isLoading={props.isLoading}>
@@ -158,6 +211,7 @@ const Diary = (props: DiaryProps) => {
         {renderDatePicker()}
         {renderDiaryContent()}
       </Loader>
+      {renderModals()}
     </div>
   );
 };

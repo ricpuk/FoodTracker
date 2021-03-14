@@ -8,6 +8,8 @@ import { Product } from "./Products";
 
 export interface DiariesState {
   isLoading: boolean;
+  isCreateLoading: boolean;
+  isModalOpen: boolean;
   diaries: { [date: string]: Diary };
   date: string;
 }
@@ -49,9 +51,14 @@ interface ReceiveDiaryAction {
   diary: Diary;
 }
 
+interface ToggleModalState {
+  type: "TOGGLE_MODAL";
+  state: boolean;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
-type KnownAction = RequestDiaryAction | ReceiveDiaryAction;
+type KnownAction = RequestDiaryAction | ReceiveDiaryAction | ToggleModalState;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -78,12 +85,24 @@ export const actionCreators = {
       dispatch({ type: "REQUEST_DIARY", date: date });
     }
   },
+  toggleModalState: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    const appState = getState();
+    if (appState && appState.diaries) {
+      dispatch({ type: "TOGGLE_MODAL", state: !appState.diaries.isModalOpen });
+    }
+  },
 };
 
 // ----------------
 // REDUCER - For a given state and action, returns the new state. To support time travel, this must not mutate the old state.
 
-const unloadedState: DiariesState = { diaries: {}, date: "", isLoading: false };
+const unloadedState: DiariesState = {
+  diaries: {},
+  date: "",
+  isLoading: false,
+  isCreateLoading: false,
+  isModalOpen: false,
+};
 
 export const reducer: Reducer<DiariesState> = (
   state: DiariesState | undefined,
@@ -97,7 +116,7 @@ export const reducer: Reducer<DiariesState> = (
   switch (action.type) {
     case "REQUEST_DIARY":
       return {
-        diaries: state.diaries,
+        ...state,
         date: action.date,
         isLoading: true,
       };
@@ -105,12 +124,18 @@ export const reducer: Reducer<DiariesState> = (
       if (action.date === state.date) {
         state.diaries[action.date] = action.diary;
         return {
+          ...state,
           diaries: state.diaries,
           date: action.date,
           isLoading: false,
         };
       }
       break;
+    case "TOGGLE_MODAL":
+      return {
+        ...state,
+        isModalOpen: !state.isModalOpen,
+      };
   }
 
   return state;

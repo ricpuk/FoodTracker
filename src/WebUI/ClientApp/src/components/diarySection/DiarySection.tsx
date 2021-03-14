@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Col, Container, Row } from "reactstrap";
+import { Col, Container, Row, Button } from "reactstrap";
 import { ApplicationState } from "../../store";
 import { DiaryEntry } from "../../store/Diaries";
 import { ScreenSize } from "../../utils/screenSize";
@@ -8,6 +8,7 @@ import "./diarySection.css";
 
 type DiarySectionProps = {
   items: DiaryEntry[];
+  toggleModal: () => void;
 };
 
 const DiarySection = (props: DiarySectionProps) => {
@@ -53,6 +54,16 @@ const DiarySection = (props: DiarySectionProps) => {
     </Row>
   );
 
+  const renderControls = () => {
+    return (
+      <Row className="my-3">
+        <Button color="primary" onClick={props.toggleModal}>
+          Add food
+        </Button>
+      </Row>
+    );
+  };
+
   const renderBody = () => {
     return props.items.map((entry) => {
       const product = entry.product;
@@ -92,6 +103,7 @@ const DiarySection = (props: DiarySectionProps) => {
     <Container fluid={true} className="py-3">
       {renderHeader()}
       {renderBody()}
+      {renderControls()}
     </Container>
   );
 };

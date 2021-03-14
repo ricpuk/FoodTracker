@@ -2,7 +2,7 @@ import * as React from "react";
 import { Route } from "react-router";
 import Layout from "./components/Layout";
 import Home from "./components/Home";
-import Diary from "./components/Diary";
+import Diary from "./components/diary/Diary";
 
 import "./custom.css";
 import AuthorizeRoute from "./components/api-authorization/AuthorizeRoute";
