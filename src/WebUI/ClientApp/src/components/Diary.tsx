@@ -20,7 +20,12 @@ type DiaryProps = DiariesStore.DiariesState & // ... state we've requested from 
   typeof DiariesStore.actionCreators; // ... plus action creators we've requested
 
 const Diary = (props: DiaryProps) => {
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    if (!props.date) {
+      const date = new Date().toISOString().split("T")[0];
+      requestDiary(date);
+    }
+  });
 
   const [activeTab, setActiveTab] = useState("breakfast");
   const [proteinOpen, setProteinOpen] = useState(false);
@@ -76,7 +81,7 @@ const Diary = (props: DiaryProps) => {
   );
   const renderDatePicker = () => (
     <div className="my-2">
-      <DatePicker date={props.date} dateSelected={onDateSelected} />
+      <DatePicker date={props.date} dateSelected={requestDiary} />
     </div>
   );
 
@@ -142,7 +147,7 @@ const Diary = (props: DiaryProps) => {
     </div>
   );
 
-  const onDateSelected = (date: string) => {
+  const requestDiary = (date: string) => {
     props.requestDiary(date);
   };
 
