@@ -44,6 +44,10 @@ namespace FoodTracker.Application.Common.Models
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {
             var count = await source.CountAsync();
+            if (count == 0)
+            {
+                return new PaginatedList<T>(new List<T>(), count, pageIndex, pageSize);
+            }
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
 
             return new PaginatedList<T>(items, count, pageIndex, pageSize);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
+using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Models;
 using FoodTracker.Application.Products;
 using FoodTracker.Domain.Entities;
@@ -21,6 +22,8 @@ namespace FoodTracker.Application.Common.Mappings
             CreateMap<ProductServingDto, ProductServing>();
             CreateMap<DataServiceProduct, ProductDto>()
                 .ForMember(p => p.Servings, opt => opt.Ignore());
+
+            CreateMap<DiaryEntry, DiaryEntryDto>();
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)

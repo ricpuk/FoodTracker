@@ -245,8 +245,9 @@
         "operationId": "Products_GetBySearch",
         "parameters": [
           {
-            "name": "searchQ",
-            "in": "query",
+            "name": "query",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -258,18 +259,10 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "default": 1
             },
             "x-position": 2
-          },
-          {
-            "name": "query",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 3
           }
         ],
         "responses": {
@@ -413,8 +406,16 @@
             "format": "int32",
             "nullable": true
           },
+          "numberOfServings": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "entryType": {
             "$ref": "#/components/schemas/DiaryEntryType"
+          },
+          "diarySection": {
+            "$ref": "#/components/schemas/DiarySection"
           }
         }
       },
@@ -495,6 +496,20 @@
         "enum": [
           0,
           1
+        ]
+      },
+      "DiarySection": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "enum": [
+          0,
+          1,
+          2
         ]
       },
       "CreateDiaryEntryCommand": {

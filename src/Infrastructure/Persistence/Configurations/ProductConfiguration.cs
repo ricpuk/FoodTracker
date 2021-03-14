@@ -8,6 +8,13 @@ namespace FoodTracker.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            builder
+                .HasGeneratedTsVectorColumn(
+                    p => p.SearchVector,
+                    "english",  // Text search config
+                    p => new { p.Name })  // Included properties
+                .HasIndex(p => p.SearchVector)
+                .HasMethod("GIN");
         }
     }
 }

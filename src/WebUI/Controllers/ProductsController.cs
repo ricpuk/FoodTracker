@@ -32,14 +32,14 @@ namespace FoodTracker.WebUI.Controllers
         }
 
         [HttpGet("search/{query}")]
-        public async Task<ActionResult<PaginatedList<ProductDto>>> GetBySearch(string searchQ, [FromQuery] int page)
+        public async Task<ActionResult<PaginatedList<ProductDto>>> GetBySearch(string query, [FromQuery] int page = 1)
         {
-            var query = new GetProductsBySearchQuery
+            var queryObj = new GetProductsBySearchQuery
             {
-                Query = searchQ,
+                Query = query,
                 Page = page
             };
-            return Ok(await Mediator.Send(query));
+            return Ok(await Mediator.Send(queryObj));
         }
 
         [HttpPost]

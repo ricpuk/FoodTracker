@@ -16,6 +16,19 @@ export interface Diary {
     date: string;
 }
 
+export enum DiarySection {
+    Breakfast,
+    Lunch,
+    Dinner
+}
+
+export interface DiaryEntry {
+    productId: number;
+    servingId: number;
+    numberOfServings: number;
+    diarySection:DiarySection
+}
+
 const RESOURCE_URL = 'api/diaries'
 
 // -----------------

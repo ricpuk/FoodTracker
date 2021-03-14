@@ -1,5 +1,6 @@
 ﻿using FoodTracker.Domain.Common;
 using System.Collections.Generic;
+using NpgsqlTypes;
 
 namespace FoodTracker.Domain.Entities
 {
@@ -8,6 +9,7 @@ namespace FoodTracker.Domain.Entities
         public int Id { get; set; }
         public string BarCode { get; set; }
         public string Name { get; set; }
+        public NpgsqlTsVector SearchVector { get; set; }
         public IList<ProductServing> ProductServings { get; set; } = new List<ProductServing>();
     }
 }
