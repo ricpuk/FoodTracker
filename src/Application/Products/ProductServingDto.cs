@@ -5,6 +5,7 @@ namespace FoodTracker.Application.Products
 {
     public class ProductServingDto : IMapFrom<ProductServing>
     {
+        public int Id { get; set; }
         public int ProductId { get; set; }
         public double ServingSize { get; set; }
         public string ServingSizeUnit { get; set; }
