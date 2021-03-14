@@ -33,9 +33,6 @@ interface ReceiveDiaryAction {
     diary: Diary;
 }
 
-interface DiariesResponse {
-    data: Diary
-}
 
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
@@ -46,15 +43,15 @@ type KnownAction = RequestDiaryAction | ReceiveDiaryAction;
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 
 export const actionCreators = {
-    requestPhrases: (date: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    requestDiary: (date: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         // Only load data if it's something we don't already have (and are not already loading)
         const appState = getState();
         if (appState && appState.diaries && date !== appState.diaries.date) {
-            API.get<DiariesResponse>(RESOURCE_URL)
+            API.get<Diary>(`${RESOURCE_URL}/${date}`)
                 .then(response => {
                     const {data} = response
-                    const date = new Date(data.data.date).toISOString().slice(0, 10)
-                    dispatch({ type: 'RECEIVE_DIARY', diary: data.data, date: date});
+                    const date = new Date(data.date).toISOString().slice(0, 10)
+                    dispatch({ type: 'RECEIVE_DIARY', diary: data, date: date});
                 });
 
             dispatch({ type: 'REQUEST_DIARY', date: date });
@@ -65,7 +62,7 @@ export const actionCreators = {
 // ----------------
 // REDUCER - For a given state and action, returns the new state. To support time travel, this must not mutate the old state.
 
-const unloadedState: DiariesState = { diaries: {}, date: new Date().toISOString().slice(0, 10), isLoading: false};
+const unloadedState: DiariesState = { diaries: {}, date: '', isLoading: false};
 
 export const reducer: Reducer<DiariesState> = (state: DiariesState | undefined, incomingAction: Action): DiariesState => {
     if (state === undefined) {
@@ -77,7 +74,7 @@ export const reducer: Reducer<DiariesState> = (state: DiariesState | undefined, 
         case 'REQUEST_DIARY':
             return {
                 diaries: state.diaries,
-                date: state.date,
+                date: action.date,
                 isLoading: true,
 
             };

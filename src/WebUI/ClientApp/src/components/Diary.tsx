@@ -11,10 +11,15 @@ import {
   TabPane,
   Tooltip,
 } from "reactstrap";
+import { ApplicationState } from "../store";
 import DatePicker from "./datePicker/datePicker";
 import DiarySection from "./diarySection/DiarySection";
+import * as DiariesStore from "../store/Diaries";
 
-const Diary = () => {
+type DiaryProps = DiariesStore.DiariesState & // ... state we've requested from the Redux store
+  typeof DiariesStore.actionCreators; // ... plus action creators we've requested
+
+const Diary = (props: DiaryProps) => {
   React.useEffect(() => {}, []);
 
   const [activeTab, setActiveTab] = useState("breakfast");
@@ -70,11 +75,15 @@ const Diary = () => {
     </div>
   );
 
+  const onDateSelected = (date: string) => {
+    props.requestDiary(date);
+  };
+
   return (
     <div>
       {renderDailySummary()}
       <div className="my-2">
-        <DatePicker date="2020-01-03" />
+        <DatePicker date={props.date} dateSelected={onDateSelected} />
       </div>
       <Nav tabs>
         <NavItem>
@@ -123,4 +132,7 @@ const Diary = () => {
   );
 };
 
-export default connect()(Diary);
+export default connect(
+  (state: ApplicationState) => state.diaries, // Selects which state properties are merged into the component's props
+  DiariesStore.actionCreators
+)(Diary as any); // eslint-disable-line @typescript-eslint/no-explicit-any

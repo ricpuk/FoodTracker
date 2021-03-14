@@ -36,7 +36,6 @@ namespace FoodTracker.Application.Diaries.Commands
             if (request.ExistingChecked)
             {
                 return await CreateNewDiary(request, cancellationToken, profileId);
-
             }
 
 

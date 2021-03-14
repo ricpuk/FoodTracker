@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using FoodTracker.Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using FoodTracker.Infrastructure.Identity;
@@ -73,43 +74,87 @@ namespace FoodTracker.WebUI.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
+                return Page();
+            }
+            var creationResult = await CreateUser();
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+            
+            if (creationResult.Success)
+            {
+                return await HandleCreationSuccess(creationResult, returnUrl);
             }
 
-            // If we got this far, something failed, redisplay form
+            AddModelStateErrors(creationResult.Result);
+
             return Page();
+        }
+
+        private void AddModelStateErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private async Task<UserCreationResult> CreateUser()
+        {
+            var user = new ApplicationUser
+            {
+                UserName = Input.Email,
+                Email = Input.Email,
+                Profile = new UserProfile()
+            };
+            return new UserCreationResult
+            {
+                Result = await _userManager.CreateAsync(user, Input.Password),
+                User = user
+            };
+        }
+
+        private async Task<IActionResult> HandleCreationSuccess(UserCreationResult creationResult, string returnUrl)
+        {
+            var user = creationResult.User;
+            _logger.LogInformation("User created a new account with password.");
+
+            await TrySendConfirmationEmailAsync(user, returnUrl);
+
+            if (_userManager.Options.SignIn.RequireConfirmedAccount)
+            {
+                return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
+            }
+
+            await _signInManager.SignInAsync(user, false);
+            return LocalRedirect(returnUrl);
+        }
+
+        private async Task TrySendConfirmationEmailAsync(ApplicationUser user, string returnUrl)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = user.Id, code, returnUrl },
+                protocol: Request.Scheme);
+            try
+            {
+                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical("Failed to send email");
+            }
+        }
+
+        private class UserCreationResult
+        {
+            public IdentityResult Result { get; set; }
+            public ApplicationUser User { get; set; }
+            public bool Success => Result.Succeeded;
         }
     }
 }
