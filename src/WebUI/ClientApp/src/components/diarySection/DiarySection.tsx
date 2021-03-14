@@ -1,36 +1,31 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Col, Container, Row } from "reactstrap";
 import { ApplicationState } from "../../store";
-import * as ApplicationParamsStore from "../../store/ApplicationParams";
 import { DiaryEntry } from "../../store/Diaries";
 import { ScreenSize } from "../../utils/screenSize";
 import "./diarySection.css";
 
-type DiarySectionProps = ApplicationParamsStore.ApplicationParamsState & // ... state we've requested from the Redux store
-  typeof ApplicationParamsStore.actionCreators & { items: DiaryEntry[] }; // ... plus action creators we've requested
+type DiarySectionProps = {
+  items: DiaryEntry[];
+};
 
 const DiarySection = (props: DiarySectionProps) => {
-  const canFitAllColumns = () => {
-    return props.screenSize > ScreenSize.sm;
+  const selectScreenSize = (state: ApplicationState) => {
+    if (state.application) {
+      return state.application.screenSize;
+    }
+    return ScreenSize.sm;
   };
 
-  const products = [
-    {
-      title: "Myprotein - Impact Whey Protein Peach Tea Flavour, 32 g",
-      calories: 132,
-      carbs: 1,
-      fat: 2,
-      protein: 27,
-    },
-    {
-      title: "Myprotein - Impact Whey Protein Peach Tea Flavour, 32 g",
-      calories: 132,
-      carbs: 1,
-      fat: 2,
-      protein: 27,
-    },
-  ];
+  const screenSize = useSelector(selectScreenSize);
+
+  const canFitAllColumns = () => {
+    if (!screenSize) {
+      return false;
+    }
+    return screenSize > ScreenSize.sm;
+  };
 
   const renderHeader = () => (
     <Row className="pb-3 border-bottom">
@@ -60,29 +55,37 @@ const DiarySection = (props: DiarySectionProps) => {
 
   const renderBody = () => {
     return props.items.map((entry) => {
-      const serving =
-      return <Row className="bg-light p-2 border-bottom">
-        <Col xs="8" md="4">
-          {entry.title}
-        </Col>
-        <Col xs="4" md="2" className="nutritional-value">
-          <span>{entry.calories}</span>
-        </Col>
-        {canFitAllColumns() && (
-          <>
-            <Col md="2" className="nutritional-value">
-              {entry.carbs}
-            </Col>
-            <Col md="2" className="nutritional-value">
-              {entry.fat}
-            </Col>
-            <Col md="2" className="nutritional-value">
-              {entry.protein}
-            </Col>
-          </>
-  }}
-      </Row>
-    ));
+      const product = entry.product;
+      const serving = product.servings
+        .filter((x) => x.id === entry.servingId)
+        .shift();
+      if (!serving) {
+        return null;
+      }
+      return (
+        <Row className="bg-light p-2 border-bottom">
+          <Col xs="8" md="4">
+            {product.name}
+          </Col>
+          <Col xs="4" md="2" className="nutritional-value">
+            <span>{serving.calories * entry.numberOfServings}</span>
+          </Col>
+          {canFitAllColumns() && (
+            <>
+              <Col md="2" className="nutritional-value">
+                {serving.carbohydrates * entry.numberOfServings}
+              </Col>
+              <Col md="2" className="nutritional-value">
+                {serving.fats * entry.numberOfServings}
+              </Col>
+              <Col md="2" className="nutritional-value">
+                {serving.protein * entry.numberOfServings}
+              </Col>
+            </>
+          )}
+        </Row>
+      );
+    });
   };
 
   return (
@@ -93,7 +96,4 @@ const DiarySection = (props: DiarySectionProps) => {
   );
 };
 
-export default connect(
-  (state: ApplicationState) => state.application, // Selects which state properties are merged into the component's props
-  ApplicationParamsStore.actionCreators // Selects which action creators are merged into the component's props
-)(DiarySection as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+export default DiarySection;

@@ -1,6 +1,7 @@
 import { Action, Reducer } from "redux";
 import API from "../utils/api";
 import { AppThunkAction } from ".";
+import { Product } from "./Products";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.

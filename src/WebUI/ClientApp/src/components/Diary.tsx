@@ -85,7 +85,7 @@ const Diary = (props: DiaryProps) => {
       return [];
     }
     const diary = props.diaries[props.date];
-    return diary.entries.filter((x) => x.diarySection == section);
+    return diary.entries.filter((x) => x.diarySection === section);
   };
 
   const renderDiaryContent = () => (
