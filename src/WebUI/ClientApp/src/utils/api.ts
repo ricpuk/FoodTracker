@@ -1,20 +1,37 @@
-import axios from 'axios';
-import authService from '../components/api-authorization/AuthorizationService';
+import axios from "axios";
+import authService from "../components/api-authorization/AuthorizationService";
+import { AppPaths } from "../components/api-authorization/ApiAuthorizationConstants";
+import { History } from "history";
 
-const API = axios.create({
-});
+const API = axios.create({});
 
-// Add a request interceptor
-API.interceptors.request.use(
-    async config => {
-        const token = await authService.getAccessToken();
-        if (token) {
-            config.headers['Authorization'] = 'Bearer ' + token;
-        }
-        return config;
+export function configureAxios(history: History<any>) {
+  // Add a request interceptor
+  API.interceptors.request.use(
+    async (config) => {
+      const token = await authService.getAccessToken();
+      if (token) {
+        config.headers["Authorization"] = "Bearer " + token;
+      }
+      return config;
     },
-    error => {
-        Promise.reject(error)
-    });
+    (error) => {
+      Promise.reject(error);
+    }
+  );
 
-export default API
+  API.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    function (error) {
+      if (401 === error.response.status) {
+        history.push(AppPaths.Login);
+        return;
+      }
+      return Promise.reject(error);
+    }
+  );
+}
+
+export default API;
