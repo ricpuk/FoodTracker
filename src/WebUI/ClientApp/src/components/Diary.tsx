@@ -80,6 +80,14 @@ const Diary = (props: DiaryProps) => {
     </div>
   );
 
+  const getDiarySection = (section: DiariesStore.DiarySection) => {
+    if (!props.diaries[props.date]) {
+      return [];
+    }
+    const diary = props.diaries[props.date];
+    return diary.entries.filter((x) => x.diarySection == section);
+  };
+
   const renderDiaryContent = () => (
     <div>
       <Nav tabs>
@@ -116,13 +124,19 @@ const Diary = (props: DiaryProps) => {
       </Nav>
       <TabContent activeTab={activeTab}>
         <TabPane tabId="breakfast">
-          <DiarySection />
+          <DiarySection
+            items={getDiarySection(DiariesStore.DiarySection.Breakfast)}
+          />
         </TabPane>
         <TabPane tabId="lunch">
-          <DiarySection />
+          <DiarySection
+            items={getDiarySection(DiariesStore.DiarySection.Lunch)}
+          />
         </TabPane>
         <TabPane tabId="dinner">
-          <DiarySection />
+          <DiarySection
+            items={getDiarySection(DiariesStore.DiarySection.Dinner)}
+          />
         </TabPane>
       </TabContent>
     </div>

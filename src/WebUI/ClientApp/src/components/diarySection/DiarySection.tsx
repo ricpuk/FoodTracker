@@ -3,11 +3,12 @@ import { connect } from "react-redux";
 import { Col, Container, Row } from "reactstrap";
 import { ApplicationState } from "../../store";
 import * as ApplicationParamsStore from "../../store/ApplicationParams";
+import { DiaryEntry } from "../../store/Diaries";
 import { ScreenSize } from "../../utils/screenSize";
 import "./diarySection.css";
 
 type DiarySectionProps = ApplicationParamsStore.ApplicationParamsState & // ... state we've requested from the Redux store
-  typeof ApplicationParamsStore.actionCreators; // ... plus action creators we've requested
+  typeof ApplicationParamsStore.actionCreators & { items: DiaryEntry[] }; // ... plus action creators we've requested
 
 const DiarySection = (props: DiarySectionProps) => {
   const canFitAllColumns = () => {
@@ -58,27 +59,28 @@ const DiarySection = (props: DiarySectionProps) => {
   );
 
   const renderBody = () => {
-    return products.map((product) => (
-      <Row className="bg-light p-2 border-bottom">
+    return props.items.map((entry) => {
+      const serving =
+      return <Row className="bg-light p-2 border-bottom">
         <Col xs="8" md="4">
-          {product.title}
+          {entry.title}
         </Col>
         <Col xs="4" md="2" className="nutritional-value">
-          <span>{product.calories}</span>
+          <span>{entry.calories}</span>
         </Col>
         {canFitAllColumns() && (
           <>
             <Col md="2" className="nutritional-value">
-              {product.carbs}
+              {entry.carbs}
             </Col>
             <Col md="2" className="nutritional-value">
-              {product.fat}
+              {entry.fat}
             </Col>
             <Col md="2" className="nutritional-value">
-              {product.protein}
+              {entry.protein}
             </Col>
           </>
-        )}
+  }}
       </Row>
     ));
   };

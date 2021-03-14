@@ -14,6 +14,7 @@ export interface DiariesState {
 export interface Diary {
   id: number;
   date: string;
+  entries: DiaryEntry[];
 }
 
 export enum DiarySection {
@@ -23,6 +24,7 @@ export enum DiarySection {
 }
 
 export interface DiaryEntry {
+  product: Product;
   productId: number;
   servingId: number;
   numberOfServings: number;
