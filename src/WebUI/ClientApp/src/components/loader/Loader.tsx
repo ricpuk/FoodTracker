@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import FullScreenLoader from "../FullScreenLoader";
 
 interface LoaderProps {
@@ -7,8 +7,12 @@ interface LoaderProps {
 }
 
 export default (props: LoaderProps) => {
-  if (props.isLoading) {
-    return <FullScreenLoader />;
-  }
-  return <div>{props.children}</div>;
+  return (
+    <div>
+      {props.isLoading && (
+        <FullScreenLoader backgroundColor="rgba(0,0,0,0.1)" />
+      )}
+      {props.children}
+    </div>
+  );
 };
