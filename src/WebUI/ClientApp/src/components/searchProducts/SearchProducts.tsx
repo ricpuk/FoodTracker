@@ -12,10 +12,6 @@ type SearchProductsProps = ProductsStore.ProductsState &
 const SearchProducts = (props: SearchProductsProps) => {
   const [query, setQuery] = useState("");
 
-  const fetchProducts = () => {
-    debugger;
-  };
-
   const onSearchInputChanged = (event: ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
     const { value } = target;
@@ -37,10 +33,14 @@ const SearchProducts = (props: SearchProductsProps) => {
       </FormGroup>
       <Loader isLoading={props.isLoading}>
         {props.products.map((product) => {
+          const serving = product.servings[0];
           return (
             <Row className="py-2 border-bottom product-select">
-              <Col xs="9">{product.name}</Col>
-              <Col xs="3">
+              <Col xs="10">
+                {product.name}
+                {serving && ` - ${serving.calories} ${serving.servingSizeUnit}`}
+              </Col>
+              <Col xs="2">
                 {product.servings[0] && product.servings[0].calories}
               </Col>
             </Row>
