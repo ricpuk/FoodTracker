@@ -133,22 +133,33 @@
         "operationId": "Products_Index",
         "parameters": [
           {
-            "name": "Page",
+            "name": "query",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           },
           {
-            "name": "PageSize",
+            "name": "page",
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "default": 1
             },
             "x-position": 2
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 25
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -219,48 +230,6 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfProductDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Products/search/{query}": {
-      "get": {
-        "tags": [
-          "Products"
-        ],
-        "operationId": "Products_GetBySearch",
-        "parameters": [
-          {
-            "name": "query",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
             },
             "x-position": 2
           }

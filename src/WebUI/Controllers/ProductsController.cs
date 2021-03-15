@@ -1,23 +1,27 @@
-﻿using FoodTracker.Application.Common.Models;
+﻿using System.Linq;
+using FoodTracker.Application.Common.Models;
 using FoodTracker.Application.Products;
-using FoodTracker.Application.Products.Commands;
 using FoodTracker.Application.Products.Queries.GetProductsByBarCode;
 using FoodTracker.Application.Products.Queries.GetProductsWithPagination;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using FoodTracker.Application.Products.Commands.CreateProduct;
 using FoodTracker.Application.Products.Commands.UpdateProduct;
-using FoodTracker.Application.Products.Queries.GetProductsBySearch;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTracker.WebUI.Controllers
 {
     public class ProductsController : ApiControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<PaginatedList<ProductDto>>> Index([FromQuery] GetProductsWithPaginationQuery query)
+        public async Task<ActionResult<PaginatedList<ProductDto>>> Index([FromQuery] string query, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
         {
-            return Ok(await Mediator.Send(query));
+            var sQuery = new GetProductsWithPaginationQuery
+            {
+                Query = query,
+                Page = page,
+                PageSize = pageSize
+            };
+            return Ok(await Mediator.Send(sQuery));
         }
 
         [HttpGet("{barCode}")]
@@ -29,17 +33,6 @@ namespace FoodTracker.WebUI.Controllers
                 Page = page
             };
             return Ok(await Mediator.Send(query));
-        }
-
-        [HttpGet("search/{query}")]
-        public async Task<ActionResult<PaginatedList<ProductDto>>> GetBySearch(string query, [FromQuery] int page = 1)
-        {
-            var queryObj = new GetProductsBySearchQuery
-            {
-                Query = query,
-                Page = page
-            };
-            return Ok(await Mediator.Send(queryObj));
         }
 
         [HttpPost]

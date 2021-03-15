@@ -14,6 +14,7 @@ namespace FoodTracker.Application.Products.Queries.GetProductsWithPagination
 {
     public class GetProductsWithPaginationQuery : IRequest<PaginatedList<ProductDto>>
     {
+        public string Query { get; set; }
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 25;
     }
@@ -31,16 +32,18 @@ namespace FoodTracker.Application.Products.Queries.GetProductsWithPagination
 
         public async Task<PaginatedList<ProductDto>> Handle(GetProductsWithPaginationQuery request, CancellationToken cancellationToken)
         {
-            var products = await _dbContext.Products
+            var query = _dbContext.Products
                 .OrderByDescending(p => p.Created)
                 .Include(x => x.ProductServings)
-                .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(request.Page, request.PageSize);
+                .AsQueryable();
 
-            if (products.TotalCount == 0)
+            if (!string.IsNullOrWhiteSpace(request.Query))
             {
-                throw new NotFoundException("No products have been found.");
+                query = query.Where(x => x.SearchVector.Matches(request.Query));
             }
+
+            var products = await query.ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync(request.Page, request.PageSize);
 
             return products;
         }

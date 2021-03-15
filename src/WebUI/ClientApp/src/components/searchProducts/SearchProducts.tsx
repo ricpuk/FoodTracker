@@ -12,17 +12,18 @@ type SearchProductsProps = ProductsStore.ProductsState &
 const SearchProducts = (props: SearchProductsProps) => {
   const [query, setQuery] = useState("");
 
-  const fetchProducts = (query: string) => {
-    if (props.isLoading || query.length < 3) {
-      return;
-    }
-    props.requestProductsByQuery(query, 1);
+  const fetchProducts = () => {
+    debugger;
   };
 
   const onSearchInputChanged = (event: ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
-    setQuery(target.value);
-    fetchProducts(query);
+    const { value } = target;
+    setQuery(value);
+    if (props.isLoading || value.length < 3) {
+      return;
+    }
+    props.requestProductsByQuery(value, 1);
   };
 
   return (

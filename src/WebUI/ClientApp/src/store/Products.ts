@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from "axios";
 import { Action, Reducer } from "redux";
 import API from "../utils/api";
 import { GetListResponse } from "../utils/interfaces";
@@ -66,16 +67,24 @@ export const actionCreators = {
   ): AppThunkAction<KnownAction> => (dispatch, getState) => {
     // Only load data if it's something we don't already have (and are not already loading)
     const appState = getState();
-    if (appState && appState.products && page !== appState.products.page) {
-      API.get<GetListResponse<Product>>(RESOURCE_URL).then((response) => {
-        const { data } = response;
-        dispatch({
-          type: "RECEIVE_PRODUCTS",
-          page: page,
+    if (appState && appState.products && query !== appState.products.query) {
+      const config: AxiosRequestConfig = {
+        params: {
           query: query,
-          products: data.items,
-        });
-      });
+          page: page,
+        },
+      };
+      API.get<GetListResponse<Product>>(RESOURCE_URL, config).then(
+        (response) => {
+          const { data } = response;
+          dispatch({
+            type: "RECEIVE_PRODUCTS",
+            page: page,
+            query: query,
+            products: data.items,
+          });
+        }
+      );
       dispatch({ type: "REQUEST_PRODUCTS", page: page, query: query });
     }
   },
