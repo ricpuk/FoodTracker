@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Col, Container, FormGroup, Input, Row } from "reactstrap";
 import { ApplicationState } from "../../store";
 import * as ProductsStore from "../../store/Products";
-import Loader from "../loader/Loader";
+import ListLoader from "../loader/ListLoader";
 import "./SearchProducts.css";
 
 type SearchProductsProps = ProductsStore.ProductsState &
@@ -31,7 +31,7 @@ const SearchProducts = (props: SearchProductsProps) => {
           onChange={onSearchInputChanged}
         />
       </FormGroup>
-      <Loader isLoading={props.isLoading}>
+      <ListLoader isLoading={props.isLoading}>
         {props.products.map((product) => {
           const serving = product.servings[0];
           return (
@@ -46,7 +46,7 @@ const SearchProducts = (props: SearchProductsProps) => {
             </Row>
           );
         })}
-      </Loader>
+      </ListLoader>
     </Container>
   );
 };
