@@ -1,12 +1,7 @@
 import classnames from "classnames";
 import React, { useState } from "react";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Nav,
   NavItem,
   NavLink,
@@ -21,7 +16,7 @@ import DiarySection from "../diarySection/DiarySection";
 import * as DiariesStore from "../../store/Diaries";
 import Loader from "../loader/Loader";
 import "./Diary.css";
-import SearchProducts from "../searchProducts/SearchProducts";
+import AddDiaryEntryForm from "../addDiaryEntry/AddDiaryEntryForm";
 
 type DiaryProps = DiariesStore.DiariesState & // ... state we've requested from the Redux store
   typeof DiariesStore.actionCreators; // ... plus action creators we've requested
@@ -40,20 +35,9 @@ const Diary = (props: DiaryProps) => {
     }
   });
 
-  const isMobile = useSelector((state: ApplicationState) => {
-    if (state.application) {
-      return state.application.isMobile;
-    }
-    return false;
-  });
-
   const toggle = (id: string) => {
     activeTab === id ? setActiveTab("") : setActiveTab(id);
   };
-  const toggleModal = () => {
-    props.toggleModalState();
-  };
-
   const renderDailySummary = () => (
     <div className="my-3">
       <h4>Today's summary...</h4>
@@ -109,6 +93,10 @@ const Diary = (props: DiaryProps) => {
     }
     const diary = props.diaries[props.date];
     return diary.entries.filter((x) => x.diarySection === section);
+  };
+
+  const toggleModal = () => {
+    props.toggleModalState();
   };
 
   const renderDiaryContent = () => (
@@ -172,24 +160,6 @@ const Diary = (props: DiaryProps) => {
     props.requestDiary(date);
   };
 
-  const renderModals = () => {
-    const classBindings = {
-      "full-screen": isMobile,
-    };
-    return (
-      <Modal
-        isOpen={props.isModalOpen}
-        toggle={toggleModal}
-        className={classnames(classBindings)}
-      >
-        <ModalHeader toggle={toggleModal}>Add diary entry</ModalHeader>
-        <ModalBody>
-          <SearchProducts />
-        </ModalBody>
-      </Modal>
-    );
-  };
-
   return (
     <div>
       <Loader isLoading={props.isLoading}>
@@ -197,7 +167,7 @@ const Diary = (props: DiaryProps) => {
         {renderDatePicker()}
         {renderDiaryContent()}
       </Loader>
-      {renderModals()}
+      <AddDiaryEntryForm />
     </div>
   );
 };
