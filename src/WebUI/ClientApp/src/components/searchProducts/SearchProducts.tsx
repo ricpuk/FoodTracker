@@ -6,10 +6,15 @@ import * as ProductsStore from "../../store/Products";
 import ListLoader from "../loader/ListLoader";
 import "./SearchProducts.css";
 
-type SearchProductsProps = ProductsStore.ProductsState &
-  typeof ProductsStore.actionCreators;
+interface SearchProductsProps {
+  productSelected: () => void;
+}
 
-const SearchProducts = (props: SearchProductsProps) => {
+type SearchProductsState = ProductsStore.ProductsState &
+  typeof ProductsStore.actionCreators &
+  SearchProductsProps;
+
+const SearchProducts = (props: SearchProductsState) => {
   const [query, setQuery] = useState("");
 
   const onSearchInputChanged = (event: ChangeEvent<HTMLInputElement>) => {
@@ -20,6 +25,11 @@ const SearchProducts = (props: SearchProductsProps) => {
       return;
     }
     props.requestProductsByQuery(value, 1);
+  };
+
+  const handleProductSelect = (produt: ProductsStore.Product) => {
+    //set in props
+    props.productSelected();
   };
 
   return (
@@ -35,14 +45,16 @@ const SearchProducts = (props: SearchProductsProps) => {
         {props.products.map((product) => {
           const serving = product.servings[0];
           return (
-            <Row className="py-2 border-bottom product-select">
+            <Row
+              className="py-2 border-bottom product-select"
+              key={product.id}
+              onClick={() => handleProductSelect(product)}
+            >
               <Col xs="10">
                 {product.name}
                 {serving && ` - ${serving.calories} ${serving.servingSizeUnit}`}
               </Col>
-              <Col xs="2">
-                {product.servings[0] && product.servings[0].calories}
-              </Col>
+              <Col xs="2">{serving && serving.calories}</Col>
             </Row>
           );
         })}
@@ -51,7 +63,17 @@ const SearchProducts = (props: SearchProductsProps) => {
   );
 };
 
+const mapStateToProps = (
+  state: ApplicationState,
+  ownProps: SearchProductsProps
+) => {
+  return {
+    ...state.products,
+    ...ownProps,
+  };
+};
+
 export default connect(
-  (state: ApplicationState) => state.products, // Selects which state properties are merged into the component's props
+  mapStateToProps, // Selects which state properties are merged into the component's props
   ProductsStore.actionCreators
 )(SearchProducts as any);

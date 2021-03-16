@@ -6,11 +6,13 @@ import { ApplicationState } from "../../store";
 import { useAppParams } from "../../utils/hooks";
 import SearchProducts from "../searchProducts/SearchProducts";
 import * as DiariesStore from "../../store/Diaries";
+import { Product } from "../../store/Products";
 
 type AddDiaryEntryFormProps = DiariesStore.DiariesState & // ... state we've requested from the Redux store
   typeof DiariesStore.actionCreators; // ... plus action creators we've requested
 
 const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
+  const [step, setStep] = useState(1);
   const [isMobile, screenSize] = useAppParams();
 
   const classBindings = {
@@ -21,6 +23,10 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
     props.toggleModalState();
   };
 
+  const productSelected = () => {
+    setStep(step + 1);
+  };
+
   return (
     <Modal
       isOpen={props.isModalOpen}
@@ -29,7 +35,7 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
     >
       <ModalHeader toggle={toggleModal}>Add diary entry</ModalHeader>
       <ModalBody>
-        <SearchProducts />
+        {step == 1 && <SearchProducts productSelected={productSelected} />}
       </ModalBody>
     </Modal>
   );
