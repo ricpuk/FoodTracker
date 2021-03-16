@@ -33,7 +33,7 @@ const SearchProducts = (props: SearchProductsState) => {
   };
 
   return (
-    <Container fluid={true}>
+    <Container fluid={true} className="pt-3">
       <FormGroup>
         <Input
           placeholder="Search for a product"

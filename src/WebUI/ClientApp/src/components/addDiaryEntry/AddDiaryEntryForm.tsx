@@ -16,10 +16,16 @@ const STEP_SEARCH = "SEARCH";
 const STEP_CONFIRM = "CONFIRM";
 const STEP_SCAN = "SCAN";
 
+export enum UpdateType {
+  serving = "serving",
+  numberOfServings = "numberOfServings",
+}
+
 const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
   const [step, setStep] = useState(STEP_SEARCH);
   const [product, setProduct] = useState<Product>();
-  const [servingId, setServingId] = useState();
+  const [servingId, setServingId] = useState<number>();
+  const [numberOfServings, setNumberOfServings] = useState<number>(1);
   const [isMobile] = useAppParams();
 
   const classBindings = {
@@ -28,15 +34,28 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
 
   const toggleModal = () => {
     props.toggleModalState();
+    setStep(STEP_SEARCH);
   };
 
   const productSelected = (product: Product) => {
     setProduct(product);
+    setServingId(product.servings[0].id);
     setStep(STEP_CONFIRM);
   };
 
   const scanButtonPressed = () => {
     setStep(STEP_SCAN);
+  };
+
+  const handleServingUpdate = (type: UpdateType, value: number) => {
+    switch (type) {
+      case UpdateType.serving:
+        setServingId(value);
+        break;
+      case UpdateType.numberOfServings:
+        setNumberOfServings(value);
+        break;
+    }
   };
 
   return (
@@ -46,17 +65,24 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
       className={classnames(classBindings)}
     >
       <ModalHeader toggle={toggleModal}>Add diary entry</ModalHeader>
-      <ModalBody>
-        {step === STEP_SEARCH && (
-          <SearchProducts
-            productSelected={productSelected}
-            scanButtonPressed={scanButtonPressed}
-          />
-        )}
-        {step === STEP_CONFIRM && (
-          <FinishEntry product={product} servingId={servingId} />
-        )}
-      </ModalBody>
+      {props.isModalOpen && (
+        <ModalBody className="pt-0">
+          {step === STEP_SEARCH && (
+            <SearchProducts
+              productSelected={productSelected}
+              scanButtonPressed={scanButtonPressed}
+            />
+          )}
+          {step === STEP_CONFIRM && (
+            <FinishEntry
+              product={product}
+              servingId={servingId}
+              onUpdate={handleServingUpdate}
+              numberOfServings={numberOfServings}
+            />
+          )}
+        </ModalBody>
+      )}
     </Modal>
   );
 };

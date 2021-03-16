@@ -1,15 +1,7 @@
 import classnames from "classnames";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import {
-  Nav,
-  NavItem,
-  NavLink,
-  Progress,
-  TabContent,
-  TabPane,
-  Tooltip,
-} from "reactstrap";
+import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 import { ApplicationState } from "../../store";
 import DatePicker from "../datePicker/datePicker";
 import DiarySection from "../diarySection/DiarySection";
@@ -17,16 +9,13 @@ import * as DiariesStore from "../../store/Diaries";
 import Loader from "../loader/Loader";
 import "./Diary.css";
 import AddDiaryEntryForm from "../addDiaryEntry/AddDiaryEntryForm";
+import CaloriesBreakdown from "../caloriesBreakdown/CaloriesBreakdown";
 
 type DiaryProps = DiariesStore.DiariesState & // ... state we've requested from the Redux store
   typeof DiariesStore.actionCreators; // ... plus action creators we've requested
 
 const Diary = (props: DiaryProps) => {
   const [activeTab, setActiveTab] = useState("breakfast");
-  const [proteinOpen, setProteinOpen] = useState(false);
-  const [carbsOpen, setCarbsOpen] = useState(false);
-  const [fatsOpen, setFatsOpen] = useState(false);
-  const [remainingOpen, setRemainingOpen] = useState(false);
 
   React.useEffect(() => {
     if (!props.date) {
@@ -41,44 +30,13 @@ const Diary = (props: DiaryProps) => {
   const renderDailySummary = () => (
     <div className="my-3">
       <h4>Today's summary...</h4>
-      <Progress multi>
-        <Progress bar color="primary" value="15" id="protein-tt"></Progress>
-        <Progress bar color="success" value="30" id="carbs-tt" />
-        <Progress bar color="danger" value="25" id="fats-tt" />
-        <Progress bar color="light" value="30" id="remaining-tt" />
-      </Progress>
-      <Tooltip
-        placement="bottom"
-        isOpen={proteinOpen}
-        target="protein-tt"
-        toggle={() => setProteinOpen(!proteinOpen)}
-      >
-        Proteins
-      </Tooltip>
-      <Tooltip
-        placement="bottom"
-        isOpen={carbsOpen}
-        target="carbs-tt"
-        toggle={() => setCarbsOpen(!carbsOpen)}
-      >
-        Carbs
-      </Tooltip>
-      <Tooltip
-        placement="bottom"
-        isOpen={fatsOpen}
-        target="fats-tt"
-        toggle={() => setFatsOpen(!fatsOpen)}
-      >
-        Fats
-      </Tooltip>
-      <Tooltip
-        placement="bottom"
-        isOpen={remainingOpen}
-        target="remaining-tt"
-        toggle={() => setRemainingOpen(!remainingOpen)}
-      >
-        Remaining
-      </Tooltip>
+      <CaloriesBreakdown
+        prefix="daily"
+        remaining={540}
+        protein={67.5}
+        carbs={135}
+        fats={50}
+      />
     </div>
   );
   const renderDatePicker = () => (

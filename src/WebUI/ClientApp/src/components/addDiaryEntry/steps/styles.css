@@ -1,0 +1,8 @@
+.no-hov:hover{
+    outline:0
+}
+
+.no-hov:focus{
+    outline:0;
+    box-shadow: none
+}
