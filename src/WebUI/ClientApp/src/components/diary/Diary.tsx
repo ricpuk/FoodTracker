@@ -15,7 +15,9 @@ type DiaryProps = DiariesStore.DiariesState & // ... state we've requested from 
   typeof DiariesStore.actionCreators; // ... plus action creators we've requested
 
 const Diary = (props: DiaryProps) => {
-  const [activeTab, setActiveTab] = useState("breakfast");
+  const [activeTab, setActiveTab] = useState(
+    DiariesStore.DiarySection.Breakfast
+  );
 
   React.useEffect(() => {
     if (!props.date) {
@@ -24,9 +26,12 @@ const Diary = (props: DiaryProps) => {
     }
   });
 
-  const toggle = (id: string) => {
-    activeTab === id ? setActiveTab("") : setActiveTab(id);
+  const toggle = (id: DiariesStore.DiarySection) => {
+    if (activeTab !== id) {
+      setActiveTab(id);
+    }
   };
+
   const renderDailySummary = () => (
     <div className="my-3">
       <h4>Today's summary...</h4>
@@ -62,9 +67,11 @@ const Diary = (props: DiaryProps) => {
       <Nav tabs>
         <NavItem>
           <NavLink
-            className={classnames({ active: activeTab === "breakfast" })}
+            className={classnames({
+              active: activeTab === DiariesStore.DiarySection.Breakfast,
+            })}
             onClick={() => {
-              toggle("breakfast");
+              toggle(DiariesStore.DiarySection.Breakfast);
             }}
           >
             Breakfast
@@ -72,9 +79,11 @@ const Diary = (props: DiaryProps) => {
         </NavItem>
         <NavItem>
           <NavLink
-            className={classnames({ active: activeTab === "lunch" })}
+            className={classnames({
+              active: activeTab === DiariesStore.DiarySection.Lunch,
+            })}
             onClick={() => {
-              toggle("lunch");
+              toggle(DiariesStore.DiarySection.Lunch);
             }}
           >
             Lunch
@@ -82,9 +91,11 @@ const Diary = (props: DiaryProps) => {
         </NavItem>
         <NavItem>
           <NavLink
-            className={classnames({ active: activeTab === "dinner" })}
+            className={classnames({
+              active: activeTab === DiariesStore.DiarySection.Dinner,
+            })}
             onClick={() => {
-              toggle("dinner");
+              toggle(DiariesStore.DiarySection.Dinner);
             }}
           >
             Dinner
@@ -92,19 +103,19 @@ const Diary = (props: DiaryProps) => {
         </NavItem>
       </Nav>
       <TabContent activeTab={activeTab}>
-        <TabPane tabId="breakfast">
+        <TabPane tabId={DiariesStore.DiarySection.Breakfast}>
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Breakfast)}
             toggleModal={toggleModal}
           />
         </TabPane>
-        <TabPane tabId="lunch">
+        <TabPane tabId={DiariesStore.DiarySection.Lunch}>
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Lunch)}
             toggleModal={toggleModal}
           />
         </TabPane>
-        <TabPane tabId="dinner">
+        <TabPane tabId={DiariesStore.DiarySection.Dinner}>
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Dinner)}
             toggleModal={toggleModal}
@@ -125,7 +136,12 @@ const Diary = (props: DiaryProps) => {
         {renderDatePicker()}
         {renderDiaryContent()}
       </Loader>
-      <AddDiaryEntryForm />
+      {props.diaries[props.date] && (
+        <AddDiaryEntryForm
+          diaryId={props.diaries[props.date].id}
+          diarySection={activeTab}
+        />
+      )}
     </div>
   );
 };

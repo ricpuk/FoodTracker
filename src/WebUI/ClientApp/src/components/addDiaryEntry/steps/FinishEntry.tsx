@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { Button, Col, FormGroup, Input, Row } from "reactstrap";
+import { Button, Col, FormGroup, Input, Row, Spinner } from "reactstrap";
 import { Product } from "../../../store/Products";
 import CaloriesBreakdown from "../../caloriesBreakdown/CaloriesBreakdown";
 import { UpdateType } from "../AddDiaryEntryForm";
@@ -9,7 +9,9 @@ interface FinishEntryProps {
   product?: Product;
   servingId?: number;
   numberOfServings: number;
+  blocked: boolean;
   onUpdate: (type: UpdateType, value: number) => void;
+  onSubmit: () => void;
 }
 
 const FinishEntry = (props: FinishEntryProps) => {
@@ -137,8 +139,13 @@ const FinishEntry = (props: FinishEntryProps) => {
   const renderSubmit = () => {
     return (
       <div>
-        <Button className="w-100" color="primary">
-          Submit
+        <Button
+          onClick={props.onSubmit}
+          className="w-100"
+          color="primary"
+          disabled={props.blocked}
+        >
+          {!props.blocked ? "Submit" : <Spinner color="light" />}
         </Button>
       </div>
     );

@@ -28,8 +28,8 @@ const SearchProducts = (props: SearchProductsState) => {
     props.requestProductsByQuery(value, 1);
   };
 
-  const handleProductSelect = (produt: ProductsStore.Product) => {
-    props.productSelected(produt);
+  const handleProductSelect = (product: ProductsStore.Product) => {
+    props.productSelected(product);
   };
 
   return (

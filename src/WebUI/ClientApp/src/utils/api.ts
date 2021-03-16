@@ -5,6 +5,8 @@ import { History } from "history";
 
 const API = axios.create({});
 
+export const API_DIARY = "/api/diaries";
+
 export function configureAxios(history: History<any>) {
   // Add a request interceptor
   API.interceptors.request.use(
