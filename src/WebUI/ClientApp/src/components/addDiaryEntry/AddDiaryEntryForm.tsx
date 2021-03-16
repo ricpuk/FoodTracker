@@ -7,13 +7,20 @@ import { useAppParams } from "../../utils/hooks";
 import SearchProducts from "../searchProducts/SearchProducts";
 import * as DiariesStore from "../../store/Diaries";
 import { Product } from "../../store/Products";
+import FinishEntry from "./steps/FinishEntry";
 
 type AddDiaryEntryFormProps = DiariesStore.DiariesState & // ... state we've requested from the Redux store
   typeof DiariesStore.actionCreators; // ... plus action creators we've requested
 
+const STEP_SEARCH = "SEARCH";
+const STEP_CONFIRM = "CONFIRM";
+const STEP_SCAN = "SCAN";
+
 const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
-  const [step, setStep] = useState(1);
-  const [isMobile, screenSize] = useAppParams();
+  const [step, setStep] = useState(STEP_SEARCH);
+  const [product, setProduct] = useState<Product>();
+  const [servingId, setServingId] = useState();
+  const [isMobile] = useAppParams();
 
   const classBindings = {
     "full-screen": isMobile,
@@ -23,8 +30,13 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
     props.toggleModalState();
   };
 
-  const productSelected = () => {
-    setStep(step + 1);
+  const productSelected = (product: Product) => {
+    setProduct(product);
+    setStep(STEP_CONFIRM);
+  };
+
+  const scanButtonPressed = () => {
+    setStep(STEP_SCAN);
   };
 
   return (
@@ -35,7 +47,15 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
     >
       <ModalHeader toggle={toggleModal}>Add diary entry</ModalHeader>
       <ModalBody>
-        {step == 1 && <SearchProducts productSelected={productSelected} />}
+        {step === STEP_SEARCH && (
+          <SearchProducts
+            productSelected={productSelected}
+            scanButtonPressed={scanButtonPressed}
+          />
+        )}
+        {step === STEP_CONFIRM && (
+          <FinishEntry product={product} servingId={servingId} />
+        )}
       </ModalBody>
     </Modal>
   );

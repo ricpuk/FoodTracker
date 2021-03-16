@@ -7,7 +7,8 @@ import ListLoader from "../loader/ListLoader";
 import "./SearchProducts.css";
 
 interface SearchProductsProps {
-  productSelected: () => void;
+  productSelected: (product: ProductsStore.Product) => void;
+  scanButtonPressed: () => void;
 }
 
 type SearchProductsState = ProductsStore.ProductsState &
@@ -28,8 +29,7 @@ const SearchProducts = (props: SearchProductsState) => {
   };
 
   const handleProductSelect = (produt: ProductsStore.Product) => {
-    //set in props
-    props.productSelected();
+    props.productSelected(produt);
   };
 
   return (
