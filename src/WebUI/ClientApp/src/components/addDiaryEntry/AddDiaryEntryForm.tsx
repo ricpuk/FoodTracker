@@ -87,14 +87,26 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
         diarySection: props.diarySection,
       },
     };
-    debugger;
-    API.post(`${API_DIARY}/${props.diaryId}`, request)
+    API.post<DiariesStore.DiaryEntry>(`${API_DIARY}/${props.diaryId}`, request)
       .then((response) => {
-        debugger;
+        let { data } = response;
+        if (!product) {
+          //toast here
+          reloadDiary();
+          return;
+        }
+        data.product = product;
+        props.addDiaryEntry(data);
+        props.toggleModalState();
       })
       .finally(() => {
         setIsLoading(false);
       });
+  };
+
+  const reloadDiary = () => {
+    props.requestDiary(props.date, true);
+    props.toggleModalState();
   };
 
   return (
