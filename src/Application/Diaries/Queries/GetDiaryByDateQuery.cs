@@ -7,6 +7,7 @@ using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Application.Diaries.Commands;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodTracker.Application.Diaries.Queries
 {
@@ -35,6 +36,9 @@ namespace FoodTracker.Application.Diaries.Queries
             var userProfile = await _identityService.GetCurrentUserProfileAsync();
             var diaryDate = request.Date.Date;
             var diary = _dbContext.Diaries
+                .Include(x => x.Entries)
+                .ThenInclude(e => e.Product)
+                .ThenInclude(e => e.ProductServings)
                 .SingleOrDefault(x => x.UserProfileId == userProfile.Id && x.Date.Date == diaryDate);
             if (diary != null)
             {

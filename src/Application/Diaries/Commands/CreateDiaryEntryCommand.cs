@@ -39,7 +39,7 @@ namespace FoodTracker.Application.Diaries.Commands
 
         public async Task<DiaryEntryDto> Handle(CreateDiaryEntryCommand request, CancellationToken cancellationToken)
         {
-            var diary = GetDiaryOrThrow(request.GetDiaryId());
+            var diary = await GetDiaryOrThrow(request.GetDiaryId());
             var diaryEntry = _mapper.Map<DiaryEntry>(request.Entry);
             diaryEntry.DiaryId = diary.Id;
             

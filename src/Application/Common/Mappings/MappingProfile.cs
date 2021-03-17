@@ -24,6 +24,11 @@ namespace FoodTracker.Application.Common.Mappings
                 .ForMember(p => p.Servings, opt => opt.Ignore());
 
             CreateMap<DiaryEntry, DiaryEntryDto>();
+
+            CreateMap<DiaryEntryDto, DiaryEntry>()
+                .ForMember(x => x.Product, opt => opt.Ignore())
+                .ForMember(x => x.ProductId,
+                    opt => opt.MapFrom(x => x.Product.Id));
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)

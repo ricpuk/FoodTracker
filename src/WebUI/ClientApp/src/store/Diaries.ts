@@ -56,22 +56,35 @@ interface ToggleModalState {
   state: boolean;
 }
 
+interface AddDiaryEntry {
+  type: "ADD_DIARY_ENTRY";
+  entry: DiaryEntry;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
-type KnownAction = RequestDiaryAction | ReceiveDiaryAction | ToggleModalState;
+type KnownAction =
+  | RequestDiaryAction
+  | ReceiveDiaryAction
+  | ToggleModalState
+  | AddDiaryEntry;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 
 export const actionCreators = {
-  requestDiary: (date: string): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
+  requestDiary: (
+    date: string,
+    reload: boolean = false
+  ): AppThunkAction<KnownAction> => (dispatch, getState) => {
     // Only load data if it's something we don't already have (and are not already loading)
     const appState = getState();
-    if (appState && appState.diaries && date !== appState.diaries.date) {
+    if (
+      appState &&
+      appState.diaries &&
+      (date !== appState.diaries.date || reload)
+    ) {
       API.get<Diary>(`${RESOURCE_URL}/${date}`)
         .then((response) => {
           const { data } = response;
@@ -89,6 +102,16 @@ export const actionCreators = {
     const appState = getState();
     if (appState && appState.diaries) {
       dispatch({ type: "TOGGLE_MODAL", state: !appState.diaries.isModalOpen });
+    }
+  },
+  addDiaryEntry: (entry: DiaryEntry): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    const { diaries } = appState;
+    if (appState && diaries && diaries.date && diaries.diaries[diaries.date]) {
+      dispatch({ type: "ADD_DIARY_ENTRY", entry: entry });
     }
   },
 };
@@ -135,6 +158,11 @@ export const reducer: Reducer<DiariesState> = (
       return {
         ...state,
         isModalOpen: !state.isModalOpen,
+      };
+    case "ADD_DIARY_ENTRY":
+      state.diaries[state.date].entries.push(action.entry);
+      return {
+        ...state,
       };
   }
 
