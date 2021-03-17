@@ -34,7 +34,7 @@ const Diary = (props: DiaryProps) => {
 
   const renderDailySummary = () => (
     <div className="my-3">
-      <h4>Today's summary...</h4>
+      <h4>Daily summary</h4>
       <CaloriesBreakdown
         prefix="daily"
         remaining={540}

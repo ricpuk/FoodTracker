@@ -70,6 +70,8 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
   const resetState = () => {
     setIsLoading(false);
     setStep(STEP_SEARCH);
+    setNumberOfServings(1);
+    setProduct(undefined);
   };
 
   const handleServingUpdate = (type: UpdateType, value: number) => {
