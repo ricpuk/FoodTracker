@@ -23,12 +23,5 @@ namespace FoodTracker.WebUI.Controllers
             return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("{diaryId}")]
-        public async Task<ActionResult<DiaryDto>> CreateEntry(int diaryId, CreateDiaryEntryCommand command)
-        {
-            command.SetDiaryId(diaryId);
-            return Ok(await Mediator.Send(command));
-        }
-
     }
 }

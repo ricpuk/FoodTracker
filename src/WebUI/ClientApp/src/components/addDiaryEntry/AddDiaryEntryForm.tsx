@@ -111,11 +111,8 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
       return Promise.reject();
     }
     const request = {
-      entry: {
-        id: editedEntry.id,
-        servingId: servingId,
-        numberOfServings: numberOfServings,
-      },
+      servingId: servingId,
+      numberOfServings: numberOfServings,
     };
     return API.put<DiariesStore.DiaryEntry>(
       `${API_DIARY_ENTRIES(props.diaryId)}${editedEntry.id}`,

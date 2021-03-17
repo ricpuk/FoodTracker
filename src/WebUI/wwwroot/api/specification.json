@@ -43,12 +43,12 @@
         ]
       }
     },
-    "/api/Diaries/{diaryId}": {
+    "/api/diaries/{diaryId}/entries": {
       "post": {
         "tags": [
-          "Diaries"
+          "DiaryEntries"
         ],
-        "operationId": "Diaries_CreateEntry",
+        "operationId": "DiaryEntries_Create",
         "parameters": [
           {
             "name": "diaryId",
@@ -84,12 +84,61 @@
               }
             }
           }
-        },
-        "security": [
+        }
+      }
+    },
+    "/api/diaries/{diaryId}/entries/{entryId}": {
+      "put": {
+        "tags": [
+          "DiaryEntries"
+        ],
+        "operationId": "DiaryEntries_Create2",
+        "parameters": [
           {
-            "JWT": []
+            "name": "diaryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
           }
-        ]
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDiaryEntryCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiaryDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/_configuration/{clientId}": {
@@ -496,6 +545,20 @@
                 "$ref": "#/components/schemas/DiaryEntryDto"
               }
             ]
+          }
+        }
+      },
+      "UpdateDiaryEntryCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "servingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfServings": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
