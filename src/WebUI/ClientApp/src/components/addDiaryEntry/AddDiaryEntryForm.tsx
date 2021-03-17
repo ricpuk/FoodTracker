@@ -80,6 +80,9 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
         setServingId(value);
         break;
       case UpdateType.numberOfServings:
+        if (value > 999 || value < 1) {
+          return;
+        }
         setNumberOfServings(value);
         break;
     }

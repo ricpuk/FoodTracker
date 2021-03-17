@@ -1,8 +1,14 @@
-.no-hov:hover{
-    outline:0
+.no-hov:hover {
+  outline: 0;
 }
 
-.no-hov:focus{
-    outline:0;
-    box-shadow: none
+.no-hov:focus {
+  outline: 0;
+  box-shadow: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

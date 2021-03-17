@@ -31,7 +31,8 @@ export default (props: DiaryEntryProps) => {
       onClick={props.onClick}
     >
       <Col xs="8" md="4">
-        {product.name}
+        {product.name} - {serving.servingSize * numberOfServings}{" "}
+        {serving.servingSizeUnit}
       </Col>
       <Col xs="4" md="2" className="nutritional-value">
         <span>{serving.calories * numberOfServings}</span>

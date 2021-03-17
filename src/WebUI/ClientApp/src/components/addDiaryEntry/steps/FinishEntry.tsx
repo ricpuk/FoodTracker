@@ -54,7 +54,12 @@ const FinishEntry = (props: FinishEntryProps) => {
               type="number"
               name={UpdateType.numberOfServings}
               className="border-0 no-hov text-primary"
-              style={{ width: 50 }}
+              style={{
+                width: 65,
+                appearance: "textfield",
+                WebkitAppearance: "textfield",
+                MozAppearance: "textfield",
+              }}
               max={999}
               min={1}
               value={props.numberOfServings}
