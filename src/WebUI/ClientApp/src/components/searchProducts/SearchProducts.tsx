@@ -1,6 +1,17 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBarcode, faSearch } from "@fortawesome/free-solid-svg-icons";
 import React, { ChangeEvent, useState } from "react";
 import { connect } from "react-redux";
-import { Col, Container, FormGroup, Input, Row } from "reactstrap";
+import {
+  Button,
+  ButtonGroup,
+  Col,
+  Container,
+  FormGroup,
+  Input,
+  Row,
+  Spinner,
+} from "reactstrap";
 import { ApplicationState } from "../../store";
 import * as ProductsStore from "../../store/Products";
 import ListLoader from "../loader/ListLoader";
@@ -22,10 +33,13 @@ const SearchProducts = (props: SearchProductsState) => {
     const { target } = event;
     const { value } = target;
     setQuery(value);
-    if (props.isLoading || value.length < 3) {
+  };
+
+  const searchClicked = () => {
+    if (props.isLoading) {
       return;
     }
-    props.requestProductsByQuery(value, 1);
+    props.requestProductsByQuery(query, 1);
   };
 
   const handleProductSelect = (product: ProductsStore.Product) => {
@@ -35,12 +49,31 @@ const SearchProducts = (props: SearchProductsState) => {
   return (
     <Container fluid={true} className="pt-3">
       <FormGroup>
-        <Input
-          placeholder="Search for a product"
-          value={query}
-          onChange={onSearchInputChanged}
-        />
+        <div className="d-flex justify-content-around">
+          <div className="flex-grow-1 mr-1">
+            <Input
+              placeholder="Search for a product"
+              value={query}
+              onChange={onSearchInputChanged}
+            />
+          </div>
+          <div>
+            <ButtonGroup>
+              <Button
+                disabled={props.isLoading}
+                onClick={searchClicked}
+                color="primary"
+              >
+                <FontAwesomeIcon icon={faSearch} size="sm" />
+              </Button>
+              <Button disabled={props.isLoading} outline color="primary">
+                <FontAwesomeIcon icon={faBarcode} size="sm" />
+              </Button>
+            </ButtonGroup>
+          </div>
+        </div>
       </FormGroup>
+
       <ListLoader isLoading={props.isLoading}>
         {props.products.map((product) => {
           const serving = product.servings[0];
