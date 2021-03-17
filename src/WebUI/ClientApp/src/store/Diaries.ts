@@ -27,6 +27,7 @@ export enum DiarySection {
 }
 
 export interface DiaryEntry {
+  id: number;
   product: Product;
   productId: number;
   servingId: number;

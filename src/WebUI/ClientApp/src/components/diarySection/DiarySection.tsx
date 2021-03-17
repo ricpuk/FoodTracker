@@ -2,12 +2,13 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Col, Container, Row, Button } from "reactstrap";
 import { ApplicationState } from "../../store";
-import { DiaryEntry } from "../../store/Diaries";
+import { DiaryEntry as DiaryEntryDto } from "../../store/Diaries";
 import { ScreenSize } from "../../utils/screenSize";
+import DiaryEntry from "../diaryEntry/DiaryEntry";
 import "./diarySection.css";
 
 type DiarySectionProps = {
-  items: DiaryEntry[];
+  items: DiaryEntryDto[];
   toggleModal: () => void;
 };
 
@@ -66,36 +67,7 @@ const DiarySection = (props: DiarySectionProps) => {
 
   const renderBody = () => {
     return props.items.map((entry) => {
-      const product = entry.product;
-      const serving = product.servings
-        .filter((x) => x.id === entry.servingId)
-        .shift();
-      if (!serving) {
-        return null;
-      }
-      return (
-        <Row className="bg-light p-2 border-bottom">
-          <Col xs="8" md="4">
-            {product.name}
-          </Col>
-          <Col xs="4" md="2" className="nutritional-value">
-            <span>{serving.calories * entry.numberOfServings}</span>
-          </Col>
-          {canFitAllColumns() && (
-            <>
-              <Col md="2" className="nutritional-value">
-                {serving.carbohydrates * entry.numberOfServings}
-              </Col>
-              <Col md="2" className="nutritional-value">
-                {serving.fats * entry.numberOfServings}
-              </Col>
-              <Col md="2" className="nutritional-value">
-                {serving.protein * entry.numberOfServings}
-              </Col>
-            </>
-          )}
-        </Row>
-      );
+      return <DiaryEntry entry={entry} canFitAllColumns={canFitAllColumns()} />;
     });
   };
 

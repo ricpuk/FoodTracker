@@ -53,6 +53,7 @@ const FinishEntry = (props: FinishEntryProps) => {
               className="border-0 no-hov text-primary"
               style={{ width: 50 }}
               max={999}
+              min={1}
               value={props.numberOfServings}
               onChange={handleChange}
             />
