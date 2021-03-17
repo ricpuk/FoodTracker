@@ -76,6 +76,11 @@ interface ReplaceDiaryEntry {
   index: number;
 }
 
+interface RemoveDiaryEntry {
+  type: "REMOVE_DIARY_ENTRY";
+  index: number;
+}
+
 export enum DiaryModalType {
   new = "new",
   edit = "edit",
@@ -89,7 +94,8 @@ type KnownAction =
   | ToggleModalState
   | AddDiaryEntry
   | ToggleModalEdit
-  | ReplaceDiaryEntry;
+  | ReplaceDiaryEntry
+  | RemoveDiaryEntry;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -154,6 +160,21 @@ export const actionCreators = {
       dispatch({ type: "REPLACE_DIARY_ENTRY", entry: entry, index: index });
     }
   },
+  removeEditedDiaryEntry: (entryId: number): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    const { diaries } = appState;
+    if (appState && diaries && diaries.date && diaries.diaries[diaries.date]) {
+      const diary = diaries.diaries[diaries.date];
+      const index = diary.entries.findIndex((x) => x.id === entryId);
+      if (index === -1) {
+        return;
+      }
+      dispatch({ type: "REMOVE_DIARY_ENTRY", index: index });
+    }
+  },
 };
 
 // ----------------
@@ -197,9 +218,12 @@ export const reducer: Reducer<DiariesState> = (
       }
       break;
     case "TOGGLE_MODAL":
+      const modalType = !state.isModalOpen
+        ? DiaryModalType.new
+        : state.modalType;
       return {
         ...state,
-        modalType: DiaryModalType.new,
+        modalType: modalType,
         isModalOpen: !state.isModalOpen,
       };
     case "ADD_DIARY_ENTRY":
@@ -219,6 +243,12 @@ export const reducer: Reducer<DiariesState> = (
         modalType: DiaryModalType.edit,
         editedEntry: action.entry,
       };
+    case "REMOVE_DIARY_ENTRY": {
+      state.diaries[state.date].entries.splice(action.index, 1);
+      return {
+        ...state,
+      };
+    }
   }
 
   return state;

@@ -143,7 +143,26 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
       });
   };
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    setIsLoading(true);
+    if (!editedEntry) {
+      //Some sort of error, promise reject
+      return Promise.reject();
+    }
+    return API.delete<void>(
+      `${API_DIARY_ENTRIES(props.diaryId)}${editedEntry.id}`
+    )
+      .then(() => {
+        props.removeEditedDiaryEntry(editedEntry.id);
+        props.toggleModalState();
+      })
+      .catch((error) => {
+        //Display error toast
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const reloadDiary = () => {
     props.requestDiary(props.date, true);

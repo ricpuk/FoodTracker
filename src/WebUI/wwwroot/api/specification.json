@@ -139,6 +139,47 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "DiaryEntries"
+        ],
+        "operationId": "DiaryEntries_Delete",
+        "parameters": [
+          {
+            "name": "diaryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/_configuration/{clientId}": {

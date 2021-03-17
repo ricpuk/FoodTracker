@@ -165,7 +165,7 @@ const FinishEntry = (props: FinishEntryProps) => {
         </Button>
         {props.modalType === DiaryModalType.edit && (
           <Button
-            onClick={props.onSubmit}
+            onClick={props.onDelete}
             className="w-100 mx-1"
             color="danger"
             disabled={props.blocked}
