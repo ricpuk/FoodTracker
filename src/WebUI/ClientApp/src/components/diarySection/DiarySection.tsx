@@ -9,7 +9,7 @@ import "./diarySection.css";
 
 type DiarySectionProps = {
   items: DiaryEntryDto[];
-  toggleModal: () => void;
+  toggleModal: (diaryEntry?: DiaryEntryDto) => void;
 };
 
 const DiarySection = (props: DiarySectionProps) => {
@@ -27,6 +27,10 @@ const DiarySection = (props: DiarySectionProps) => {
       return false;
     }
     return screenSize > ScreenSize.sm;
+  };
+
+  const handleEntryClicked = (entry: DiaryEntryDto) => {
+    props.toggleModal(entry);
   };
 
   const renderHeader = () => (
@@ -58,7 +62,7 @@ const DiarySection = (props: DiarySectionProps) => {
   const renderControls = () => {
     return (
       <Row className="my-3">
-        <Button color="primary" onClick={props.toggleModal}>
+        <Button color="primary" onClick={() => props.toggleModal()}>
           Add food
         </Button>
       </Row>
@@ -67,7 +71,13 @@ const DiarySection = (props: DiarySectionProps) => {
 
   const renderBody = () => {
     return props.items.map((entry) => {
-      return <DiaryEntry entry={entry} canFitAllColumns={canFitAllColumns()} />;
+      return (
+        <DiaryEntry
+          entry={entry}
+          canFitAllColumns={canFitAllColumns()}
+          onClick={() => handleEntryClicked(entry)}
+        />
+      );
     });
   };
 

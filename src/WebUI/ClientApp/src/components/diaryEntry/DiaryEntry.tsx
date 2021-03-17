@@ -1,36 +1,35 @@
-import React, { useState } from "react";
-import {
-  Col,
-  Popover,
-  PopoverBody,
-  PopoverHeader,
-  Row,
-  UncontrolledPopover,
-} from "reactstrap";
+import classNames from "classnames";
+import React from "react";
+import { Col, Row } from "reactstrap";
 import { DiaryEntry } from "../../store/Diaries";
 import "./DiaryEntry.css";
 
 interface DiaryEntryProps {
   entry: DiaryEntry;
   canFitAllColumns: boolean;
+  onClick: () => void;
 }
 
 export default (props: DiaryEntryProps) => {
-  const [popoverOpen, setPopoverOpen] = useState(false);
-
   const { product, numberOfServings, servingId, id } = props.entry;
   const serving = product.servings.filter((x) => x.id === servingId)[0];
 
-  const toggle = () => setPopoverOpen(!popoverOpen);
-
   const diaryEntryId = () => `diary-entry-${id}`;
+
+  const rowClassBindings = {
+    "bg-light p-2 border-bottom diary-entry": true,
+  };
 
   if (!serving) {
     return null;
   }
 
   return (
-    <Row className="bg-light p-2 border-bottom diary-entry" id={diaryEntryId()}>
+    <Row
+      className={classNames(rowClassBindings)}
+      id={diaryEntryId()}
+      onClick={props.onClick}
+    >
       <Col xs="8" md="4">
         {product.name}
       </Col>
@@ -50,19 +49,6 @@ export default (props: DiaryEntryProps) => {
           </Col>
         </>
       )}
-      <UncontrolledPopover
-        placement="auto"
-        // isOpen={popoverOpen}
-        target={diaryEntryId()}
-        // toggle={toggle}
-        trigger="focus"
-      >
-        <PopoverHeader>Popover Title</PopoverHeader>
-        <PopoverBody>
-          Sed posuere consectetur est at lobortis. Aenean eu leo quam.
-          Pellentesque ornare sem lacinia quam venenatis vestibulum.
-        </PopoverBody>
-      </UncontrolledPopover>
     </Row>
   );
 };

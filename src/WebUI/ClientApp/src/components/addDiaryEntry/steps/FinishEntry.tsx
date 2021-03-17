@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from "react";
 import { Button, Col, FormGroup, Input, Row, Spinner } from "reactstrap";
+import { DiaryModalType } from "../../../store/Diaries";
 import { Product } from "../../../store/Products";
 import CaloriesBreakdown from "../../caloriesBreakdown/CaloriesBreakdown";
 import { UpdateType } from "../AddDiaryEntryForm";
@@ -10,8 +11,10 @@ interface FinishEntryProps {
   servingId?: number;
   numberOfServings: number;
   blocked: boolean;
+  modalType: DiaryModalType;
   onUpdate: (type: UpdateType, value: number) => void;
   onSubmit: () => void;
+  onDelete: () => void;
 }
 
 const FinishEntry = (props: FinishEntryProps) => {
@@ -137,17 +140,39 @@ const FinishEntry = (props: FinishEntryProps) => {
     </Row>
   );
 
-  const renderSubmit = () => {
+  const renderControls = () => {
+    if (props.blocked) {
+      return (
+        <div className="d-flex justify-content-center">
+          <Spinner
+            color="primary"
+            size="lg"
+            style={{ width: "40px", height: "40px" }}
+          />
+        </div>
+      );
+    }
+
     return (
-      <div>
+      <div className="d-flex">
         <Button
           onClick={props.onSubmit}
-          className="w-100"
+          className="w-100 mx-1"
           color="primary"
           disabled={props.blocked}
         >
           {!props.blocked ? "Submit" : <Spinner color="light" />}
         </Button>
+        {props.modalType === DiaryModalType.edit && (
+          <Button
+            onClick={props.onSubmit}
+            className="w-100 mx-1"
+            color="danger"
+            disabled={props.blocked}
+          >
+            {!props.blocked ? "Delete" : <Spinner color="light" />}
+          </Button>
+        )}
       </div>
     );
   };
@@ -156,7 +181,7 @@ const FinishEntry = (props: FinishEntryProps) => {
     <div>
       {renderHeader()}
       {renderCalorieBreakdown()}
-      {renderSubmit()}
+      {renderControls()}
     </div>
   );
 };

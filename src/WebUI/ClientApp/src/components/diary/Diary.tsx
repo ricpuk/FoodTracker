@@ -58,8 +58,11 @@ const Diary = (props: DiaryProps) => {
     return diary.entries.filter((x) => x.diarySection === section);
   };
 
-  const toggleModal = () => {
-    props.toggleModalState();
+  const toggleModal = (diaryEntry?: DiariesStore.DiaryEntry) => {
+    if (!diaryEntry) {
+      return props.toggleModalState();
+    }
+    props.toggleModalStateForEdit(diaryEntry);
   };
 
   const renderDiaryContent = () => (

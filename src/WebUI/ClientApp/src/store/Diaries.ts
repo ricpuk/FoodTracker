@@ -12,6 +12,8 @@ export interface DiariesState {
   isModalOpen: boolean;
   diaries: { [date: string]: Diary };
   date: string;
+  modalType: DiaryModalType;
+  editedEntry?: DiaryEntry;
 }
 
 export interface Diary {
@@ -57,9 +59,26 @@ interface ToggleModalState {
   state: boolean;
 }
 
+interface ToggleModalEdit {
+  type: "TOGGLE_MODAL_EDIT";
+  state: boolean;
+  entry: DiaryEntry;
+}
+
 interface AddDiaryEntry {
   type: "ADD_DIARY_ENTRY";
   entry: DiaryEntry;
+}
+
+interface ReplaceDiaryEntry {
+  type: "REPLACE_DIARY_ENTRY";
+  entry: DiaryEntry;
+  index: number;
+}
+
+export enum DiaryModalType {
+  new = "new",
+  edit = "edit",
 }
 
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
@@ -68,7 +87,9 @@ type KnownAction =
   | RequestDiaryAction
   | ReceiveDiaryAction
   | ToggleModalState
-  | AddDiaryEntry;
+  | AddDiaryEntry
+  | ToggleModalEdit
+  | ReplaceDiaryEntry;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -105,6 +126,18 @@ export const actionCreators = {
       dispatch({ type: "TOGGLE_MODAL", state: !appState.diaries.isModalOpen });
     }
   },
+  toggleModalStateForEdit: (
+    diaryEntry: DiaryEntry
+  ): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    const appState = getState();
+    if (appState && appState.diaries && !appState.diaries.isModalOpen) {
+      dispatch({
+        type: "TOGGLE_MODAL_EDIT",
+        state: true,
+        entry: diaryEntry,
+      });
+    }
+  },
   addDiaryEntry: (entry: DiaryEntry): AppThunkAction<KnownAction> => (
     dispatch,
     getState
@@ -112,7 +145,13 @@ export const actionCreators = {
     const appState = getState();
     const { diaries } = appState;
     if (appState && diaries && diaries.date && diaries.diaries[diaries.date]) {
-      dispatch({ type: "ADD_DIARY_ENTRY", entry: entry });
+      const diary = diaries.diaries[diaries.date];
+      const index = diary.entries.findIndex((x) => x.id === entry.id);
+      if (index === -1) {
+        dispatch({ type: "ADD_DIARY_ENTRY", entry: entry });
+        return;
+      }
+      dispatch({ type: "REPLACE_DIARY_ENTRY", entry: entry, index: index });
     }
   },
 };
@@ -126,6 +165,8 @@ const unloadedState: DiariesState = {
   isLoading: false,
   isCreateLoading: false,
   isModalOpen: false,
+  modalType: DiaryModalType.new,
+  editedEntry: undefined,
 };
 
 export const reducer: Reducer<DiariesState> = (
@@ -158,12 +199,25 @@ export const reducer: Reducer<DiariesState> = (
     case "TOGGLE_MODAL":
       return {
         ...state,
+        modalType: DiaryModalType.new,
         isModalOpen: !state.isModalOpen,
       };
     case "ADD_DIARY_ENTRY":
       state.diaries[state.date].entries.push(action.entry);
       return {
         ...state,
+      };
+    case "REPLACE_DIARY_ENTRY":
+      state.diaries[state.date].entries[action.index] = action.entry;
+      return {
+        ...state,
+      };
+    case "TOGGLE_MODAL_EDIT":
+      return {
+        ...state,
+        isModalOpen: action.state,
+        modalType: DiaryModalType.edit,
+        editedEntry: action.entry,
       };
   }
 
