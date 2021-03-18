@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FoodTracker.Application.Common.Models;
+﻿using FoodTracker.Application.Common.Models;
 using FoodTracker.Application.Products;
 using FoodTracker.Application.Products.Queries.GetProductsByBarCode;
 using FoodTracker.Application.Products.Queries.GetProductsWithPagination;

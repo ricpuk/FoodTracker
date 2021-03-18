@@ -19,16 +19,16 @@
   overflow: hidden;
   width: 250px;
   margin: auto;
-  height: 250px;
+  height: auto;
 }
 
-.camera camera {
+.camera video {
   width: 100%;
 }
 
-/* .drawingBuffer {
+.drawingBuffer {
   display: none;
-} */
+}
 
 .camera__explanation {
   max-width: 230px;
