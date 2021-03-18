@@ -24,7 +24,7 @@ namespace FoodTracker.WebUI.Controllers
         }
 
         [HttpGet("{barCode}")]
-        public async Task<ActionResult<PaginatedList<ProductDto>>> GetByBarCode(string barCode, [FromQuery]int page)
+        public async Task<ActionResult<ProductDto>> GetByBarCode(string barCode, [FromQuery]int page)
         {
             var query = new GetProductsByBarCodeQuery
             {

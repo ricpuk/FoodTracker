@@ -1,20 +1,62 @@
-import React, { ChangeEvent, ChangeEventHandler, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Button, Input } from "reactstrap";
 import BarCodeScanner from "../../barCodeScanner";
 
-export default () => {
+interface ScanProductProps {
+  submit: (code: string) => void;
+}
+
+export default (props: ScanProductProps) => {
   //   const [isCameraSupported, setCameraSupported] = React.useState(false);
   //   const [isCameraEnabled, setCameraEnabled] = React.useState(
   // PermissionHandler.isCameraPermissionGranted()
   const [code, setCode] = useState<string>("");
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    // const re = /^[0-9\b]+$/;
     const { target } = event;
+    if (target.value.length > 13) {
+      return;
+    }
     setCode(target.value);
   };
 
+  const validate = (value: string) => {
+    console.log(value);
+    if (!validateCode(value)) {
+      setCode("");
+      //toast error
+      return false;
+    }
+    return true;
+  };
+
+  const submit = () => {
+    if (!validateCode(code)) {
+      //Error toast
+      return;
+    }
+    props.submit(code);
+  };
+
   const codeScanned = (value: string) => {
-    setCode(value);
+    if (validate(value)) {
+      props.submit(value);
+    }
+  };
+
+  const validateCodeLength = (value: string) => {
+    const validlengths = [8, 12, 13];
+    return validlengths.includes(value.length);
+  };
+
+  const validateCode = (value: string) => {
+    const digits = () => /^\d{8,13}$/g.test(value);
+
+    if (!digits() || !validateCodeLength(value)) {
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -25,6 +67,7 @@ export default () => {
       </div>
       <div className="d-flex justify-content-center mt-3">
         <Input
+          type="number"
           placeholder="Barcode here..."
           style={{ width: 250 }}
           value={code}
@@ -32,7 +75,12 @@ export default () => {
         />
       </div>
       <div className="d-flex mt-2 justify-content-center mb-5">
-        <Button color="success" style={{ width: 250 }}>
+        <Button
+          color="success"
+          style={{ width: 250 }}
+          disabled={!validateCodeLength(code)}
+          onClick={submit}
+        >
           Submit
         </Button>
       </div>

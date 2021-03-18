@@ -8,15 +8,24 @@ import classNames from "classnames";
 const BarCodeScanner = (props) => {
   const [cameraInit, setCameraInit] = useState(false);
   const [cameraError, setCameraError] = useState(false);
+  const [scanThrottled, setScanThrottled] = useState(false);
   const onInitSuccess = () => {
     Quagga.start();
     setCameraInit(true);
   };
   const onDetected = (result) => {
+    if (scanThrottled) {
+      return;
+    }
+    setScanThrottled(true);
+
     var code = result.codeResult.code;
     if (props.scanned) {
       props.scanned(code);
     }
+    setTimeout(() => {
+      setScanThrottled(false);
+    }, 1000);
   };
   useEffect(() => {
     if (cameraInit) {

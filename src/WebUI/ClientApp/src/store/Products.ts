@@ -12,10 +12,12 @@ export interface ProductsState {
   page?: number;
   products: Product[];
   query: string;
+  code: string;
 }
 
 export interface Product {
   id: number;
+  complete: boolean;
   name: string;
   servings: ProductServing[];
 }
@@ -45,6 +47,11 @@ interface RequestProductsQueryAction {
   page: number;
 }
 
+interface ScanProductQueryAction {
+  type: "SCAN_PRODUCT";
+  code: string;
+}
+
 interface ReceiveProductsAction {
   type: "RECEIVE_PRODUCTS";
   page: number;
@@ -52,9 +59,18 @@ interface ReceiveProductsAction {
   products: Product[];
 }
 
+interface ReceiveScannedProductAction {
+  type: "RECEIVE_SCANNED_PRODUCT";
+  product: Product;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
-type KnownAction = RequestProductsQueryAction | ReceiveProductsAction;
+type KnownAction =
+  | RequestProductsQueryAction
+  | ReceiveProductsAction
+  | ScanProductQueryAction
+  | ReceiveScannedProductAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -88,25 +104,21 @@ export const actionCreators = {
       dispatch({ type: "REQUEST_PRODUCTS", page: page, query: query });
     }
   },
-  requestProductsByCode: (
-    code: string,
-    page: number
-  ): AppThunkAction<KnownAction> => (dispatch, getState) => {
+  requestProductByCode: (code: string): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
     // Only load data if it's something we don't already have (and are not already loading)
     const appState = getState();
-    if (appState && appState.products && page !== appState.products.page) {
-      API.get<GetListResponse<Product>>(`${RESOURCE_URL}/${code}`).then(
-        (response) => {
-          const { data } = response;
-          dispatch({
-            type: "RECEIVE_PRODUCTS",
-            page: page,
-            query: code,
-            products: data.items,
-          });
-        }
-      );
-      dispatch({ type: "REQUEST_PRODUCTS", page: page, query: code });
+    if (appState && appState.products) {
+      API.get<Product>(`${RESOURCE_URL}/${code}`).then((response) => {
+        const { data } = response;
+        dispatch({
+          type: "RECEIVE_SCANNED_PRODUCT",
+          product: data,
+        });
+      });
+      dispatch({ type: "SCAN_PRODUCT", code: code });
     }
   },
 };
@@ -118,6 +130,7 @@ const unloadedState: ProductsState = {
   products: [],
   isLoading: false,
   query: "",
+  code: "",
 };
 
 export const reducer: Reducer<ProductsState> = (
@@ -132,6 +145,7 @@ export const reducer: Reducer<ProductsState> = (
   switch (action.type) {
     case "REQUEST_PRODUCTS":
       return {
+        ...state,
         products: state.products,
         page: action.page,
         query: action.query,
@@ -140,6 +154,7 @@ export const reducer: Reducer<ProductsState> = (
     case "RECEIVE_PRODUCTS":
       if (action.page === state.page && action.query === state.query) {
         return {
+          ...state,
           products: action.products,
           page: action.page,
           query: action.query,
@@ -147,6 +162,12 @@ export const reducer: Reducer<ProductsState> = (
         };
       }
       break;
+    case "SCAN_PRODUCT":
+      return {
+        ...state,
+        code: action.code,
+        isLoading: true,
+      };
   }
 
   return state;

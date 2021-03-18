@@ -330,7 +330,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfProductDto"
+                  "$ref": "#/components/schemas/ProductDto"
                 }
               }
             }
@@ -485,6 +485,9 @@
           "id": {
             "type": "integer",
             "format": "int32"
+          },
+          "complete": {
+            "type": "boolean"
           },
           "barCode": {
             "type": "string",

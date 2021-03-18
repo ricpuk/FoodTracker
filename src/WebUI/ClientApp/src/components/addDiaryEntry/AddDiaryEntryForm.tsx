@@ -10,6 +10,7 @@ import { Product } from "../../store/Products";
 import FinishEntry from "./steps/FinishEntry";
 import API, { API_DIARY_ENTRIES } from "../../utils/api";
 import ScanProduct from "./steps/ScanProduct";
+import ProductForm from "../productForm/ProductForm";
 
 interface OwnProps {
   diaryId: number;
@@ -23,6 +24,7 @@ type AddDiaryEntryFormProps = DiariesStore.DiariesState & // ... state we've req
 const STEP_SEARCH = "SEARCH";
 const STEP_CONFIRM = "CONFIRM";
 const STEP_SCAN = "SCAN";
+const STEP_PRODUCT_FORM = "TEST";
 
 export enum UpdateType {
   serving = "serving",
@@ -36,6 +38,7 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
   const [numberOfServings, setNumberOfServings] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile] = useAppParams();
+  const [barCode, setBarCode] = useState<string>("");
 
   const { isModalOpen, modalType, editedEntry } = useSelector(
     (state: ApplicationState) => {
@@ -188,12 +191,23 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
     setProduct(undefined);
   };
 
+  const submitScan = (code: string) => {
+    setBarCode(code);
+    setStep(STEP_PRODUCT_FORM);
+  };
+
+  const handleProductCreationSubmit = (product: Product) => {
+    setProduct(product);
+    setStep(STEP_CONFIRM);
+  };
+
   return (
     <Modal
       onOpened={handleOpened}
       onClosed={resetState}
       isOpen={isModalOpen}
       toggle={toggleModal}
+      scrollable={true}
       className={classnames(classBindings)}
     >
       <ModalHeader toggle={toggleModal}>Add diary entry</ModalHeader>
@@ -216,7 +230,10 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
             modalType={modalType}
           />
         )}
-        {step === STEP_SCAN && <ScanProduct />}
+        {step === STEP_SCAN && <ScanProduct submit={submitScan} />}
+        {step === STEP_PRODUCT_FORM && (
+          <ProductForm barCode={barCode} submit={handleProductCreationSubmit} />
+        )}
       </ModalBody>
     </Modal>
   );
