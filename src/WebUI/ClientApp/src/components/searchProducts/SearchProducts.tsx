@@ -10,7 +10,6 @@ import {
   FormGroup,
   Input,
   Row,
-  Spinner,
 } from "reactstrap";
 import { ApplicationState } from "../../store";
 import * as ProductsStore from "../../store/Products";
@@ -66,7 +65,12 @@ const SearchProducts = (props: SearchProductsState) => {
               >
                 <FontAwesomeIcon icon={faSearch} size="sm" />
               </Button>
-              <Button disabled={props.isLoading} outline color="primary">
+              <Button
+                disabled={props.isLoading}
+                outline
+                color="primary"
+                onClick={props.scanButtonPressed}
+              >
                 <FontAwesomeIcon icon={faBarcode} size="sm" />
               </Button>
             </ButtonGroup>

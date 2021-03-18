@@ -9,6 +9,7 @@ import * as DiariesStore from "../../store/Diaries";
 import { Product } from "../../store/Products";
 import FinishEntry from "./steps/FinishEntry";
 import API, { API_DIARY_ENTRIES } from "../../utils/api";
+import ScanProduct from "./steps/ScanProduct";
 
 interface OwnProps {
   diaryId: number;
@@ -215,6 +216,7 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
             modalType={modalType}
           />
         )}
+        {step === STEP_SCAN && <ScanProduct />}
       </ModalBody>
     </Modal>
   );
