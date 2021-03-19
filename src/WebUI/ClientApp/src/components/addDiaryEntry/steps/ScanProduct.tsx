@@ -7,13 +7,9 @@ interface ScanProductProps {
 }
 
 export default (props: ScanProductProps) => {
-  //   const [isCameraSupported, setCameraSupported] = React.useState(false);
-  //   const [isCameraEnabled, setCameraEnabled] = React.useState(
-  // PermissionHandler.isCameraPermissionGranted()
   const [code, setCode] = useState<string>("");
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    // const re = /^[0-9\b]+$/;
     const { target } = event;
     if (target.value.length > 13) {
       return;

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Button, Col, Input, Row } from "reactstrap";
-import { Product } from "../../store/Products";
+import { Alert, Button, Col, Input, Row } from "reactstrap";
+import { Product, ProductServing } from "../../store/Products";
 import API from "../../utils/api";
 
 interface ProductFormProps {
@@ -9,10 +9,15 @@ interface ProductFormProps {
 }
 
 const ProductForm = (props: ProductFormProps) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [productName, setProductName] = useState<string>("");
-  const [servings, setServings] = useState<any[]>([]);
+  const [servings, setServings] = useState<any[]>([{}]);
+  const [statusMessage, setStatusMessage] = useState("");
   useEffect(() => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
     API.get<Product>(`api/products/${props.barCode}`)
       .then((response) => {
         const { data } = response;
@@ -20,17 +25,35 @@ const ProductForm = (props: ProductFormProps) => {
           props.submit(data);
           return;
         }
-        if (data) {
-          //Populate product TODO
-          //   setProduct(data);
-          return;
-        }
+        populateProductState(data);
       })
       .catch((err) => {
         //error
       })
       .finally(() => setLoading(false));
-  });
+  }, []);
+
+  const populateProductState = (data: Product) => {
+    if (typeof data !== "object") {
+      setStatusMessage(
+        "No product found. Please enter the information to help improve our database."
+      );
+      return;
+    }
+
+    if (data.name) {
+      setProductName(data.name);
+    }
+    if (data.servings && data.servings.length > 0) {
+      const fetchedServings = data.servings.map((x) => x);
+      setServings(fetchedServings);
+    }
+    if (!data.complete) {
+      setStatusMessage(
+        "This product has been fetched from open food facts database. Please check if the date provided is correct."
+      );
+    }
+  };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {};
 
@@ -42,7 +65,8 @@ const ProductForm = (props: ProductFormProps) => {
 
   return (
     <React.Fragment>
-      <Row className="border-bottom">
+      {statusMessage && <Alert color="warning my-2">{statusMessage}</Alert>}
+      <Row className="border-bottom border-top">
         <Col className="d-flex flex-column justify-content-center">
           {props.barCode}
         </Col>
@@ -53,7 +77,7 @@ const ProductForm = (props: ProductFormProps) => {
       <Row className="border-bottom">
         <Col className="d-flex flex-column justify-content-center">
           <Input
-            className="border-0 no-hov text-primary p-0"
+            className="border-0 no-hov p-0"
             placeholder="Product name"
             value={productName}
             name="name"
@@ -69,32 +93,50 @@ const ProductForm = (props: ProductFormProps) => {
           Servings
         </Col>
       </Row>
-      {servings.map((serving) => (
+      {servings.map((serving: ProductServing) => (
         <Row className="border-bottom">
           <Col xs="6">
             <Input
               type="number"
               placeholder="Serving size"
               className="border-0 no-hov p-0"
+              value={serving.servingSize}
             />
           </Col>
           <Col xs="6">
             <Input
               placeholder="Units (g, ml, etc...)"
               className="border-0 no-hov p-0"
+              value={serving.servingSizeUnit}
             />
           </Col>
           <Col xs="6">
-            <Input placeholder="Cals" className="border-0 no-hov p-0" />
+            <Input
+              placeholder="Cals"
+              className="border-0 no-hov p-0"
+              value={serving.calories}
+            />
           </Col>
           <Col xs="6">
-            <Input placeholder="Protein (g)" className="border-0 no-hov p-0" />
+            <Input
+              placeholder="Protein (g)"
+              className="border-0 no-hov p-0"
+              value={serving.protein}
+            />
           </Col>
           <Col xs="6">
-            <Input placeholder="Fat (g)" className="border-0 no-hov p-0" />
+            <Input
+              placeholder="Fat (g)"
+              className="border-0 no-hov p-0"
+              value={serving.fats}
+            />
           </Col>
           <Col xs="6">
-            <Input placeholder="Carbs (g)" className="border-0 no-hov p-0" />
+            <Input
+              placeholder="Carbs (g)"
+              className="border-0 no-hov p-0"
+              value={serving.carbohydrates}
+            />
           </Col>
         </Row>
       ))}
