@@ -1,12 +1,24 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Alert, Button, Col, Input, Row } from "reactstrap";
 import { Product, ProductServing } from "../../store/Products";
 import API from "../../utils/api";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import ProductFormServing from "./ProductFormServing";
+import classnames from "classnames";
+import "./productForm.css";
 
 interface ProductFormProps {
   submit: (product: Product) => void;
   barCode: string;
 }
+
+const NAME_SERVING_SIZE = "servingSize";
+const NAME_SERVING_SIZE_UNIT = "servingSizeUnit";
+const NAME_CALORIES = "calories";
+const NAME_PROTEIN = "protein";
+const NAME_FATS = "fats";
+const NAME_CARBS = "carbohydrates";
 
 const ProductForm = (props: ProductFormProps) => {
   const [loading, setLoading] = useState(false);
@@ -55,11 +67,45 @@ const ProductForm = (props: ProductFormProps) => {
     }
   };
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {};
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target } = event;
+    const { name, value } = target;
+    switch (name) {
+      case "name":
+        setProductName(value);
+        break;
+    }
+  };
+
+  const updateServing = (serving: ProductServing, index: number) => {
+    const arr = servings.map((x) => x);
+    arr[index] = serving;
+    setServings(arr);
+  };
+
+  const handleServingValueUpdate = (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const { target } = event;
+    const { name, value } = target;
+    const item = servings[index];
+    item[name] = value;
+    updateServing(item, index);
+  };
 
   const addServing = () => {
     const arr = servings.map((x) => x);
     arr.push({});
+    setServings(arr);
+  };
+
+  const deleteServing = (index: number) => {
+    if (index === 0) {
+      return;
+    }
+    const arr = servings.map((x) => x);
+    arr.splice(index, 1);
     setServings(arr);
   };
 
@@ -93,7 +139,7 @@ const ProductForm = (props: ProductFormProps) => {
           Servings
         </Col>
       </Row>
-      {servings.map((serving: ProductServing) => (
+      {servings.map((serving: ProductServing, index: number) => (
         <Row className="border-bottom">
           <Col xs="6">
             <Input
@@ -101,41 +147,69 @@ const ProductForm = (props: ProductFormProps) => {
               placeholder="Serving size"
               className="border-0 no-hov p-0"
               value={serving.servingSize}
+              name={NAME_SERVING_SIZE}
+              onChange={(e) => handleServingValueUpdate(e, index)}
             />
           </Col>
-          <Col xs="6">
+          <Col xs="5" className="d-flex">
             <Input
               placeholder="Units (g, ml, etc...)"
               className="border-0 no-hov p-0"
               value={serving.servingSizeUnit}
+              name={NAME_SERVING_SIZE_UNIT}
+              onChange={(e) => handleServingValueUpdate(e, index)}
+            />
+          </Col>
+          <Col xs="1" className="p-0 d-flex flex-column justify-content-center">
+            <FontAwesomeIcon
+              icon={faTimes}
+              size="lg"
+              className={classnames({
+                "icon-hover": true,
+                invisible: index === 0,
+              })}
+              color="red"
+              onClick={() => deleteServing(index)}
             />
           </Col>
           <Col xs="6">
             <Input
+              type="number"
               placeholder="Cals"
               className="border-0 no-hov p-0"
               value={serving.calories}
+              name={NAME_CALORIES}
+              onChange={(e) => handleServingValueUpdate(e, index)}
             />
           </Col>
           <Col xs="6">
             <Input
+              type="number"
               placeholder="Protein (g)"
               className="border-0 no-hov p-0"
               value={serving.protein}
+              name={NAME_PROTEIN}
+              onChange={(e) => handleServingValueUpdate(e, index)}
             />
           </Col>
           <Col xs="6">
             <Input
+              type="number"
               placeholder="Fat (g)"
               className="border-0 no-hov p-0"
               value={serving.fats}
+              name={NAME_FATS}
+              onChange={(e) => handleServingValueUpdate(e, index)}
             />
           </Col>
           <Col xs="6">
             <Input
+              type="number"
               placeholder="Carbs (g)"
               className="border-0 no-hov p-0"
               value={serving.carbohydrates}
+              name={NAME_CARBS}
+              onChange={(e) => handleServingValueUpdate(e, index)}
             />
           </Col>
         </Row>
