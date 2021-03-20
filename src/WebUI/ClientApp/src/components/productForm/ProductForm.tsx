@@ -4,7 +4,6 @@ import { Alert, Button, Col, Input, Row } from "reactstrap";
 import { Product, ProductServing } from "../../store/Products";
 import API from "../../utils/api";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import ProductFormServing from "./ProductFormServing";
 import classnames from "classnames";
 import "./productForm.css";
 
@@ -107,6 +106,27 @@ const ProductForm = (props: ProductFormProps) => {
     const arr = servings.map((x) => x);
     arr.splice(index, 1);
     setServings(arr);
+  };
+
+  const submitForm = () => {
+    setLoading(true);
+    const product: Product = {
+      barCode: props.barCode,
+      id: 0,
+      complete: false,
+      name: productName,
+      servings: servings,
+    };
+
+    API.post<Product>("/api/products", product)
+      .then((response) => {
+        const { data } = response;
+        props.submit(data);
+      })
+      .catch((err) => {
+        //toast error
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -222,7 +242,7 @@ const ProductForm = (props: ProductFormProps) => {
       >
         Add serving
       </Button>
-      <Button color="primary" className="mt-2 w-100">
+      <Button color="primary" className="mt-2 w-100" onClick={submitForm}>
         Submit
       </Button>
     </React.Fragment>

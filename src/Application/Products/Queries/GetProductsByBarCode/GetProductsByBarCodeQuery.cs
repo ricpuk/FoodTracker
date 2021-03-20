@@ -9,6 +9,7 @@ using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
 {
@@ -40,7 +41,7 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
 
         private async Task<ProductDto> FetchProduct(string barCode)
         {
-            var product = _dbContext.Products
+            var product = _dbContext.Products.Include(x => x.ProductServings)
                 .FirstOrDefault(x => x.BarCode == barCode);
 
             if (product != null)

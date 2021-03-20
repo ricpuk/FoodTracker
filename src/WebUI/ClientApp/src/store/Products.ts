@@ -16,6 +16,7 @@ export interface ProductsState {
 }
 
 export interface Product {
+  barCode: string;
   id: number;
   complete: boolean;
   name: string;

@@ -19,13 +19,17 @@ interface FinishEntryProps {
 
 const FinishEntry = (props: FinishEntryProps) => {
   const { product, numberOfServings } = props;
+
   if (!product) {
     return null;
   }
 
-  const servingIndex = product.servings.findIndex(
+  let servingIndex = product.servings.findIndex(
     (x) => x.id === props.servingId
   );
+  if (servingIndex === -1) {
+    servingIndex = 0;
+  }
   const serving = product.servings[servingIndex];
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

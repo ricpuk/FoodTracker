@@ -198,6 +198,7 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
 
   const handleProductCreationSubmit = (product: Product) => {
     setProduct(product);
+    setServingId(product.servings[0].id);
     setStep(STEP_CONFIRM);
   };
 
