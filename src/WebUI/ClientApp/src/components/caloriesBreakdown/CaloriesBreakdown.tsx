@@ -18,9 +18,12 @@ export default (props: CaloriesBreakdownProps) => {
   const carbsCals = carbs * 4;
   const fatsCals = fats * 9;
   const remaining = props.remaining ? props.remaining : 0;
-  const max = protein + fats + carbs + remaining;
+  const max = proteinCals + carbsCals + fatsCals + remaining;
 
-  const percentage = (value: number) => `${Math.round((value / max) * 100)}%`;
+  const round = (num: number, precision: number) =>
+    Number(Math.round(Number(`${num}e+${precision}`)) + "e-" + precision);
+
+  const percentage = (value: number) => `${round((value / max) * 100, 1)}%`;
 
   const proteinId = `${prefix}-protein-tt`;
   const carbsId = `${prefix}-carbs-tt`;

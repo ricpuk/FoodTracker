@@ -32,18 +32,57 @@ const Diary = (props: DiaryProps) => {
     }
   };
 
-  const renderDailySummary = () => (
-    <div className="my-3">
-      <h4>Daily summary</h4>
-      <CaloriesBreakdown
-        prefix="daily"
-        remaining={540}
-        protein={67.5}
-        carbs={135}
-        fats={50}
-      />
-    </div>
-  );
+  const getTotalNutrientsConsumed = () => {
+    const diary = props.diaries[props.date];
+    if (!diary) {
+      return {
+        remaining: 100,
+        protein: 0,
+        fats: 0,
+        carbs: 0,
+      };
+    }
+    const result = diary.entries.reduce(
+      (total, value) => {
+        const { product, servingId } = value;
+        const index = product.servings.findIndex((x) => x.id === servingId);
+        if (index === -1) {
+          return total;
+        }
+        const serving = product.servings[index];
+        return {
+          remaining: 0,
+          protein: total.protein + serving.protein,
+          fats: total.fats + serving.fats,
+          carbs: total.carbs + serving.carbohydrates,
+        };
+      },
+      {
+        remaining: 0,
+        protein: 0,
+        fats: 0,
+        carbs: 0,
+      }
+    );
+
+    return result;
+  };
+
+  const renderDailySummary = () => {
+    const { remaining, protein, fats, carbs } = getTotalNutrientsConsumed();
+    return (
+      <div className="my-3">
+        <h4>Daily summary</h4>
+        <CaloriesBreakdown
+          prefix="daily"
+          remaining={remaining}
+          protein={protein}
+          carbs={carbs}
+          fats={fats}
+        />
+      </div>
+    );
+  };
   const renderDatePicker = () => (
     <div className="my-2">
       <DatePicker date={props.date} dateSelected={requestDiary} />
