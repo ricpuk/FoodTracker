@@ -8,6 +8,8 @@ const API = axios.create({});
 export const API_DIARY_ENTRIES = (diaryId: number) =>
   `/api/diaries/${diaryId}/entries/`;
 
+export const API_USER_GOALS = `/api/users/goals`;
+
 export function configureAxios(history: History<any>) {
   // Add a request interceptor
   API.interceptors.request.use(

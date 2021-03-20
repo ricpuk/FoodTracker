@@ -39,6 +39,7 @@ namespace FoodTracker.Infrastructure.Identity
         {
             var user = await _userManager.Users
             .Include(x => x.Profile)
+            .ThenInclude(up => up.UserGoals)
             .FirstAsync(u => u.Id == _currentUserService.UserId);
             return user.Profile;
         }
