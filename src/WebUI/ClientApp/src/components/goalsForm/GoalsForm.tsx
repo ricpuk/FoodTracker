@@ -17,6 +17,7 @@ import {
 import { ApplicationState } from "../../store";
 import classnames from "classnames";
 import { useAppParams } from "../../utils/hooks";
+import API, { API_USER_GOALS } from "../../utils/api";
 
 interface GoalsFormOwnProps {
   initial: boolean;
@@ -36,6 +37,8 @@ enum NutrientNames {
 
 const GoalsForm = (props: GoalsFormProps) => {
   const { initial, isOpen, toggle } = props;
+  const [loading, setLoading] = useState(false);
+  const [calories, setCalories] = useState(1800);
   const [carbs, setCarbs] = useState(50);
   const [protein, setProtein] = useState(30);
   const [fat, setFat] = useState(20);
@@ -62,6 +65,36 @@ const GoalsForm = (props: GoalsFormProps) => {
         setProtein(valueParsed);
         break;
     }
+  };
+
+  const submit = () => {
+    setLoading(true);
+    const goals = constructGoals();
+    const request = {
+      goals,
+    };
+    API.post<UserStore.UserGoals>(API_USER_GOALS, request)
+      .then((response) => {
+        const { data } = response;
+        props.setUserGoals(data);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const constructGoals = () => {
+    const caloriesFromCarbs = (calories * carbs) / 100;
+    const caloriesFromFat = (calories * carbs) / 100;
+    const caloriesFromProtein = (calories * carbs) / 100;
+    const result: UserStore.UserGoals = {
+      id: 0,
+      caloriesGoal: calories,
+      carbohydratesGoal: Math.round(caloriesFromCarbs / 4),
+      proteinGoal: Math.round(caloriesFromProtein / 4),
+      fatsGoal: Math.round(caloriesFromFat / 9),
+      waterGoal: 2000,
+    };
+
+    return result;
   };
 
   const classBindings = {
@@ -184,7 +217,12 @@ const GoalsForm = (props: GoalsFormProps) => {
         {renderInfoBadge()}
         {renderForm()}
         {renderSummary()}
-        <Button color="primary" disabled={!isValid()} className="mt-3 w-100">
+        <Button
+          color="primary"
+          disabled={!isValid()}
+          className="mt-3 w-100"
+          onClick={submit}
+        >
           Submit
         </Button>
       </ModalBody>

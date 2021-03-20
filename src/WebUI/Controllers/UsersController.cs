@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FoodTracker.Application.Users.Commands;
 using FoodTracker.Application.Users.Queries.GetUserCurrentGoals;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
