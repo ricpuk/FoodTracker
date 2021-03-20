@@ -14,5 +14,11 @@ namespace FoodTracker.WebUI.Controllers
             var query = new GetUserCurrentGoalsQuery();
             return Ok(await Mediator.Send(query));
         }
+
+        [HttpPost("goals")]
+        public async Task<IActionResult> SetGoalsAsync([FromBody] SetGoalsCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
     }
 }

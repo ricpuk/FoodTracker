@@ -1,0 +1,40 @@
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using FoodTracker.Application.Common.DTOs;
+using FoodTracker.Application.Common.Interfaces;
+using FoodTracker.Domain.Entities;
+using MediatR;
+
+namespace FoodTracker.Application.Users.Commands
+{
+    public class SetGoalsCommand : IRequest<UserGoalsDto>
+    {
+        public UserGoalsDto Goals { get; set; }
+    }
+
+    public class SetGoalsCommandHandler : IRequestHandler<SetGoalsCommand, UserGoalsDto>
+    {
+        private readonly IApplicationDbContext _dbContext;
+        private readonly IIdentityService _identityService;
+        private readonly IMapper _mapper;
+
+        public SetGoalsCommandHandler(IApplicationDbContext dbContext, IMapper mapper, IIdentityService identityService)
+        {
+            _dbContext = dbContext;
+            _identityService = identityService;
+            _mapper = mapper;
+        }
+        public async Task<UserGoalsDto> Handle(SetGoalsCommand request, CancellationToken cancellationToken)
+        {
+            var goals = _mapper.Map<UserGoals>(request.Goals);
+
+            var profile = await _identityService.GetCurrentUserProfileAsync();
+            profile.UserGoals = goals;
+            await _identityService.UpdateCurrentUserProfileAsync(profile);
+
+            return _mapper.Map<UserGoalsDto>(profile.UserGoals);
+
+        }
+    }
+}

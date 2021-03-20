@@ -44,6 +44,19 @@ namespace FoodTracker.Infrastructure.Identity
             return user.Profile;
         }
 
+        public async Task<UserProfile> UpdateCurrentUserProfileAsync(UserProfile userProfile)
+        {
+            var user = _userManager.Users.SingleOrDefault(u => u.Id == _currentUserService.UserId);
+            if (user == null)
+            {
+                return userProfile;
+            }
+            user.Profile = userProfile;
+            await _userManager.UpdateAsync(user);
+
+            return user.Profile;
+        }
+
         public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
         {
             var user = new ApplicationUser
