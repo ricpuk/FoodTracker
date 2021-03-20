@@ -9,8 +9,9 @@ namespace FoodTracker.Domain.Entities
     {
         public int Id { get; set; }
         public int UserProfileId { get; set; }
-        public bool IsCompleted { get; set; }
         public IList<DiaryEntry> Entries { get; set; } = new List<DiaryEntry>();
+        public UserGoals UserGoals { get; set; }
+        public double Weight { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime Date { get; set; }
