@@ -52,10 +52,18 @@ namespace FoodTracker.Application.Diaries.Commands
 
         private async Task<DiaryDto> CreateNewDiary(CreateDiaryCommand request, CancellationToken cancellationToken, int profileId)
         {
+            var userProfile = await _dbContext.UserProfiles.FindAsync(profileId);
+            if (userProfile == null)
+            {
+                throw new Exception(); //TODO proper exception
+            }
+
+            var goals = userProfile.UserGoals;
             var entity = new Diary
             {
                 Date = request.Date.Date,
-                UserProfileId = profileId
+                UserProfileId = profileId,
+                UserGoals = goals
             };
 
             await _dbContext.Diaries.AddAsync(entity, cancellationToken);

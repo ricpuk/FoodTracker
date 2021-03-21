@@ -36,6 +36,7 @@ namespace FoodTracker.Application.Diaries.Queries
             var userProfile = await _identityService.GetCurrentUserProfileAsync();
             var diaryDate = request.Date.Date;
             var diary = _dbContext.Diaries
+                .Include(x => x.UserGoals)
                 .Include(x => x.Entries)
                 .ThenInclude(e => e.Product)
                 .ThenInclude(e => e.ProductServings)

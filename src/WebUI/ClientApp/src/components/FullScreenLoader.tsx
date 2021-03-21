@@ -16,6 +16,7 @@ const FullScreenLoader = (props: FullScreenLoaderProps) => {
         bottom: 0,
         background: bg,
         opacity: 1,
+        zIndex: 1,
       }}
     >
       <div

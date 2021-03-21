@@ -1,18 +1,36 @@
 import classnames from "classnames";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  Spinner,
+  TabContent,
+  TabPane,
+} from "reactstrap";
 import { ApplicationState } from "../../store";
 import DatePicker from "../datePicker/datePicker";
 import DiarySection from "../diarySection/DiarySection";
 import * as DiariesStore from "../../store/Diaries";
+import * as UserStore from "../../store/User";
 import Loader from "../loader/Loader";
 import "./Diary.css";
 import AddDiaryEntryForm from "../addDiaryEntry/AddDiaryEntryForm";
 import CaloriesBreakdown from "../caloriesBreakdown/CaloriesBreakdown";
 
-type DiaryProps = DiariesStore.DiariesState & // ... state we've requested from the Redux store
-  typeof DiariesStore.actionCreators; // ... plus action creators we've requested
+// type DiaryProps = DiariesStore.DiariesState &
+//   typeof DiariesStore.actionCreators;
+
+type DiaryProps = DiariesStore.DiariesState & {
+  user: UserStore.UserState;
+} & typeof DiariesStore.actionCreators &
+  typeof UserStore.actionCreators;
 
 const Diary = (props: DiaryProps) => {
   const [activeTab, setActiveTab] = useState(
@@ -20,11 +38,12 @@ const Diary = (props: DiaryProps) => {
   );
 
   React.useEffect(() => {
+    props.fetchUserGoals();
     if (!props.date) {
       const date = new Date().toISOString().split("T")[0];
       requestDiary(date);
     }
-  });
+  }, []);
 
   const toggle = (id: DiariesStore.DiarySection) => {
     if (activeTab !== id) {
@@ -40,21 +59,24 @@ const Diary = (props: DiaryProps) => {
         protein: 0,
         fats: 0,
         carbs: 0,
+        calories: 0,
       };
     }
     const result = diary.entries.reduce(
       (total, value) => {
-        const { product, servingId } = value;
+        const { product, servingId, numberOfServings } = value;
         const index = product.servings.findIndex((x) => x.id === servingId);
         if (index === -1) {
           return total;
         }
         const serving = product.servings[index];
+
         return {
           remaining: 0,
-          protein: total.protein + serving.protein,
-          fats: total.fats + serving.fats,
-          carbs: total.carbs + serving.carbohydrates,
+          protein: total.protein + serving.protein * numberOfServings,
+          fats: total.fats + serving.fats * numberOfServings,
+          carbs: total.carbs + serving.carbohydrates * numberOfServings,
+          calories: total.calories + serving.calories * numberOfServings,
         };
       },
       {
@@ -62,14 +84,62 @@ const Diary = (props: DiaryProps) => {
         protein: 0,
         fats: 0,
         carbs: 0,
+        calories: 0,
       }
     );
 
     return result;
   };
 
+  const getGoals = () => {
+    const diary = props.diaries[props.date];
+    if (!diary) {
+      return props.user.goals;
+    }
+    const { userGoals } = diary;
+    if (!userGoals) {
+      return props.user.goals;
+    }
+    return userGoals;
+  };
+
+  const renderGoalsCalories = () => {
+    if (props.user.isLoading || props.isLoading) {
+      return <Spinner size="sm" color="primary" />;
+    }
+    const goals = getGoals();
+    if (!goals) {
+      return "Error";
+    }
+    return goals.caloriesGoal;
+  };
+
+  const renderGoalsRemainingCalories = (value: number) => {
+    if (props.user.isLoading || props.isLoading) {
+      return <Spinner size="sm" color="primary" />;
+    }
+    const goals = getGoals();
+    if (!goals) {
+      return "Error";
+    }
+    return goals.caloriesGoal - value;
+  };
+
+  const renderGoalsConsumedCalories = (value: number) => {
+    if (props.isLoading) {
+      return <Spinner size="sm" color="primary" />;
+    }
+    return value;
+  };
+
   const renderDailySummary = () => {
-    const { remaining, protein, fats, carbs } = getTotalNutrientsConsumed();
+    const {
+      remaining,
+      protein,
+      fats,
+      carbs,
+      calories,
+    } = getTotalNutrientsConsumed();
     return (
       <div className="my-3">
         <h4>Daily summary</h4>
@@ -80,6 +150,35 @@ const Diary = (props: DiaryProps) => {
           carbs={carbs}
           fats={fats}
         />
+        <Card className="mt-3">
+          <CardHeader>
+            <h5>Calories</h5>
+          </CardHeader>
+          <CardBody>
+            <Row noGutters={true} className="mb-2">
+              <Col xs="4" className="text-center">
+                {renderGoalsCalories()}
+              </Col>
+              <Col xs="4" className="text-center">
+                {renderGoalsConsumedCalories(calories)}
+              </Col>
+              <Col xs="4" className="text-center">
+                {renderGoalsRemainingCalories(calories)}
+              </Col>
+            </Row>
+            <Row noGutters={true}>
+              <Col xs="4" className="text-center">
+                <h6>Goal</h6>
+              </Col>
+              <Col xs="4" className="text-center">
+                <h6>Consumed</h6>
+              </Col>
+              <Col xs="4" className="text-center">
+                <h6>Remaining</h6>
+              </Col>
+            </Row>
+          </CardBody>
+        </Card>
       </div>
     );
   };
@@ -189,7 +288,19 @@ const Diary = (props: DiaryProps) => {
   );
 };
 
+const mapStateToProps = (state: ApplicationState) => {
+  return {
+    ...state.diaries,
+    user: state.user,
+  };
+};
+
+const mapActionsToProps = {
+  ...DiariesStore.actionCreators,
+  ...UserStore.actionCreators,
+};
+
 export default connect(
-  (state: ApplicationState) => state.diaries, // Selects which state properties are merged into the component's props
-  DiariesStore.actionCreators
+  mapStateToProps, // Selects which state properties are merged into the component's props
+  mapActionsToProps
 )(Diary as any); // eslint-disable-line @typescript-eslint/no-explicit-any

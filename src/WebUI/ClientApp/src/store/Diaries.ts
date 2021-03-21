@@ -2,6 +2,7 @@ import { Action, Reducer } from "redux";
 import API from "../utils/api";
 import { AppThunkAction } from ".";
 import { Product } from "./Products";
+import { UserGoals } from "./User";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -20,6 +21,7 @@ export interface Diary {
   id: number;
   date: string;
   entries: DiaryEntry[];
+  userGoals: UserGoals;
 }
 
 export enum DiarySection {

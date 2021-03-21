@@ -1,5 +1,6 @@
 import { Action, Reducer } from "redux";
 import { AppThunkAction } from ".";
+import API, { API_USER_GOALS } from "../utils/api";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -7,6 +8,7 @@ import { AppThunkAction } from ".";
 export interface UserState {
   isLoading: boolean;
   goals?: UserGoals;
+  goalsLoading: boolean;
 }
 
 export interface UserGoals {
@@ -29,9 +31,13 @@ interface SetUserGoalsAction {
   goals: UserGoals;
 }
 
+interface RequestUserGoalsAction {
+  type: "REQUEST_GOALS";
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
-type KnownAction = SetUserGoalsAction;
+type KnownAction = SetUserGoalsAction | RequestUserGoalsAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -47,6 +53,20 @@ export const actionCreators = {
       dispatch({ type: "SET_GOALS", goals });
     }
   },
+  fetchUserGoals: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    const appState = getState();
+    if (appState && appState.user && !appState.user.goals) {
+      API.get<UserGoals>(API_USER_GOALS).then((response) => {
+        const { data, status } = response;
+        if (status === 204) {
+          return;
+        }
+        dispatch({ type: "SET_GOALS", goals: data });
+      });
+
+      dispatch({ type: "REQUEST_GOALS" });
+    }
+  },
 };
 
 // ----------------
@@ -55,6 +75,7 @@ export const actionCreators = {
 const unloadedState: UserState = {
   isLoading: false,
   goals: undefined,
+  goalsLoading: false,
 };
 
 export const reducer: Reducer<UserState> = (
@@ -71,6 +92,12 @@ export const reducer: Reducer<UserState> = (
       return {
         ...state,
         goals: action.goals,
+        goalsLoading: false,
+      };
+    case "REQUEST_GOALS":
+      return {
+        ...state,
+        goalsLoading: true,
       };
     default:
       return { ...state };
