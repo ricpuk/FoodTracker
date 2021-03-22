@@ -2,12 +2,9 @@ import * as React from "react";
 import {
   Collapse,
   Container,
-  Nav,
   Navbar,
   NavbarBrand,
   NavbarToggler,
-  NavItem,
-  NavLink,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import "./NavMenu.css";
@@ -22,9 +19,6 @@ export default class NavMenu extends React.PureComponent<
   };
 
   public render() {
-    if (this.props.isMobile) {
-      return this.renderMobileNavigation();
-    }
     return (
       <header>
         <Navbar
@@ -56,33 +50,4 @@ export default class NavMenu extends React.PureComponent<
       isOpen: !this.state.isOpen,
     });
   };
-
-  private renderMobileNavigation = () => (
-    <Nav
-      style={{
-        position: "fixed",
-        width: "100%",
-        bottom: 10,
-        left: 0,
-        right: 0,
-        display: "flex",
-        justifyContent: "space-around",
-      }}
-    >
-      <NavItem>
-        <NavLink href="#">Link</NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink href="#">Link</NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink href="#">Another Link</NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink disabled href="#">
-          Disabled Link
-        </NavLink>
-      </NavItem>
-    </Nav>
-  );
 }

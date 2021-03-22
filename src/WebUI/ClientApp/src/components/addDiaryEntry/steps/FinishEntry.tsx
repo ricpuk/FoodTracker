@@ -86,7 +86,7 @@ const FinishEntry = (props: FinishEntryProps) => {
             >
               {product.servings.map((serving) => {
                 return (
-                  <option value={serving.id}>
+                  <option key={serving.id} value={serving.id}>
                     {serving.servingSize} {serving.servingSizeUnit}
                   </option>
                 );

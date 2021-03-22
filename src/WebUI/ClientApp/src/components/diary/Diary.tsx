@@ -23,6 +23,7 @@ import Loader from "../loader/Loader";
 import "./Diary.css";
 import AddDiaryEntryForm from "../addDiaryEntry/AddDiaryEntryForm";
 import CaloriesBreakdown from "../caloriesBreakdown/CaloriesBreakdown";
+import WidgetsContainer from "../widgetsContainer/WidgetsContainer";
 
 // type DiaryProps = DiariesStore.DiariesState &
 //   typeof DiariesStore.actionCreators;
@@ -151,9 +152,7 @@ const Diary = (props: DiaryProps) => {
           fats={fats}
         />
         <Card className="mt-3">
-          <CardHeader>
-            <h5>Calories</h5>
-          </CardHeader>
+          <CardHeader tag="h5">Calories</CardHeader>
           <CardBody>
             <Row noGutters={true} className="mb-2">
               <Col xs="4" className="text-center">
@@ -203,6 +202,8 @@ const Diary = (props: DiaryProps) => {
     }
     props.toggleModalStateForEdit(diaryEntry);
   };
+
+  const renderWidgets = () => <WidgetsContainer />;
 
   const renderDiaryContent = () => (
     <div>
@@ -277,6 +278,7 @@ const Diary = (props: DiaryProps) => {
         {renderDailySummary()}
         {renderDatePicker()}
         {renderDiaryContent()}
+        {renderWidgets()}
       </Loader>
       {props.diaries[props.date] && (
         <AddDiaryEntryForm

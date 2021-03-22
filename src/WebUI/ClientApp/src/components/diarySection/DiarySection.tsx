@@ -73,6 +73,7 @@ const DiarySection = (props: DiarySectionProps) => {
     return props.items.map((entry) => {
       return (
         <DiaryEntry
+          key={entry.id}
           entry={entry}
           canFitAllColumns={canFitAllColumns()}
           onClick={() => handleEntryClicked(entry)}

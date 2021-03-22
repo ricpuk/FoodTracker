@@ -43,7 +43,7 @@ class Layout extends React.PureComponent<
     return (
       <React.Fragment>
         <NavMenu isMobile={this.props.isMobile} />
-        <Container fluid={this.isContainerFluid()}>
+        <Container fluid={this.isContainerFluid()} className="pb-5">
           {this.props.children}
         </Container>
       </React.Fragment>
