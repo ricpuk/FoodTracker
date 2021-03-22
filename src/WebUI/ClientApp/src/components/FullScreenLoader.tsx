@@ -1,7 +1,7 @@
 import * as React from "react";
 
 interface FullScreenLoaderProps {
-  backgroundColor: string;
+  backgroundColor?: string;
 }
 
 const FullScreenLoader = (props: FullScreenLoaderProps) => {
@@ -9,7 +9,7 @@ const FullScreenLoader = (props: FullScreenLoaderProps) => {
   return (
     <div
       style={{
-        position: "absolute",
+        position: "fixed",
         top: 0,
         left: 0,
         right: 0,

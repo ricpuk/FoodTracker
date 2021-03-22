@@ -1,104 +1,90 @@
-import React from "react";
-import { Component } from "react";
+import React, { useEffect, useState } from "react";
 import authService from "./AuthorizationService";
 import { AuthenticationResultStatus } from "./AuthorizationService";
 import { LoginPaths, QueryParams, AppPaths } from "./ApiAuthorizationConstants";
 import FullScreenLoader from "../FullScreenLoader";
 
-// The main responsibility of this component is to handle the user's login process.
-// This is the starting point for the login process. Any component that needs to authenticate
-// a user can simply perform a redirect to this component with a returnUrl query parameter and
-// let the component perform the login and return back to the return url.
-export class Login extends Component {
-  constructor(props) {
-    super(props);
+interface LoginProps {
+  action: string;
+}
 
-    this.state = {
-      message: undefined,
-    };
-  }
+interface AuthorizeResult {
+  status: string;
+  message: string;
+  state: any;
+}
 
-  componentDidMount() {
-    const action = this.props.action;
+export const Login = (props: LoginProps) => {
+  const [message, setMessage] = useState<string>();
+  const { action } = props;
+
+  useEffect(() => {
+    const action = props.action;
     switch (action) {
       case LoginPaths.Login:
-        this.login(this.getReturnUrl());
+        login(getReturnUrl());
         break;
       case LoginPaths.LoginCallback:
-        this.processLoginCallback();
+        processLoginCallback();
         break;
       case LoginPaths.LoginFailed:
         const params = new URLSearchParams(window.location.search);
         const error = params.get(QueryParams.Message);
-        this.setState({ message: error });
+        if (!error) {
+          return;
+        }
+        setMessage(error);
         break;
       case LoginPaths.Profile:
-        this.redirectToProfile();
+        redirectToProfile();
         break;
       case LoginPaths.Register:
-        this.redirectToRegister();
+        redirectToRegister();
         break;
       default:
         throw new Error(`Invalid action '${action}'`);
     }
-  }
+  });
 
-  render() {
-    const action = this.props.action;
-    const { message } = this.state;
-
-    if (!!message) {
-      return <div>{message}</div>;
-    } else {
-      switch (action) {
-        case LoginPaths.Login:
-        case LoginPaths.LoginCallback:
-          return <FullScreenLoader />;
-        default:
-          throw new Error(`Invalid action '${action}'`);
-      }
-    }
-  }
-
-  async login(returnUrl) {
+  const login = async (returnUrl: string) => {
     const state = { returnUrl };
-    const result = await authService.signIn(state);
+    const result = (await authService.signIn(state)) as AuthorizeResult;
     switch (result.status) {
       case AuthenticationResultStatus.Redirect:
         break;
       case AuthenticationResultStatus.Success:
-        await this.navigateToReturnUrl(returnUrl);
+        await navigateToReturnUrl(returnUrl);
         break;
       case AuthenticationResultStatus.Fail:
-        this.setState({ message: result.message });
+        setMessage(result.message);
         break;
       default:
         throw new Error(`Invalid status result ${result.status}.`);
     }
-  }
+  };
 
-  async processLoginCallback() {
+  const processLoginCallback = async () => {
     const url = window.location.href;
-    const result = await authService.completeSignIn(url);
+    const result = (await authService.completeSignIn(url)) as AuthorizeResult;
     switch (result.status) {
       case AuthenticationResultStatus.Redirect:
         // There should not be any redirects as the only time completeSignIn finishes
         // is when we are doing a redirect sign in flow.
         throw new Error("Should not redirect.");
       case AuthenticationResultStatus.Success:
-        await this.navigateToReturnUrl(this.getReturnUrl(result.state));
+        await navigateToReturnUrl(getReturnUrl(result.state));
         break;
       case AuthenticationResultStatus.Fail:
-        this.setState({ message: result.message });
+        setMessage(result.message);
         break;
       default:
         throw new Error(
           `Invalid authentication result status '${result.status}'.`
         );
     }
-  }
+  };
 
-  getReturnUrl(state) {
+  const getReturnUrl = (state?: any) => {
     const params = new URLSearchParams(window.location.search);
     const fromQuery = params.get(QueryParams.ReturnUrl);
     if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
@@ -110,31 +96,37 @@ export class Login extends Component {
     return (
       (state && state.returnUrl) || fromQuery || `${window.location.origin}/`
     );
-  }
+  };
 
-  redirectToRegister() {
-    this.redirectToApiAuthorizationPath(
+  const redirectToRegister = () => {
+    redirectToApiAuthorizationPath(
       `${AppPaths.IdentityRegisterPath}?${QueryParams.ReturnUrl}=${encodeURI(
         AppPaths.Login
       )}`
     );
-  }
+  };
 
-  redirectToProfile() {
-    this.redirectToApiAuthorizationPath(AppPaths.IdentityManagePath);
-  }
+  const redirectToProfile = () => {
+    redirectToApiAuthorizationPath(AppPaths.IdentityManagePath);
+  };
 
-  redirectToApiAuthorizationPath(apiAuthorizationPath) {
+  const redirectToApiAuthorizationPath = (apiAuthorizationPath: string) => {
     const redirectUrl = `${window.location.origin}/${apiAuthorizationPath}`;
-    // It's important that we do a replace here so that when the user hits the back arrow on the
-    // browser they get sent back to where it was on the app instead of to an endpoint on this
-    // component.
     window.location.replace(redirectUrl);
-  }
+  };
 
-  navigateToReturnUrl(returnUrl) {
-    // It's important that we do a replace here so that we remove the callback uri with the
-    // fragment containing the tokens from the browser history.
+  const navigateToReturnUrl = (returnUrl: string) => {
     window.location.replace(returnUrl);
+  };
+
+  if (!!message) {
+    return <div>{message}</div>;
   }
-}
+  switch (action) {
+    case LoginPaths.Login:
+    case LoginPaths.LoginCallback:
+      return <FullScreenLoader />;
+    default:
+      throw new Error(`Invalid action '${action}'`);
+  }
+};
