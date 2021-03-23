@@ -26,6 +26,7 @@ export interface UserProfile {
   startingWeight: number;
   currentWeight: number;
   weightGoal: number;
+  waterGoal: number;
 }
 
 const RESOURCE_URL = "api/user";
