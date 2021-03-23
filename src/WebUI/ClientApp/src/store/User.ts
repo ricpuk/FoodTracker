@@ -1,6 +1,6 @@
 import { Action, Reducer } from "redux";
 import { AppThunkAction } from ".";
-import API, { API_USER_GOALS } from "../utils/api";
+import API, { API_USER_GOALS, API_USER_PROFILE } from "../utils/api";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -8,6 +8,7 @@ import API, { API_USER_GOALS } from "../utils/api";
 export interface UserState {
   isLoading: boolean;
   goals?: UserGoals;
+  profile?: UserProfile;
   goalsLoading: boolean;
 }
 
@@ -18,6 +19,13 @@ export interface UserGoals {
   carbohydratesGoal: number;
   fatsGoal: number;
   waterGoal: number;
+}
+
+export interface UserProfile {
+  id: number;
+  startingWeight: number;
+  currentWeight: number;
+  weightGoal: number;
 }
 
 const RESOURCE_URL = "api/user";
@@ -35,9 +43,22 @@ interface RequestUserGoalsAction {
   type: "REQUEST_GOALS";
 }
 
+interface RequestUserProfileAction {
+  type: "REQUEST_PROFILE";
+}
+
+interface SetUserProfileAction {
+  type: "SET_PROFILE";
+  profile: UserProfile;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
-type KnownAction = SetUserGoalsAction | RequestUserGoalsAction;
+type KnownAction =
+  | SetUserGoalsAction
+  | RequestUserGoalsAction
+  | RequestUserProfileAction
+  | SetUserProfileAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -65,6 +86,20 @@ export const actionCreators = {
       });
 
       dispatch({ type: "REQUEST_GOALS" });
+    }
+  },
+  fetchUserProfile: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    const appState = getState();
+    if (appState && appState.user && !appState.user.profile) {
+      API.get<UserProfile>(API_USER_PROFILE).then((response) => {
+        const { data, status } = response;
+        if (status === 204) {
+          return;
+        }
+        dispatch({ type: "SET_PROFILE", profile: data });
+      });
+
+      dispatch({ type: "REQUEST_PROFILE" });
     }
   },
 };

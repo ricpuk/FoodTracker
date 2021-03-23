@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Alert,
   Button,
   Card,
   CardBody,
@@ -12,8 +13,29 @@ import {
   Progress,
   Row,
 } from "reactstrap";
+import { ApplicationState } from "../../store";
+import WeightWidget from "../weightWidget/WeightWidget";
+import * as DiariesStore from "../../store/Diaries";
+import * as UserStore from "../../store/User";
+import { connect } from "react-redux";
+import GoalsForm from "../goalsForm/GoalsForm";
 
-const WidgetsContainer = () => {
+type WidgetContainerProps = {
+  diary: DiariesStore.Diary;
+  userProfile: UserStore.UserProfile;
+} & typeof DiariesStore.actionCreators;
+
+const WidgetsContainer = (props: WidgetContainerProps) => {
+  const userProfile = props.userProfile;
+  const { startingWeight, currentWeight, weightGoal } = userProfile
+    ? userProfile
+    : {
+        startingWeight: undefined,
+        currentWeight: undefined,
+        weightGoal: undefined,
+      };
+  const weight = props.diary ? props.diary.weight : currentWeight;
+
   return (
     <Row>
       <Col md="6">
@@ -69,35 +91,34 @@ const WidgetsContainer = () => {
         </Card>
       </Col>
       <Col md="6">
-        <Card className="mb-3">
-          <CardHeader tag="h5">Weight</CardHeader>
-          <CardBody>
-            <div className="d-flex mb-2">
-              <span className="mr-2">82</span>
-              <div className="flex-grow-1 m-auto">
-                <Progress color="primary" value={500} max={2000} />
-              </div>
-              <span className="ml-2">70</span>
-            </div>
-            <h6 className="text-center">Current weight: 78 kg</h6>
-            <Row className="m-0 mt-3" noGutters={true}>
-              <Col xs="8">
-                <InputGroup className="w-100">
-                  <Input type="number" className="w-100" min={1} max={9999} />
-                  <InputGroupAddon addonType="append">kg</InputGroupAddon>
-                </InputGroup>
-              </Col>
-              <Col xs="4" className="pl-3">
-                <Button color="primary" className="w-100">
-                  Submit
-                </Button>
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
+        <WeightWidget
+          currentWeight={weight}
+          goalFrom={startingWeight}
+          goalTo={weightGoal}
+          onUpdated={() => {}}
+        />
       </Col>
     </Row>
   );
 };
 
-export default WidgetsContainer;
+const mapStateToProps = (state: ApplicationState) => {
+  const { diaries, user } = state;
+  let diary;
+  let userProfile;
+  if (diaries) {
+    diary = diaries.diaries[diaries.date];
+  }
+  if (user) {
+    userProfile = user.profile;
+  }
+  return {
+    diary: diary,
+    userProfile: userProfile,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  DiariesStore.actionCreators
+)(WidgetsContainer as any);

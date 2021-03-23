@@ -22,6 +22,7 @@ export interface Diary {
   date: string;
   entries: DiaryEntry[];
   userGoals: UserGoals;
+  weight: number;
 }
 
 export enum DiarySection {
