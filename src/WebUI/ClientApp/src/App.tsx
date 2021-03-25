@@ -8,6 +8,7 @@ import "./custom.css";
 import AuthorizeRoute from "./components/api-authorization/AuthorizeRoute";
 import { AppPaths } from "./components/api-authorization/ApiAuthorizationConstants";
 import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizationRoutes";
+import Coaching from "./components/coaching/coaching";
 
 export default () => (
   <Layout>
