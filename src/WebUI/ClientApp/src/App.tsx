@@ -13,6 +13,7 @@ export default () => (
   <Layout>
     <Route exact path="/" component={Home} />
     <AuthorizeRoute path="/diary" component={Diary} />
+    <AuthorizeRoute path="/coaching" component={Coaching} />
     <Route
       path={AppPaths.ApiAuthorizationPrefix}
       component={ApiAuthorizationRoutes}
