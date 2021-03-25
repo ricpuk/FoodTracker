@@ -1,30 +1,19 @@
 import React from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  Progress,
-  Row,
-} from "reactstrap";
+import { Col, Row } from "reactstrap";
 import { ApplicationState } from "../../store";
 import WeightWidget from "../weightWidget/WeightWidget";
 import * as DiariesStore from "../../store/Diaries";
 import * as UserStore from "../../store/User";
 import { connect } from "react-redux";
-import GoalsForm from "../goalsForm/GoalsForm";
 import WaterIntakeWidget from "../waterIntakeWidget/WaterIntakeWidget";
 
 type WidgetContainerProps = {
   diary: DiariesStore.Diary;
   userProfile: UserStore.UserProfile;
-} & typeof DiariesStore.actionCreators;
+} & typeof DiariesStore.actionCreators & {
+    isWaterLoading: boolean;
+    isWeightLoading: boolean;
+  };
 
 const WidgetsContainer = (props: WidgetContainerProps) => {
   const userProfile = props.userProfile;
@@ -36,7 +25,6 @@ const WidgetsContainer = (props: WidgetContainerProps) => {
         weightGoal: undefined,
         waterGoal: undefined,
       };
-  debugger;
   const { weight, waterIntake } = props.diary
     ? props.diary
     : { weight: currentWeight, waterIntake: undefined };
@@ -44,14 +32,24 @@ const WidgetsContainer = (props: WidgetContainerProps) => {
   return (
     <Row>
       <Col md="6">
-        <WaterIntakeWidget goalIntake={waterGoal} currentIntake={waterIntake} />
+        <WaterIntakeWidget
+          goalIntake={waterGoal}
+          currentIntake={waterIntake}
+          onUpdated={(amount: number) =>
+            props.logWater(props.diary.date, amount)
+          }
+          isLoading={props.isWaterLoading}
+        />
       </Col>
       <Col md="6">
         <WeightWidget
           currentWeight={weight}
           goalFrom={startingWeight}
           goalTo={weightGoal}
-          onUpdated={() => {}}
+          onUpdated={(amount: number) => {
+            props.logWeight(props.diary.date, amount);
+          }}
+          isLoading={props.isWeightLoading}
         />
       </Col>
     </Row>
@@ -70,6 +68,8 @@ const mapStateToProps = (state: ApplicationState) => {
   }
   return {
     diary: diary,
+    isWaterLoading: diaries ? diaries.isWaterLoading : true,
+    isWeightLoading: diaries ? diaries.isWeightLoading : true,
     userProfile: userProfile,
   };
 };

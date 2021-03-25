@@ -9,6 +9,8 @@ import { UserGoals } from "./User";
 
 export interface DiariesState {
   isLoading: boolean;
+  isWaterLoading: boolean;
+  isWeightLoading: boolean;
   isCreateLoading: boolean;
   isModalOpen: boolean;
   diaries: { [date: string]: Diary };
@@ -85,6 +87,26 @@ interface RemoveDiaryEntry {
   index: number;
 }
 
+interface LogWeightAction {
+  type: "LOG_WEIGHT";
+}
+
+interface LogWeightResponseAction {
+  type: "LOG_WEIGHT_RESPONSE";
+  date: string;
+  amount: number;
+}
+
+interface LogWaterResponseAction {
+  type: "LOG_WATER_RESPONSE";
+  date: string;
+  waterIntake: number;
+}
+
+interface LogWaterAction {
+  type: "LOG_WATER";
+}
+
 export enum DiaryModalType {
   new = "new",
   edit = "edit",
@@ -99,7 +121,11 @@ type KnownAction =
   | AddDiaryEntry
   | ToggleModalEdit
   | ReplaceDiaryEntry
-  | RemoveDiaryEntry;
+  | RemoveDiaryEntry
+  | LogWeightAction
+  | LogWaterAction
+  | LogWaterResponseAction
+  | LogWeightResponseAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -121,6 +147,7 @@ export const actionCreators = {
         .then((response) => {
           const { data } = response;
           const date = data.date.slice(0, 10);
+          data.date = date;
           dispatch({ type: "RECEIVE_DIARY", diary: data, date: date });
         })
         .catch((error) => {
@@ -179,6 +206,60 @@ export const actionCreators = {
       dispatch({ type: "REMOVE_DIARY_ENTRY", index: index });
     }
   },
+  logWater: (date: string, amount: number): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    const { diaries } = appState;
+    if (
+      appState &&
+      diaries &&
+      diaries.date === date &&
+      diaries.diaries[diaries.date]
+    ) {
+      API.post<number>(`${RESOURCE_URL}/${date}/water`, { amount: amount })
+        .then((response) => {
+          const { data } = response;
+          dispatch({
+            type: "LOG_WATER_RESPONSE",
+            date: date,
+            waterIntake: data,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      dispatch({ type: "LOG_WATER" });
+    }
+  },
+  logWeight: (date: string, amount: number): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    const { diaries } = appState;
+    if (
+      appState &&
+      diaries &&
+      diaries.date === date &&
+      diaries.diaries[diaries.date]
+    ) {
+      API.post<number>(`${RESOURCE_URL}/${date}/weight`, { amount: amount })
+        .then((response) => {
+          const { data } = response;
+          dispatch({
+            type: "LOG_WEIGHT_RESPONSE",
+            date: date,
+            amount: data,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      dispatch({ type: "LOG_WEIGHT" });
+    }
+  },
 };
 
 // ----------------
@@ -188,6 +269,8 @@ const unloadedState: DiariesState = {
   diaries: {},
   date: "",
   isLoading: false,
+  isWaterLoading: false,
+  isWeightLoading: false,
   isCreateLoading: false,
   isModalOpen: false,
   modalType: DiaryModalType.new,
@@ -251,6 +334,36 @@ export const reducer: Reducer<DiariesState> = (
       state.diaries[state.date].entries.splice(action.index, 1);
       return {
         ...state,
+      };
+    }
+    case "LOG_WATER": {
+      return {
+        ...state,
+        isWaterLoading: true,
+      };
+    }
+    case "LOG_WEIGHT": {
+      return {
+        ...state,
+        isWeightLoading: true,
+      };
+    }
+    case "LOG_WATER_RESPONSE": {
+      const diary = state.diaries[action.date];
+      diary.waterIntake = action.waterIntake;
+      state.diaries[action.date] = diary;
+      return {
+        ...state,
+        isWaterLoading: false,
+      };
+    }
+    case "LOG_WEIGHT_RESPONSE": {
+      const diary = state.diaries[action.date];
+      diary.weight = action.amount;
+      state.diaries[action.date] = diary;
+      return {
+        ...state,
+        isWeightLoading: true,
       };
     }
   }

@@ -12,7 +12,8 @@ namespace FoodTracker.Application.Common.DTOs
         public bool IsCompleted { get; set; }
         public IList<DiaryEntryDto> Entries { get; set; } = new List<DiaryEntryDto>();
         public UserGoalsDto UserGoals { get; set; }
-
+        public double WaterIntake { get; set; }
+        public double Weight { get; set; }
         public DateTime Date { get; set; }
 
     }

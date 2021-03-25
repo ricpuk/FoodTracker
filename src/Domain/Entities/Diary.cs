@@ -12,6 +12,7 @@ namespace FoodTracker.Domain.Entities
         public IList<DiaryEntry> Entries { get; set; } = new List<DiaryEntry>();
         public UserGoals UserGoals { get; set; }
         public double Weight { get; set; }
+        public double WaterIntake { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime Date { get; set; }

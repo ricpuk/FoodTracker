@@ -11,6 +11,7 @@ import {
   InputGroupAddon,
   Progress,
   Row,
+  Spinner,
 } from "reactstrap";
 
 interface WeightWidgetProps {
@@ -18,6 +19,7 @@ interface WeightWidgetProps {
   goalTo?: number;
   currentWeight?: number;
   onUpdated: (weight: number) => void;
+  isLoading: boolean;
 }
 
 const WeightWidget = (props: WeightWidgetProps) => {
@@ -37,20 +39,18 @@ const WeightWidget = (props: WeightWidgetProps) => {
     onUpdated(weight);
   };
 
-  if (!weight || goalTo || currentWeight) {
+  const renderBody = () => {
+    if (!weight || goalTo || currentWeight) {
+      return (
+        <Alert color="danger">
+          Weight widget could not be displayed because you have not entered
+          information related to your weight. Please enter: starting weight,
+          current weight and your goal weight
+        </Alert>
+      );
+    }
     return (
-      <Alert color="danger">
-        Weight widget could not be displayed because you have not entered
-        information related to your weight. Please enter: starting weight,
-        current weight and your goal weight
-      </Alert>
-    );
-  }
-
-  return (
-    <Card className="mb-3">
-      <CardHeader tag="h5">Weight</CardHeader>
-      <CardBody>
+      <React.Fragment>
         <div className="d-flex mb-2">
           <span className="mr-2">{goalFrom}</span>
           <div className="flex-grow-1 m-auto">
@@ -69,17 +69,30 @@ const WeightWidget = (props: WeightWidgetProps) => {
                 max={9999}
                 value={weight}
                 onChange={handleWeightChange}
+                disabled={props.isLoading}
               />
               <InputGroupAddon addonType="append">kg</InputGroupAddon>
             </InputGroup>
           </Col>
           <Col xs="4" className="pl-3">
-            <Button onClick={handleSubmit} color="primary" className="w-100">
-              Submit
+            <Button
+              onClick={handleSubmit}
+              color="primary"
+              className="w-100"
+              disabled={props.isLoading}
+            >
+              {props.isLoading ? <Spinner color="primary" /> : "Submit"}
             </Button>
           </Col>
         </Row>
-      </CardBody>
+      </React.Fragment>
+    );
+  };
+
+  return (
+    <Card className="mb-3">
+      <CardHeader tag="h5">Weight</CardHeader>
+      <CardBody>{renderBody()}</CardBody>
     </Card>
   );
 };

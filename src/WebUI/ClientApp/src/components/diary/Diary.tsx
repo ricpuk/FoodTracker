@@ -38,13 +38,15 @@ const Diary = (props: DiaryProps) => {
     DiariesStore.DiarySection.Breakfast
   );
 
+  const { fetchUserGoals, date, requestDiary } = props;
+
   React.useEffect(() => {
-    props.fetchUserGoals();
-    if (!props.date) {
+    fetchUserGoals();
+    if (!date) {
       const date = new Date().toISOString().split("T")[0];
       requestDiary(date);
     }
-  }, []);
+  }, [date, fetchUserGoals, requestDiary]);
 
   const toggle = (id: DiariesStore.DiarySection) => {
     if (activeTab !== id) {
@@ -267,10 +269,6 @@ const Diary = (props: DiaryProps) => {
       </TabContent>
     </div>
   );
-
-  const requestDiary = (date: string) => {
-    props.requestDiary(date);
-  };
 
   return (
     <div>
