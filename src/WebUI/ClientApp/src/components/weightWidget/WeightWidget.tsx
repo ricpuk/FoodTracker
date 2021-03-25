@@ -39,26 +39,42 @@ const WeightWidget = (props: WeightWidgetProps) => {
     onUpdated(weight);
   };
 
-  const renderBody = () => {
-    if (!weight || goalTo || currentWeight) {
-      return (
-        <Alert color="danger">
-          Weight widget could not be displayed because you have not entered
-          information related to your weight. Please enter: starting weight,
-          current weight and your goal weight
-        </Alert>
-      );
+  const renderWeightText = () => {
+    return (
+      <h6 className="text-center">
+        {currentWeight
+          ? `Current weight: ${currentWeight} kg`
+          : "Enter your weight"}
+      </h6>
+    );
+  };
+
+  const renderProgress = () => {
+    if (!goalFrom || !goalTo || !currentWeight) {
+      return null;
     }
+
+    const desired = Math.abs(goalTo - goalFrom);
+    const change = Math.abs(currentWeight - goalFrom);
+
+    return (
+      <div className="d-flex mb-2">
+        <span className="mr-2">{goalFrom}</span>
+        <div className="flex-grow-1 m-auto">
+          <Progress color="primary" value={change} max={desired} />
+        </div>
+        <span className="ml-2">{goalTo}</span>
+      </div>
+    );
+  };
+
+  const renderBody = () => {
     return (
       <React.Fragment>
-        <div className="d-flex mb-2">
-          <span className="mr-2">{goalFrom}</span>
-          <div className="flex-grow-1 m-auto">
-            <Progress color="primary" value={500} max={2000} />
-          </div>
-          <span className="ml-2">{goalTo}</span>
-        </div>
-        <h6 className="text-center">Current weight: {currentWeight} kg</h6>
+        <Alert color="info">Enter your weigh in for today.</Alert>
+        {renderProgress()}
+        {renderWeightText()}
+        <h6 className="text-center"></h6>
         <Row className="m-0 mt-3" noGutters={true}>
           <Col xs="8">
             <InputGroup className="w-100">
@@ -81,7 +97,7 @@ const WeightWidget = (props: WeightWidgetProps) => {
               className="w-100"
               disabled={props.isLoading}
             >
-              {props.isLoading ? <Spinner color="primary" /> : "Submit"}
+              {props.isLoading ? <Spinner size="sm" color="light" /> : "Submit"}
             </Button>
           </Col>
         </Row>

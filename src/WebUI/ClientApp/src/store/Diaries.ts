@@ -233,7 +233,7 @@ export const actionCreators = {
       dispatch({ type: "LOG_WATER" });
     }
   },
-  logWeight: (date: string, amount: number): AppThunkAction<KnownAction> => (
+  logWeight: (date: string, weight: number): AppThunkAction<KnownAction> => (
     dispatch,
     getState
   ) => {
@@ -245,13 +245,12 @@ export const actionCreators = {
       diaries.date === date &&
       diaries.diaries[diaries.date]
     ) {
-      API.post<number>(`${RESOURCE_URL}/${date}/weight`, { amount: amount })
-        .then((response) => {
-          const { data } = response;
+      API.post(`${RESOURCE_URL}/${date}/weight`, { weight: weight })
+        .then(() => {
           dispatch({
             type: "LOG_WEIGHT_RESPONSE",
             date: date,
-            amount: data,
+            amount: weight,
           });
         })
         .catch((error) => {
@@ -363,7 +362,7 @@ export const reducer: Reducer<DiariesState> = (
       state.diaries[action.date] = diary;
       return {
         ...state,
-        isWeightLoading: true,
+        isWeightLoading: false,
       };
     }
   }
