@@ -2,6 +2,7 @@ import * as Diaries from "./Diaries";
 import * as Products from "./Products";
 import * as Application from "./ApplicationParams";
 import * as LocalUser from "./User";
+import * as Coaching from "./Coaching";
 import { User } from "oidc-client";
 import { reducer as oidcReducer } from "redux-oidc";
 
@@ -16,6 +17,7 @@ export interface ApplicationState {
   products: Products.ProductsState | undefined;
   user: LocalUser.UserState | undefined;
   application: Application.ApplicationParamsState | undefined;
+  coaching: Coaching.CoachingState | undefined;
   oidc: OidcState;
 }
 
@@ -27,6 +29,7 @@ export const reducers = {
   products: Products.reducer,
   user: LocalUser.reducer,
   application: Application.reducer,
+  coaching: Coaching.reducer,
   oidc: oidcReducer,
 };
 
