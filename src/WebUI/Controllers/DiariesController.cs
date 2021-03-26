@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FoodTracker.Application.Common.DTOs;
-using FoodTracker.Application.Diaries.Commands;
 using FoodTracker.Application.Diaries.Commands.LogWaterIntake;
 using FoodTracker.Application.Diaries.Commands.LogWeight;
 using FoodTracker.Application.Diaries.Queries;
