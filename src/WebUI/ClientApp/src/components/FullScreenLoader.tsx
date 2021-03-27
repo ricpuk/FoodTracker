@@ -23,11 +23,10 @@ const FullScreenLoader = (props: FullScreenLoaderProps) => {
         style={{
           position: "absolute",
           top: "50%",
-          left: "50%",
-          marginTop: -20,
-          marginLeft: -25,
-          width: 100,
-          height: 80,
+          left: 0,
+          right: 0,
+          marginLeft: "auto",
+          marginRight: "auto",
           textAlign: "center",
           fontSize: 20,
         }}

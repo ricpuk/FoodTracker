@@ -3,6 +3,7 @@ using System;
 using FoodTracker.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -10,52 +11,16 @@ using NpgsqlTypes;
 namespace FoodTracker.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210327111909_AddPersonalInformationToUserProfile")]
+    partial class AddPersonalInformationToUserProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.CoachingRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<int>("FromId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ToId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasAlternateKey("FromId", "ToId");
-
-                    b.HasIndex("ToId");
-
-                    b.ToTable("CoachingRequests");
-                });
 
             modelBuilder.Entity("FoodTracker.Domain.Entities.Diary", b =>
                 {
@@ -625,25 +590,6 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.CoachingRequest", b =>
-                {
-                    b.HasOne("FoodTracker.Domain.Entities.UserProfile", "From")
-                        .WithMany()
-                        .HasForeignKey("FromId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FoodTracker.Domain.Entities.UserProfile", "To")
-                        .WithMany()
-                        .HasForeignKey("ToId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("From");
-
-                    b.Navigation("To");
                 });
 
             modelBuilder.Entity("FoodTracker.Domain.Entities.Diary", b =>

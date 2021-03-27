@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
@@ -31,6 +30,12 @@ namespace FoodTracker.Application.Common.Mappings
                     opt => opt.MapFrom(x => x.Product.Id));
 
             CreateMap<UserGoalsDto, UserGoals>();
+
+            CreateMap<UserProfile, CoachDto>()
+                .ForMember(x => x.NumberOfClients,
+                    opt =>
+                        opt.MapFrom(s => s.Trainees.Count))
+                .ForMember(x => x.CoachingRequested, opt => opt.Ignore());
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)

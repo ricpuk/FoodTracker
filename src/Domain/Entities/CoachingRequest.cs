@@ -2,17 +2,21 @@
 
 namespace FoodTracker.Domain.Entities
 {
-    public enum TrainingRequestStatus
+    public enum CoachingRequestStatus
     {
         Sent,
         Accepted,
-        Declined
+        Declined,
+        Revoked
     }
-    public class TrainingRequest : AuditableEntity
+    public class CoachingRequest : AuditableEntity
     {
         public int Id { get; set; }
+        public int FromId { get; set; }
         public UserProfile From { get; set; }
+
+        public int ToId { get; set; }
         public UserProfile To { get; set; }
-        public TrainingRequestStatus Status { get; set; }
+        public CoachingRequestStatus Status { get; set; }
     }
 }

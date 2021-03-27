@@ -1,5 +1,6 @@
 import classnames from "classnames";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import * as CoachingStore from "../../store/Coaching";
 import {
   Nav,
   TabContent,
@@ -14,19 +15,38 @@ import {
   CardBody,
   CardSubtitle,
 } from "reactstrap";
+import { ApplicationState } from "../../store";
+import { connect } from "react-redux";
+import Loader from "../loader/Loader";
 
+type CoachingProps = CoachingStore.CoachingState &
+  typeof CoachingStore.actionCreators & {};
+
+const TAB_COACH = "coach";
 const TAB_CLIENTS = "clients";
 const TAB_REQUESTS = "coachingRequests";
 
-const Coaching = () => {
-  const [activeTab, setActiveTab] = useState(TAB_CLIENTS);
+const Coaching = (props: CoachingProps) => {
+  const [activeTab, setActiveTab] = useState(TAB_COACH);
+  const { fetchCoaches } = props;
+
+  useEffect(() => {
+    fetchCoaches(1);
+  }, [fetchCoaches]);
 
   const toggle = (tab: string) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
-  const renderTrainer = () => (
-    <Col sm="6" lg="4">
+  const handleClick = (coach: CoachingStore.CoachInfo) => {
+    if (coach.coachingRequested) {
+      return props.revokeCoachingRequest(coach);
+    }
+    props.requestCoaching(coach);
+  };
+
+  const renderCoach = (coach: CoachingStore.CoachInfo) => (
+    <Col sm="6" lg="4" key={`${coach.id}`}>
       <Card className="mb-3">
         <img
           src="https://via.placeholder.com/340x120/FFA07A/000000"
@@ -41,30 +61,40 @@ const Coaching = () => {
             className="img-fluid img-thumbnail rounded-circle d-flex mr-auto ml-auto"
           />
           <CardTitle tag="h4" className="text-center mt-2">
-            John Doe
+            {coach.firstName} {coach.lastName}
           </CardTitle>
           <CardSubtitle className="text-secondary mb-1 text-center">
-            Professional trainer
+            {coach.shortDescription}
           </CardSubtitle>
           <CardSubtitle className="text-muted font-size-lg text-center">
-            15 clients
+            {coach.numberOfClients ? coach.numberOfClients : "No"} clients
           </CardSubtitle>
-          <Button color="primary w-100 mt-2" outline>
-            Request coaching
+          <Button
+            color={coach.coachingRequested ? "warning" : "primary"}
+            className="w-100 mt-2"
+            outline
+            onClick={() => handleClick(coach)}
+          >
+            {coach.coachingRequested ? "Revoke request" : "Request coaching"}
           </Button>
         </CardBody>
       </Card>
     </Col>
   );
 
-  const trainers = [];
-  for (var i = 0; i < 12; i++) {
-    trainers.push(renderTrainer());
-  }
-
   return (
-    <div>
+    <Loader isLoading={props.coachesLoading}>
       <Nav tabs>
+        <NavItem>
+          <NavLink
+            className={classnames({ active: activeTab === TAB_COACH })}
+            onClick={() => {
+              toggle(TAB_COACH);
+            }}
+          >
+            Coach
+          </NavLink>
+        </NavItem>
         <NavItem>
           <NavLink
             className={classnames({ active: activeTab === TAB_CLIENTS })}
@@ -87,13 +117,19 @@ const Coaching = () => {
         </NavItem>
       </Nav>
       <TabContent activeTab={activeTab}>
-        <TabPane tabId={TAB_CLIENTS} className="p-3">
-          <Row>{trainers}</Row>
+        <TabPane tabId={TAB_COACH} className="p-3">
+          {props.coaches && (
+            <Row>{props.coaches.map((coach) => renderCoach(coach))}</Row>
+          )}
         </TabPane>
+        <TabPane tabId={TAB_CLIENTS} className="p-3"></TabPane>
         <TabPane tabId={TAB_REQUESTS}></TabPane>
       </TabContent>
-    </div>
+    </Loader>
   );
 };
 
-export default Coaching;
+export default connect(
+  (state: ApplicationState) => state.coaching,
+  CoachingStore.actionCreators
+)(Coaching as any);

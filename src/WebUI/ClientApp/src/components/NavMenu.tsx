@@ -39,22 +39,12 @@ export default class NavMenu extends React.PureComponent<
             >
               <ul className="navbar-nav flex-grow">
                 <NavItem>
-                  <NavLink
-                    tag={Link}
-                    className="text-dark"
-                    onClick={this.toggle}
-                    to={"/diary"}
-                  >
+                  <NavLink tag={Link} className="text-dark" to={"/diary"}>
                     Diary
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink
-                    tag={Link}
-                    className="text-dark"
-                    to={"/coaching"}
-                    onClick={this.toggle}
-                  >
+                  <NavLink tag={Link} className="text-dark" to={"/coaching"}>
                     Coaching
                   </NavLink>
                 </NavItem>

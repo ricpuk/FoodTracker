@@ -13,6 +13,7 @@ namespace FoodTracker.Application.Common.Interfaces
         public DbSet<DiaryEntry> DiaryEntries { get; set; }
         public DbSet<UserGoals> UserGoals { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<CoachingRequest> CoachingRequests { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
