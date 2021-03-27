@@ -4,10 +4,12 @@ using FoodTracker.Application.Coaches.Commands.DeleteCoachingRequest;
 using FoodTracker.Application.Coaches.Queries.GetCoaches;
 using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Models;
+using FoodTracker.Application.Common.Security;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTracker.WebUI.Controllers
 {
+    [Authorize]
     public class CoachesController : ApiControllerBase
     {
         public async Task<ActionResult<PaginatedList<CoachDto>>> Index([FromQuery] GetCoachesQuery query)

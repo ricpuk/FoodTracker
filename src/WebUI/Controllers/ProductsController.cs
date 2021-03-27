@@ -5,10 +5,12 @@ using FoodTracker.Application.Products.Queries.GetProductsWithPagination;
 using System.Threading.Tasks;
 using FoodTracker.Application.Products.Commands.CreateProduct;
 using FoodTracker.Application.Products.Commands.UpdateProduct;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTracker.WebUI.Controllers
 {
+    [Authorize]
     public class ProductsController : ApiControllerBase
     {
         [HttpGet]

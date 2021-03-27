@@ -3,10 +3,12 @@ using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Diaries.Commands;
 using FoodTracker.Application.DiaryEntries.Commands.DeleteDiaryEntry;
 using FoodTracker.Application.DiaryEntries.Commands.UpdateDiaryEntry;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodTracker.WebUI.Controllers
 {
+    [Authorize]
     [Route("api/diaries/{diaryId}/entries")]
     public class DiaryEntriesController : ApiControllerBase
     {

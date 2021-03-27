@@ -143,7 +143,6 @@ export const actionCreators = {
       appState.coaching &&
       appState.coaching.coaches.findIndex((x) => x.id === coach.id) != -1
     ) {
-      const request = {};
       API.delete(`${COACH_RESOURCE_URL}/${coach.id}`).then((response) => {
         dispatch({ type: "REVOKE_COACHING_REQUEST_DONE", coachId: coach.id });
       });

@@ -18,6 +18,8 @@ import {
 import { ApplicationState } from "../../store";
 import { connect } from "react-redux";
 import Loader from "../loader/Loader";
+import CoachingRequests from "./CoachingRequests";
+import "./Coaching.css";
 
 type CoachingProps = CoachingStore.CoachingState &
   typeof CoachingStore.actionCreators & {};
@@ -27,7 +29,7 @@ const TAB_CLIENTS = "clients";
 const TAB_REQUESTS = "coachingRequests";
 
 const Coaching = (props: CoachingProps) => {
-  const [activeTab, setActiveTab] = useState(TAB_COACH);
+  const [activeTab, setActiveTab] = useState(TAB_REQUESTS);
   const { fetchCoaches } = props;
 
   useEffect(() => {
@@ -123,7 +125,9 @@ const Coaching = (props: CoachingProps) => {
           )}
         </TabPane>
         <TabPane tabId={TAB_CLIENTS} className="p-3"></TabPane>
-        <TabPane tabId={TAB_REQUESTS}></TabPane>
+        <TabPane tabId={TAB_REQUESTS}>
+          <CoachingRequests />
+        </TabPane>
       </TabContent>
     </Loader>
   );
