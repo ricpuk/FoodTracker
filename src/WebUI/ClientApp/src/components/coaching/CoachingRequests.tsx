@@ -14,28 +14,56 @@ const CoachingRequests = (props: CoachingRequestsProps) => {
     fetchCoachingRequests(1);
   }, [fetchCoachingRequests]);
 
+  const acceptRequest = (requestId: number) => {
+    props.acceptCoachingRequest(requestId);
+  };
+
+  const declineRequest = (requestId: number) => {
+    props.declineCoachingRequest(requestId);
+  };
+
+  const renderRequest = (request: CoachingStore.CoachingRequest) => {
+    const user = request.from;
+    return (
+      <ListGroupItem
+        className="d-flex align-items-center flex-wrap"
+        key={request.id}
+      >
+        <Media
+          left
+          src="https://bootdey.com/img/Content/avatar/avatar2.png"
+          style={{ width: 75 }}
+        />
+        <div className="flex-fill pl-3 pr-3">
+          <div>
+            <a href="#" className="text-dark font-weight-600">
+              {user.firstName} {user.lastName}
+            </a>
+          </div>
+          <div className="text-muted fs-13px">{user.shortDescription}</div>
+        </div>
+        <div className="d-flex align-items-center justify-content-center">
+          <Button
+            color="primary mr-3"
+            onClick={() => acceptRequest(request.id)}
+          >
+            Accept
+          </Button>
+          <Button
+            color="danger ml-3"
+            onClick={() => declineRequest(request.id)}
+          >
+            Deny
+          </Button>
+        </div>
+      </ListGroupItem>
+    );
+  };
+
   return (
     <React.Fragment>
       <ListGroup className="mt-3 request-list">
-        <ListGroupItem className="d-flex align-items-center flex-wrap">
-          <Media
-            left
-            src="https://bootdey.com/img/Content/avatar/avatar2.png"
-            style={{ width: 75 }}
-          />
-          <div className="flex-fill pl-3 pr-3">
-            <div>
-              <a href="#" className="text-dark font-weight-600">
-                Ethel Wilkes
-              </a>
-            </div>
-            <div className="text-muted fs-13px">North Raundspic</div>
-          </div>
-          <div className="d-flex align-items-center justify-content-center">
-            <Button color="primary mr-3">Accept</Button>
-            <Button color="danger ml-3">Deny</Button>
-          </div>
-        </ListGroupItem>
+        {props.coachingRequests.map((x) => renderRequest(x))}
       </ListGroup>
     </React.Fragment>
   );

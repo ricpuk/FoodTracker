@@ -90,6 +90,15 @@ interface FetchCoachingRequestsAction {
   page: number;
 }
 
+interface RespondToRequestAction {
+  type: "RESPOND_TO_REQUEST";
+}
+
+interface RespondToRequestResponseAction {
+  type: "RESPOND_TO_REQUEST_RESPONSE";
+  requestId: number;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction =
@@ -101,7 +110,9 @@ type KnownAction =
   | SendCoachingRequestActionDone
   | RevokeCoachingRequestAction
   | RevokeCoachingRequestActionDone
-  | FetchCoachingRequestsAction;
+  | FetchCoachingRequestsAction
+  | RespondToRequestAction
+  | RespondToRequestResponseAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -192,6 +203,44 @@ export const actionCreators = {
       dispatch({ type: "FETCH_COACHING_REQUESTS", page: page });
     }
   },
+  acceptCoachingRequest: (requestId: number): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.coaching) {
+      API.put(`${CLIENTS_RESOURCE_URL}/requests/${requestId}`, {}).then(
+        (response) => {
+          const { data } = response;
+          dispatch({
+            type: "RESPOND_TO_REQUEST_RESPONSE",
+            requestId: requestId,
+          });
+        }
+      );
+
+      dispatch({ type: "RESPOND_TO_REQUEST" });
+    }
+  },
+  declineCoachingRequest: (requestId: number): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.coaching) {
+      API.delete(`${CLIENTS_RESOURCE_URL}/requests/${requestId}`, {}).then(
+        (response) => {
+          const { data } = response;
+          dispatch({
+            type: "RESPOND_TO_REQUEST_RESPONSE",
+            requestId: requestId,
+          });
+        }
+      );
+
+      dispatch({ type: "RESPOND_TO_REQUEST" });
+    }
+  },
 };
 
 // ----------------
@@ -275,6 +324,22 @@ export const reducer: Reducer<CoachingState> = (
           coachingRequestsLoading: false,
         };
       }
+    case "RESPOND_TO_REQUEST":
+      return {
+        ...state,
+        coachingRequestsLoading: true,
+      };
+    case "RESPOND_TO_REQUEST_RESPONSE":
+      const requestIndex = state.coachingRequests.findIndex(
+        (x) => x.id === action.requestId
+      );
+      if (requestIndex != -1) {
+        state.coachingRequests.splice(requestIndex, 1);
+      }
+      return {
+        ...state,
+        coachingRequestsLoading: false,
+      };
 
     default:
       return { ...state };
