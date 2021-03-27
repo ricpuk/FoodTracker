@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import * as CoachingStore from "../../store/Coaching";
 import { Button, ListGroup, ListGroupItem, Media, Row } from "reactstrap";
+import { ApplicationState } from "../../store";
 
-const CoachingRequests = () => {
+type CoachingRequestsProps = CoachingStore.CoachingState &
+  typeof CoachingStore.actionCreators & {};
+
+const CoachingRequests = (props: CoachingRequestsProps) => {
+  const { fetchCoachingRequests } = props;
+
+  useEffect(() => {
+    fetchCoachingRequests(1);
+  }, [fetchCoachingRequests]);
+
   return (
     <React.Fragment>
       <ListGroup className="mt-3 request-list">
@@ -29,4 +41,7 @@ const CoachingRequests = () => {
   );
 };
 
-export default CoachingRequests;
+export default connect(
+  (state: ApplicationState) => state.coaching,
+  CoachingStore.actionCreators
+)(CoachingRequests as any);

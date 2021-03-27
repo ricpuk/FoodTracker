@@ -11,12 +11,17 @@ export interface CoachingState {
   coaches: CoachInfo[];
   clients: UserInfo[];
   coach?: UserInfo;
-  coachingRequests: CoachingRequest;
+  coachingRequests: CoachingRequest[];
+  coachingRequestsPage?: number;
   coachesPage?: number;
   coachesLoading: boolean;
+  coachingRequestsLoading: boolean;
 }
 
-export interface CoachingRequest {}
+export interface CoachingRequest {
+  id: number;
+  from: UserInfo;
+}
 
 export interface CoachInfo {
   id: number;
@@ -29,9 +34,13 @@ export interface CoachInfo {
 
 export interface UserInfo {
   id: number;
+  firstName: string;
+  lastName: string;
+  shortDescription: string;
 }
 
 const COACH_RESOURCE_URL = "api/coaches";
+const CLIENTS_RESOURCE_URL = "api/clients";
 
 // -----------------
 // ACTIONS - These are serializable (hence replayable) descriptions of state transitions.
@@ -54,6 +63,7 @@ interface FetchCoachingRequestsAction {
 
 interface ReceiveCoachingRequestsAction {
   type: "RECEIVE_COACHING_REQUESTS";
+  page: number;
   requests: CoachingRequest[];
 }
 
@@ -75,6 +85,11 @@ interface RevokeCoachingRequestActionDone {
   coachId: number;
 }
 
+interface FetchCoachingRequestsAction {
+  type: "FETCH_COACHING_REQUESTS";
+  page: number;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction =
@@ -85,7 +100,8 @@ type KnownAction =
   | SendCoachingRequestAction
   | SendCoachingRequestActionDone
   | RevokeCoachingRequestAction
-  | RevokeCoachingRequestActionDone;
+  | RevokeCoachingRequestActionDone
+  | FetchCoachingRequestsAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -150,6 +166,32 @@ export const actionCreators = {
       dispatch({ type: "REVOKE_COACHING_REQUEST" });
     }
   },
+  fetchCoachingRequests: (page: number): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.coaching) {
+      const config: AxiosRequestConfig = {
+        params: {
+          page: page,
+        },
+      };
+      API.get<GetListResponse<CoachingRequest>>(
+        `${CLIENTS_RESOURCE_URL}/requests`,
+        config
+      ).then((response) => {
+        const { data } = response;
+        dispatch({
+          type: "RECEIVE_COACHING_REQUESTS",
+          requests: data.items,
+          page: page,
+        });
+      });
+
+      dispatch({ type: "FETCH_COACHING_REQUESTS", page: page });
+    }
+  },
 };
 
 // ----------------
@@ -160,8 +202,10 @@ const unloadedState: CoachingState = {
   clients: [],
   coach: undefined,
   coachingRequests: [],
+  coachingRequestsLoading: false,
   coachesLoading: false,
   coachesPage: undefined,
+  coachingRequestsPage: undefined,
 };
 
 export const reducer: Reducer<CoachingState> = (
@@ -215,6 +259,22 @@ export const reducer: Reducer<CoachingState> = (
         ...state,
         coachesLoading: false,
       };
+
+    case "FETCH_COACHING_REQUESTS":
+      return {
+        ...state,
+        coachingRequestsPage: action.page,
+        coachingRequestsLoading: true,
+      };
+    case "RECEIVE_COACHING_REQUESTS":
+      if (action.page === state.coachingRequestsPage) {
+        return {
+          ...state,
+          coachingRequests: action.requests,
+          coachingRequestsPage: action.page,
+          coachingRequestsLoading: false,
+        };
+      }
 
     default:
       return { ...state };
