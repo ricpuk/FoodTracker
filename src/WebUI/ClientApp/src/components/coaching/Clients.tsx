@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import * as CoachingStore from "../../store/Coaching";
 import { Button, ListGroup, ListGroupItem, Media, NavLink } from "reactstrap";
 import { ApplicationState } from "../../store";
-import { Link } from "react-router-dom";
 import { UserProfile } from "../../store/User";
 import LinkButton from "../linkButton/LinkButton";
 
@@ -40,7 +39,7 @@ const CoachingRequests = (props: ClientsProps) => {
           <LinkButton
             color="primary"
             className="mr-3"
-            to={"1"}
+            to={`${user.id}`}
             text="View diary"
           />
           <Button color="danger ml-3">Stop coaching</Button>

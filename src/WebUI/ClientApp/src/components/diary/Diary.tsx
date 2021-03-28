@@ -24,6 +24,8 @@ import "./Diary.css";
 import AddDiaryEntryForm from "../addDiaryEntry/AddDiaryEntryForm";
 import CaloriesBreakdown from "../caloriesBreakdown/CaloriesBreakdown";
 import WidgetsContainer from "../widgetsContainer/WidgetsContainer";
+import DailySummary from "../daliySummary/DailySummary";
+import DiaryContent from "../diaryContent/DiaryContent";
 
 // type DiaryProps = DiariesStore.DiariesState &
 //   typeof DiariesStore.actionCreators;
@@ -34,10 +36,6 @@ type DiaryProps = DiariesStore.DiariesState & {
   typeof UserStore.actionCreators;
 
 const Diary = (props: DiaryProps) => {
-  const [activeTab, setActiveTab] = useState(
-    DiariesStore.DiarySection.Breakfast
-  );
-
   const { fetchUserGoals, date, requestDiary } = props;
 
   React.useEffect(() => {
@@ -47,12 +45,6 @@ const Diary = (props: DiaryProps) => {
       requestDiary(date);
     }
   }, [date, fetchUserGoals, requestDiary]);
-
-  const toggle = (id: DiariesStore.DiarySection) => {
-    if (activeTab !== id) {
-      setActiveTab(id);
-    }
-  };
 
   const getTotalNutrientsConsumed = () => {
     const diary = props.diaries[props.date];
@@ -106,35 +98,6 @@ const Diary = (props: DiaryProps) => {
     return userGoals;
   };
 
-  const renderGoalsCalories = () => {
-    if (props.user.isLoading || props.isLoading) {
-      return <Spinner size="sm" color="primary" />;
-    }
-    const goals = getGoals();
-    if (!goals) {
-      return "Error";
-    }
-    return goals.caloriesGoal;
-  };
-
-  const renderGoalsRemainingCalories = (value: number) => {
-    if (props.user.isLoading || props.isLoading) {
-      return <Spinner size="sm" color="primary" />;
-    }
-    const goals = getGoals();
-    if (!goals) {
-      return "Error";
-    }
-    return goals.caloriesGoal - value;
-  };
-
-  const renderGoalsConsumedCalories = (value: number) => {
-    if (props.isLoading) {
-      return <Spinner size="sm" color="primary" />;
-    }
-    return value;
-  };
-
   const renderDailySummary = () => {
     const {
       remaining,
@@ -153,33 +116,11 @@ const Diary = (props: DiaryProps) => {
           carbs={carbs}
           fats={fats}
         />
-        <Card className="mt-3">
-          <CardHeader tag="h5">Calories</CardHeader>
-          <CardBody>
-            <Row noGutters={true} className="mb-2">
-              <Col xs="4" className="text-center">
-                {renderGoalsCalories()}
-              </Col>
-              <Col xs="4" className="text-center">
-                {renderGoalsConsumedCalories(calories)}
-              </Col>
-              <Col xs="4" className="text-center">
-                {renderGoalsRemainingCalories(calories)}
-              </Col>
-            </Row>
-            <Row noGutters={true}>
-              <Col xs="4" className="text-center">
-                <h6>Goal</h6>
-              </Col>
-              <Col xs="4" className="text-center">
-                <h6>Consumed</h6>
-              </Col>
-              <Col xs="4" className="text-center">
-                <h6>Remaining</h6>
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
+        <DailySummary
+          calories={calories}
+          goals={getGoals()}
+          isLoading={props.user.isLoading || props.isLoading}
+        />
       </div>
     );
   };
@@ -189,13 +130,8 @@ const Diary = (props: DiaryProps) => {
     </div>
   );
 
-  const getDiarySection = (section: DiariesStore.DiarySection) => {
-    if (!props.diaries[props.date]) {
-      return [];
-    }
-    const diary = props.diaries[props.date];
-    const entries = diary.entries.filter((x) => x.diarySection === section);
-    return entries;
+  const getDiary = () => {
+    return props.diaries[props.date];
   };
 
   const toggleModal = (diaryEntry?: DiariesStore.DiaryEntry) => {
@@ -205,85 +141,14 @@ const Diary = (props: DiaryProps) => {
     props.toggleModalStateForEdit(diaryEntry);
   };
 
-  const renderWidgets = () => <WidgetsContainer />;
-
-  const renderDiaryContent = () => (
-    <div>
-      <Nav tabs>
-        <NavItem>
-          <NavLink
-            className={classnames({
-              active: activeTab === DiariesStore.DiarySection.Breakfast,
-            })}
-            onClick={() => {
-              toggle(DiariesStore.DiarySection.Breakfast);
-            }}
-          >
-            Breakfast
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({
-              active: activeTab === DiariesStore.DiarySection.Lunch,
-            })}
-            onClick={() => {
-              toggle(DiariesStore.DiarySection.Lunch);
-            }}
-          >
-            Lunch
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({
-              active: activeTab === DiariesStore.DiarySection.Dinner,
-            })}
-            onClick={() => {
-              toggle(DiariesStore.DiarySection.Dinner);
-            }}
-          >
-            Dinner
-          </NavLink>
-        </NavItem>
-      </Nav>
-      <TabContent activeTab={activeTab}>
-        <TabPane tabId={DiariesStore.DiarySection.Breakfast}>
-          <DiarySection
-            items={getDiarySection(DiariesStore.DiarySection.Breakfast)}
-            toggleModal={toggleModal}
-          />
-        </TabPane>
-        <TabPane tabId={DiariesStore.DiarySection.Lunch}>
-          <DiarySection
-            items={getDiarySection(DiariesStore.DiarySection.Lunch)}
-            toggleModal={toggleModal}
-          />
-        </TabPane>
-        <TabPane tabId={DiariesStore.DiarySection.Dinner}>
-          <DiarySection
-            items={getDiarySection(DiariesStore.DiarySection.Dinner)}
-            toggleModal={toggleModal}
-          />
-        </TabPane>
-      </TabContent>
-    </div>
-  );
-
   return (
     <div>
       <Loader isLoading={props.isLoading}>
         {renderDailySummary()}
         {renderDatePicker()}
-        {renderDiaryContent()}
-        {renderWidgets()}
+        <DiaryContent diary={getDiary()} toggleModal={toggleModal} />
+        <WidgetsContainer interactive={true} />
       </Loader>
-      {props.diaries[props.date] && (
-        <AddDiaryEntryForm
-          diaryId={props.diaries[props.date].id}
-          diarySection={activeTab}
-        />
-      )}
     </div>
   );
 };

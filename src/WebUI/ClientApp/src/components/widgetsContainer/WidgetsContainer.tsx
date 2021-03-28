@@ -7,16 +7,20 @@ import * as UserStore from "../../store/User";
 import { connect } from "react-redux";
 import WaterIntakeWidget from "../waterIntakeWidget/WaterIntakeWidget";
 
+interface WidgetsContainerOwnProps {
+  interactive: boolean;
+}
+
 type WidgetContainerProps = {
   diary: DiariesStore.Diary;
   userProfile: UserStore.UserProfile;
 } & typeof DiariesStore.actionCreators & {
     isWaterLoading: boolean;
     isWeightLoading: boolean;
-  };
+  } & WidgetsContainerOwnProps;
 
 const WidgetsContainer = (props: WidgetContainerProps) => {
-  const userProfile = props.userProfile;
+  const { userProfile, interactive } = props;
   const { startingWeight, currentWeight, weightGoal, waterGoal } = userProfile
     ? userProfile
     : {
@@ -39,6 +43,7 @@ const WidgetsContainer = (props: WidgetContainerProps) => {
             props.logWater(props.diary.date, amount)
           }
           isLoading={props.isWaterLoading}
+          interactive={interactive}
         />
       </Col>
       <Col md="6">
@@ -50,13 +55,17 @@ const WidgetsContainer = (props: WidgetContainerProps) => {
             props.logWeight(props.diary.date, amount);
           }}
           isLoading={props.isWeightLoading}
+          interactive={interactive}
         />
       </Col>
     </Row>
   );
 };
 
-const mapStateToProps = (state: ApplicationState) => {
+const mapStateToProps = (
+  state: ApplicationState,
+  ownProps: WidgetsContainerOwnProps
+) => {
   const { diaries, user } = state;
   let diary;
   let userProfile;
@@ -71,6 +80,7 @@ const mapStateToProps = (state: ApplicationState) => {
     isWaterLoading: diaries ? diaries.isWaterLoading : true,
     isWeightLoading: diaries ? diaries.isWeightLoading : true,
     userProfile: userProfile,
+    interactive: ownProps.interactive,
   };
 };
 

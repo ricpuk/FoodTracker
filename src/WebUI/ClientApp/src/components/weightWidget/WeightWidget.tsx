@@ -20,10 +20,11 @@ interface WeightWidgetProps {
   currentWeight?: number;
   onUpdated: (weight: number) => void;
   isLoading: boolean;
+  interactive: boolean;
 }
 
 const WeightWidget = (props: WeightWidgetProps) => {
-  const { goalFrom, goalTo, currentWeight, onUpdated } = props;
+  const { goalFrom, goalTo, currentWeight, onUpdated, interactive } = props;
   const [weight, setWeight] = useState(currentWeight);
 
   const handleWeightChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -40,13 +41,17 @@ const WeightWidget = (props: WeightWidgetProps) => {
   };
 
   const renderWeightText = () => {
-    return (
-      <h6 className="text-center">
-        {currentWeight
-          ? `Current weight: ${currentWeight} kg`
-          : "Enter your weight"}
-      </h6>
-    );
+    return <h6 className="text-center">{weightText()}</h6>;
+  };
+
+  const weightText = () => {
+    if (currentWeight) {
+      return `Current weight: ${currentWeight} kg`;
+    }
+    if (interactive) {
+      return "Enter your weight";
+    }
+    return "No weight provided";
   };
 
   const renderProgress = () => {
@@ -71,36 +76,43 @@ const WeightWidget = (props: WeightWidgetProps) => {
   const renderBody = () => {
     return (
       <React.Fragment>
-        <Alert color="info">Enter your weigh in for today.</Alert>
+        {interactive && (
+          <Alert color="info">Enter your weigh in for today.</Alert>
+        )}
         {renderProgress()}
         {renderWeightText()}
-        <h6 className="text-center"></h6>
-        <Row className="m-0 mt-3" noGutters={true}>
-          <Col xs="8">
-            <InputGroup className="w-100">
-              <Input
-                type="number"
+        {interactive && (
+          <Row className="m-0 mt-3" noGutters={true}>
+            <Col xs="8">
+              <InputGroup className="w-100">
+                <Input
+                  type="number"
+                  className="w-100"
+                  min={1}
+                  max={9999}
+                  value={weight}
+                  onChange={handleWeightChange}
+                  disabled={props.isLoading}
+                />
+                <InputGroupAddon addonType="append">kg</InputGroupAddon>
+              </InputGroup>
+            </Col>
+            <Col xs="4" className="pl-3">
+              <Button
+                onClick={handleSubmit}
+                color="primary"
                 className="w-100"
-                min={1}
-                max={9999}
-                value={weight}
-                onChange={handleWeightChange}
                 disabled={props.isLoading}
-              />
-              <InputGroupAddon addonType="append">kg</InputGroupAddon>
-            </InputGroup>
-          </Col>
-          <Col xs="4" className="pl-3">
-            <Button
-              onClick={handleSubmit}
-              color="primary"
-              className="w-100"
-              disabled={props.isLoading}
-            >
-              {props.isLoading ? <Spinner size="sm" color="light" /> : "Submit"}
-            </Button>
-          </Col>
-        </Row>
+              >
+                {props.isLoading ? (
+                  <Spinner size="sm" color="light" />
+                ) : (
+                  "Submit"
+                )}
+              </Button>
+            </Col>
+          </Row>
+        )}
       </React.Fragment>
     );
   };

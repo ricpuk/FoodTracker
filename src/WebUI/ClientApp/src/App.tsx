@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import Home from "./components/Home";
 import Diary from "./components/diary/Diary";
 import Coaching from "./components/coaching/Coaching";
+import ClientPage from "./components/clientPage/ClientPage";
 
 import "./custom.css";
 import AuthorizeRoute from "./components/api-authorization/AuthorizeRoute";
@@ -13,8 +14,9 @@ import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizat
 export default () => (
   <Layout>
     <Route exact path="/" component={Home} />
-    <AuthorizeRoute path="/diary" component={Diary} />
-    <AuthorizeRoute path="/coaching" component={Coaching} />
+    <AuthorizeRoute exact path="/diary" component={Diary} />
+    <AuthorizeRoute exact path="/coaching" component={Coaching} />
+    <AuthorizeRoute path="/coaching/:clientId" component={ClientPage} />
     <Route
       path={AppPaths.ApiAuthorizationPrefix}
       component={ApiAuthorizationRoutes}

@@ -11,6 +11,7 @@ namespace FoodTracker.Domain.Entities
         public string LastName { get; set; }
         public string ShortDescription { get; set; }
         public IList<Diary> Diaries { get; set; } = new List<Diary>();
+        public int? TrainerId { get; set; }
         public UserProfile Trainer { get; set; }
         public IList<UserProfile> Trainees { get; set; } = new List<UserProfile>();
         public UserGoals UserGoals { get; set; }
