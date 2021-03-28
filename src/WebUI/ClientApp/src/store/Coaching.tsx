@@ -3,19 +3,22 @@ import { Action, Reducer } from "redux";
 import { AppThunkAction } from ".";
 import API from "../utils/api";
 import { GetListResponse } from "../utils/interfaces";
+import { UserProfile } from "./User";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
 
 export interface CoachingState {
   coaches: CoachInfo[];
-  clients: UserInfo[];
+  clients: UserProfile[];
   coach?: UserInfo;
   coachingRequests: CoachingRequest[];
   coachingRequestsPage?: number;
   coachesPage?: number;
   coachesLoading: boolean;
   coachingRequestsLoading: boolean;
+  clientsLoading: boolean;
+  clientsPage?: number;
 }
 
 export interface CoachingRequest {
@@ -99,6 +102,17 @@ interface RespondToRequestResponseAction {
   requestId: number;
 }
 
+interface FetchClientsAction {
+  type: "FETCH_CLIENTS";
+  page: number;
+}
+
+interface ReceiveClientsAction {
+  type: "RECEIVE_CLIENTS";
+  clients: UserProfile[];
+  page: number;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction =
@@ -112,7 +126,9 @@ type KnownAction =
   | RevokeCoachingRequestActionDone
   | FetchCoachingRequestsAction
   | RespondToRequestAction
-  | RespondToRequestResponseAction;
+  | RespondToRequestResponseAction
+  | FetchClientsAction
+  | ReceiveClientsAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -241,6 +257,32 @@ export const actionCreators = {
       dispatch({ type: "RESPOND_TO_REQUEST" });
     }
   },
+  fetchClients: (page: number): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.coaching) {
+      const config: AxiosRequestConfig = {
+        params: {
+          page: page,
+        },
+      };
+      API.get<GetListResponse<UserProfile>>(
+        `${CLIENTS_RESOURCE_URL}/`,
+        config
+      ).then((response) => {
+        const { data } = response;
+        dispatch({
+          type: "RECEIVE_CLIENTS",
+          clients: data.items,
+          page: page,
+        });
+      });
+
+      dispatch({ type: "FETCH_CLIENTS", page: page });
+    }
+  },
 };
 
 // ----------------
@@ -255,6 +297,8 @@ const unloadedState: CoachingState = {
   coachesLoading: false,
   coachesPage: undefined,
   coachingRequestsPage: undefined,
+  clientsLoading: false,
+  clientsPage: undefined,
 };
 
 export const reducer: Reducer<CoachingState> = (
@@ -339,6 +383,18 @@ export const reducer: Reducer<CoachingState> = (
       return {
         ...state,
         coachingRequestsLoading: false,
+      };
+    case "FETCH_CLIENTS":
+      return {
+        ...state,
+        clientsLoading: true,
+        clientsPage: action.page,
+      };
+    case "RECEIVE_CLIENTS":
+      return {
+        ...state,
+        clients: action.clients,
+        clientsLoading: false,
       };
 
     default:

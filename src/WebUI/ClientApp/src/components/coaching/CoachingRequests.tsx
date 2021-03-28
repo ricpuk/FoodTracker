@@ -60,6 +60,14 @@ const CoachingRequests = (props: CoachingRequestsProps) => {
     );
   };
 
+  if (props.coachingRequests.length === 0) {
+    return (
+      <React.Fragment>
+        <h5 className="mt-3">You have no coaching requests at the moment.</h5>
+      </React.Fragment>
+    );
+  }
+
   return (
     <React.Fragment>
       <ListGroup className="mt-3 request-list">

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FoodTracker.Application.Clients.Queries.GetCachingRequests;
+using FoodTracker.Application.Clients.Queries.GetClients;
 using FoodTracker.Application.CoachingRequests.Commands.AcceptCoachingRequest;
 using FoodTracker.Application.CoachingRequests.Commands.DeclineCoachingRequest;
 using FoodTracker.Application.Common.DTOs;
@@ -15,6 +16,12 @@ namespace FoodTracker.WebUI.Controllers
     [Authorize]
     public class ClientsController : ApiControllerBase
     {
+
+        [HttpGet]
+        public async Task<ActionResult<PaginatedList<CoachingRequestDto>>> ClientsList([FromQuery] GetClientsQuery query)
+        {
+            return Ok(await Mediator.Send(query));
+        }
         [HttpGet("requests")]
         public async Task<ActionResult<PaginatedList<CoachingRequestDto>>> CoachingRequests([FromQuery] GetCoachingRequestsQuery query)
         {

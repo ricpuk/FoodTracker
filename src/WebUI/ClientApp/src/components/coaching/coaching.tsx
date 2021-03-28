@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 import Loader from "../loader/Loader";
 import CoachingRequests from "./CoachingRequests";
 import "./Coaching.css";
+import Clients from "./Clients";
 
 type CoachingProps = CoachingStore.CoachingState &
   typeof CoachingStore.actionCreators & {};
@@ -124,7 +125,9 @@ const Coaching = (props: CoachingProps) => {
             <Row>{props.coaches.map((coach) => renderCoach(coach))}</Row>
           )}
         </TabPane>
-        <TabPane tabId={TAB_CLIENTS} className="p-3"></TabPane>
+        <TabPane tabId={TAB_CLIENTS} className="p-3">
+          <Clients />
+        </TabPane>
         <TabPane tabId={TAB_REQUESTS}>
           <CoachingRequests />
         </TabPane>
