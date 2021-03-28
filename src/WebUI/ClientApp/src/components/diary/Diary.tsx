@@ -1,31 +1,17 @@
-import classnames from "classnames";
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Nav,
-  NavItem,
-  NavLink,
-  Row,
-  Spinner,
-  TabContent,
-  TabPane,
-} from "reactstrap";
+
 import { ApplicationState } from "../../store";
 import DatePicker from "../datePicker/datePicker";
-import DiarySection from "../diarySection/DiarySection";
 import * as DiariesStore from "../../store/Diaries";
 import * as UserStore from "../../store/User";
 import Loader from "../loader/Loader";
 import "./Diary.css";
-import AddDiaryEntryForm from "../addDiaryEntry/AddDiaryEntryForm";
 import CaloriesBreakdown from "../caloriesBreakdown/CaloriesBreakdown";
 import WidgetsContainer from "../widgetsContainer/WidgetsContainer";
 import DailySummary from "../daliySummary/DailySummary";
 import DiaryContent from "../diaryContent/DiaryContent";
+import { getTotalNutrientsConsumed } from "../../utils/nutritionHelper";
 
 // type DiaryProps = DiariesStore.DiariesState &
 //   typeof DiariesStore.actionCreators;
@@ -46,46 +32,6 @@ const Diary = (props: DiaryProps) => {
     }
   }, [date, fetchUserGoals, requestDiary]);
 
-  const getTotalNutrientsConsumed = () => {
-    const diary = props.diaries[props.date];
-    if (!diary) {
-      return {
-        remaining: 100,
-        protein: 0,
-        fats: 0,
-        carbs: 0,
-        calories: 0,
-      };
-    }
-    const result = diary.entries.reduce(
-      (total, value) => {
-        const { product, servingId, numberOfServings } = value;
-        const index = product.servings.findIndex((x) => x.id === servingId);
-        if (index === -1) {
-          return total;
-        }
-        const serving = product.servings[index];
-
-        return {
-          remaining: 0,
-          protein: total.protein + serving.protein * numberOfServings,
-          fats: total.fats + serving.fats * numberOfServings,
-          carbs: total.carbs + serving.carbohydrates * numberOfServings,
-          calories: total.calories + serving.calories * numberOfServings,
-        };
-      },
-      {
-        remaining: 0,
-        protein: 0,
-        fats: 0,
-        carbs: 0,
-        calories: 0,
-      }
-    );
-
-    return result;
-  };
-
   const getGoals = () => {
     const diary = props.diaries[props.date];
     if (!diary) {
@@ -99,13 +45,15 @@ const Diary = (props: DiaryProps) => {
   };
 
   const renderDailySummary = () => {
+    const diary = props.diaries[props.date];
+
     const {
       remaining,
       protein,
       fats,
       carbs,
       calories,
-    } = getTotalNutrientsConsumed();
+    } = getTotalNutrientsConsumed(diary);
     return (
       <div className="my-3">
         <h4>Daily summary</h4>

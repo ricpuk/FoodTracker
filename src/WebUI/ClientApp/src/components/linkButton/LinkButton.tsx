@@ -2,11 +2,7 @@ import React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
 import { Button, NavLink } from "reactstrap";
 
-type PathParamsType = {
-  clientId: string;
-};
-
-type LinkButtonProps = RouteComponentProps<PathParamsType> & {
+type LinkButtonProps = RouteComponentProps & {
   to: string;
   color: string;
   className: string;

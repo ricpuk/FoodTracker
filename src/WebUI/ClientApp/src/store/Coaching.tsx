@@ -4,6 +4,7 @@ import { AppThunkAction } from ".";
 import API from "../utils/api";
 import { GetListResponse } from "../utils/interfaces";
 import { UserProfile } from "./User";
+import * as DiariesStore from "./Diaries";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -19,6 +20,9 @@ export interface CoachingState {
   coachingRequestsLoading: boolean;
   clientsLoading: boolean;
   clientsPage?: number;
+  clientDiary?: DiariesStore.Diary;
+  clientDiaryDate: string;
+  clientId: string;
 }
 
 export interface CoachingRequest {
@@ -113,6 +117,19 @@ interface ReceiveClientsAction {
   page: number;
 }
 
+interface FetchClientDiaryAction {
+  type: "FETCH_CLIENT_DIARY";
+  clientId: string;
+  date: string;
+}
+
+interface ReceiveClientDiaryAction {
+  type: "RECEIVE_CLIENT_DIARY";
+  clientId: string;
+  diary: DiariesStore.Diary;
+  date: string;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction =
@@ -128,7 +145,9 @@ type KnownAction =
   | RespondToRequestAction
   | RespondToRequestResponseAction
   | FetchClientsAction
-  | ReceiveClientsAction;
+  | ReceiveClientsAction
+  | FetchClientDiaryAction
+  | ReceiveClientDiaryAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -283,6 +302,31 @@ export const actionCreators = {
       dispatch({ type: "FETCH_CLIENTS", page: page });
     }
   },
+  fetchClientDiary: (
+    clientId: string,
+    date: string
+  ): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    const appState = getState();
+    if (appState && appState.coaching) {
+      API.get<DiariesStore.Diary>(
+        `${CLIENTS_RESOURCE_URL}/${clientId}/diaries/${date}`
+      ).then((response) => {
+        const { data } = response;
+        dispatch({
+          type: "RECEIVE_CLIENT_DIARY",
+          clientId: clientId,
+          date: date,
+          diary: data,
+        });
+      });
+
+      dispatch({
+        type: "FETCH_CLIENT_DIARY",
+        clientId: clientId,
+        date: date,
+      });
+    }
+  },
 };
 
 // ----------------
@@ -299,6 +343,9 @@ const unloadedState: CoachingState = {
   coachingRequestsPage: undefined,
   clientsLoading: false,
   clientsPage: undefined,
+  clientDiary: undefined,
+  clientDiaryDate: "",
+  clientId: "",
 };
 
 export const reducer: Reducer<CoachingState> = (
@@ -395,6 +442,19 @@ export const reducer: Reducer<CoachingState> = (
         ...state,
         clients: action.clients,
         clientsLoading: false,
+      };
+    case "FETCH_CLIENT_DIARY":
+      return {
+        ...state,
+        clientId: action.clientId,
+        clientDiaryDate: action.date,
+      };
+    case "RECEIVE_CLIENT_DIARY":
+      return {
+        ...state,
+        clientId: action.clientId,
+        clientDiaryDate: action.date,
+        clientDiary: action.diary,
       };
 
     default:

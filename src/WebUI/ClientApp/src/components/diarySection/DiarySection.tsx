@@ -9,7 +9,7 @@ import "./diarySection.css";
 
 type DiarySectionProps = {
   items: DiaryEntryDto[];
-  toggleModal: (diaryEntry?: DiaryEntryDto) => void;
+  toggleModal?: (diaryEntry?: DiaryEntryDto) => void;
 };
 
 const DiarySection = (props: DiarySectionProps) => {
@@ -30,9 +30,16 @@ const DiarySection = (props: DiarySectionProps) => {
   };
 
   const handleEntryClicked = (entry: DiaryEntryDto) => {
-    props.toggleModal(entry);
+    if (props.toggleModal) {
+      props.toggleModal(entry);
+    }
   };
 
+  const handleNewClick = () => {
+    if (props.toggleModal) {
+      props.toggleModal();
+    }
+  };
   const renderHeader = () => (
     <Row className="pb-3 border-bottom">
       <Col xs="8" md="4"></Col>
@@ -62,7 +69,7 @@ const DiarySection = (props: DiarySectionProps) => {
   const renderControls = () => {
     return (
       <Row className="my-3">
-        <Button color="primary" onClick={() => props.toggleModal()}>
+        <Button color="primary" onClick={handleNewClick}>
           Add food
         </Button>
       </Row>

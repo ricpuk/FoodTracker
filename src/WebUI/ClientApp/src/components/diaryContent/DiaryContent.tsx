@@ -1,13 +1,13 @@
 import classnames from "classnames";
 import React, { useState } from "react";
-import { Nav, NavItem, TabContent, TabPane, NavLink } from "reactstrap";
+import { Nav, NavItem, TabContent, TabPane, NavLink, Alert } from "reactstrap";
 import DiarySection from "../diarySection/DiarySection";
 import * as DiariesStore from "../../store/Diaries";
 import AddDiaryEntryForm from "../addDiaryEntry/AddDiaryEntryForm";
 
 interface DiaryContentProps {
-  toggleModal: (diaryEntry?: DiariesStore.DiaryEntry) => void;
-  diary: DiariesStore.Diary;
+  toggleModal?: (diaryEntry?: DiariesStore.DiaryEntry) => void;
+  diary?: DiariesStore.Diary;
 }
 
 const DiaryContent = (props: DiaryContentProps) => {
@@ -30,6 +30,10 @@ const DiaryContent = (props: DiaryContentProps) => {
     const entries = diary.entries.filter((x) => x.diarySection === section);
     return entries;
   };
+
+  if (!diary) {
+    return <Alert color="danger">Error</Alert>;
+  }
 
   return (
     <div>
