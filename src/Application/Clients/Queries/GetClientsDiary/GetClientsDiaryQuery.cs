@@ -54,7 +54,7 @@ namespace FoodTracker.Application.Clients.Queries.GetClientsDiary
             var profile = await _dbContext.UserProfiles.SingleOrDefaultAsync(x => x.Id == clientId && x.TrainerId == userProfile.Id);
             if (profile == null)
             {
-                throw new UnauthorizedAccessException("You are not authorized to view this diary");
+                throw new ForbiddenAccessException();
             }
 
         }

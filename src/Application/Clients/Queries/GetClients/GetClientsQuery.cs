@@ -37,8 +37,7 @@ namespace FoodTracker.Application.Clients.Queries.GetClients
         {
             var userProfile = await _identityService.GetCurrentUserProfileAsync();
             var clients = await _dbContext.UserProfiles
-                .Include(x => x.Trainees)
-                .Where(x => x.Id == userProfile.Id)
+                .Where(x => x.TrainerId == userProfile.Id)
                 .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.Page, request.PageSize);
             return clients;

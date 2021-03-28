@@ -16,16 +16,19 @@ const DatePicker = (props: DatePickerProps) => {
   };
 
   return (
-    <div className="d-flex">
-      <Input
-        type="date"
-        name="date"
-        id="date"
-        placeholder="select a date"
-        value={props.date}
-        onChange={handleDateChange}
-      />
-    </div>
+    <React.Fragment>
+      <h4>Date</h4>
+      <div className="d-flex">
+        <Input
+          type="date"
+          name="date"
+          id="date"
+          placeholder="select a date"
+          value={props.date}
+          onChange={handleDateChange}
+        />
+      </div>
+    </React.Fragment>
   );
 };
 

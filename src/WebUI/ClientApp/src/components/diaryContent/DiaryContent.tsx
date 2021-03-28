@@ -8,6 +8,7 @@ import AddDiaryEntryForm from "../addDiaryEntry/AddDiaryEntryForm";
 interface DiaryContentProps {
   toggleModal?: (diaryEntry?: DiariesStore.DiaryEntry) => void;
   diary?: DiariesStore.Diary;
+  interactive: boolean;
 }
 
 const DiaryContent = (props: DiaryContentProps) => {
@@ -30,10 +31,6 @@ const DiaryContent = (props: DiaryContentProps) => {
     const entries = diary.entries.filter((x) => x.diarySection === section);
     return entries;
   };
-
-  if (!diary) {
-    return <Alert color="danger">Error</Alert>;
-  }
 
   return (
     <div>
@@ -80,18 +77,21 @@ const DiaryContent = (props: DiaryContentProps) => {
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Breakfast)}
             toggleModal={toggleModal}
+            interactive={props.interactive}
           />
         </TabPane>
         <TabPane tabId={DiariesStore.DiarySection.Lunch}>
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Lunch)}
             toggleModal={toggleModal}
+            interactive={props.interactive}
           />
         </TabPane>
         <TabPane tabId={DiariesStore.DiarySection.Dinner}>
           <DiarySection
             items={getDiarySection(DiariesStore.DiarySection.Dinner)}
             toggleModal={toggleModal}
+            interactive={props.interactive}
           />
         </TabPane>
       </TabContent>

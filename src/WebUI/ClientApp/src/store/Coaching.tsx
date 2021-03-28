@@ -23,6 +23,7 @@ export interface CoachingState {
   clientDiary?: DiariesStore.Diary;
   clientDiaryDate: string;
   clientId: string;
+  currentClient?: UserProfile;
 }
 
 export interface CoachingRequest {
@@ -130,6 +131,11 @@ interface ReceiveClientDiaryAction {
   date: string;
 }
 
+interface SetCurrentClientAction {
+  type: "SET_CURRENT_CLIENT";
+  client?: UserProfile;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction =
@@ -147,7 +153,8 @@ type KnownAction =
   | FetchClientsAction
   | ReceiveClientsAction
   | FetchClientDiaryAction
-  | ReceiveClientDiaryAction;
+  | ReceiveClientDiaryAction
+  | SetCurrentClientAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -327,6 +334,18 @@ export const actionCreators = {
       });
     }
   },
+  setCurrentClient: (client?: UserProfile): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.coaching) {
+      dispatch({
+        type: "SET_CURRENT_CLIENT",
+        client: client,
+      });
+    }
+  },
 };
 
 // ----------------
@@ -344,6 +363,7 @@ const unloadedState: CoachingState = {
   clientsLoading: false,
   clientsPage: undefined,
   clientDiary: undefined,
+  currentClient: undefined,
   clientDiaryDate: "",
   clientId: "",
 };
@@ -448,6 +468,7 @@ export const reducer: Reducer<CoachingState> = (
         ...state,
         clientId: action.clientId,
         clientDiaryDate: action.date,
+        clientsLoading: true,
       };
     case "RECEIVE_CLIENT_DIARY":
       return {
@@ -455,6 +476,12 @@ export const reducer: Reducer<CoachingState> = (
         clientId: action.clientId,
         clientDiaryDate: action.date,
         clientDiary: action.diary,
+        clientsLoading: false,
+      };
+    case "SET_CURRENT_CLIENT":
+      return {
+        ...state,
+        currentClient: action.client,
       };
 
     default:

@@ -41,6 +41,7 @@ const CoachingRequests = (props: ClientsProps) => {
             className="mr-3"
             to={`${user.id}`}
             text="View diary"
+            onClick={() => props.setCurrentClient(user)}
           />
           <Button color="danger ml-3">Stop coaching</Button>
         </div>

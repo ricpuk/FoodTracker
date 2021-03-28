@@ -10,6 +10,7 @@ import DailySummary from "../daliySummary/DailySummary";
 import WidgetsContainer from "../widgetsContainer/WidgetsContainer";
 import DiaryContent from "../diaryContent/DiaryContent";
 import DatePicker from "../datePicker/datePicker";
+import { Alert, Media } from "reactstrap";
 
 type PathParamsType = {
   clientId: string;
@@ -26,6 +27,7 @@ const ClientPage = (props: ClientPageProps) => {
     clientDiary,
     fetchClientDiary,
     clientDiaryDate,
+    currentClient,
   } = props;
 
   React.useEffect(() => {
@@ -78,13 +80,51 @@ const ClientPage = (props: ClientPageProps) => {
     );
   };
 
+  const renderClientProfile = () => {
+    if (!currentClient) {
+      return null;
+    }
+    return (
+      <div className="d-flex">
+        <Media
+          left
+          src="https://bootdey.com/img/Content/avatar/avatar2.png"
+          style={{ width: 100 }}
+        />
+        <div className="flex-fill pl-3 pr-3">
+          <div>
+            <a href="#" className="text-dark font-weight-600">
+              {currentClient.firstName} {currentClient.lastName}
+            </a>
+          </div>
+          <div className="text-muted fs-13px">
+            {currentClient.shortDescription}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div>
       <Loader isLoading={clientsLoading}>
-        {renderDailySummary()}
+        {renderClientProfile()}
         {renderDatePicker()}
-        <DiaryContent diary={clientDiary} />
-        {/* <WidgetsContainer interactive={false} /> */}
+        {clientDiary ? (
+          <React.Fragment>
+            {renderDailySummary()}
+            <DiaryContent diary={clientDiary} interactive={false} />
+            <WidgetsContainer
+              interactive={false}
+              diary={clientDiary}
+              userProfile={currentClient}
+            />
+          </React.Fragment>
+        ) : (
+          <Alert color="warning">
+            Looks like your client is yet to start a diary for this day.
+          </Alert>
+        )}
       </Loader>
     </div>
   );

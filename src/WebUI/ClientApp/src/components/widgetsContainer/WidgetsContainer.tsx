@@ -9,15 +9,14 @@ import WaterIntakeWidget from "../waterIntakeWidget/WaterIntakeWidget";
 
 interface WidgetsContainerOwnProps {
   interactive: boolean;
+  diary: DiariesStore.Diary;
+  userProfile?: UserStore.UserProfile;
 }
 
-type WidgetContainerProps = {
-  diary: DiariesStore.Diary;
-  userProfile: UserStore.UserProfile;
-} & typeof DiariesStore.actionCreators & {
-    isWaterLoading: boolean;
-    isWeightLoading: boolean;
-  } & WidgetsContainerOwnProps;
+type WidgetContainerProps = typeof DiariesStore.actionCreators & {
+  isWaterLoading: boolean;
+  isWeightLoading: boolean;
+} & WidgetsContainerOwnProps;
 
 const WidgetsContainer = (props: WidgetContainerProps) => {
   const { userProfile, interactive } = props;
@@ -66,21 +65,13 @@ const mapStateToProps = (
   state: ApplicationState,
   ownProps: WidgetsContainerOwnProps
 ) => {
-  const { diaries, user } = state;
-  let diary;
-  let userProfile;
-  if (diaries) {
-    diary = diaries.diaries[diaries.date];
-  }
-  if (user) {
-    userProfile = user.profile;
-  }
+  const { diaries } = state;
   return {
-    diary: diary,
     isWaterLoading: diaries ? diaries.isWaterLoading : true,
     isWeightLoading: diaries ? diaries.isWeightLoading : true,
-    userProfile: userProfile,
     interactive: ownProps.interactive,
+    diary: ownProps.diary,
+    userProfile: ownProps.userProfile,
   };
 };
 

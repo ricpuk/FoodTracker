@@ -89,13 +89,23 @@ const Diary = (props: DiaryProps) => {
     props.toggleModalStateForEdit(diaryEntry);
   };
 
+  const currentDiary = getDiary();
+
   return (
     <div>
       <Loader isLoading={props.isLoading}>
-        {renderDailySummary()}
         {renderDatePicker()}
-        <DiaryContent diary={getDiary()} toggleModal={toggleModal} />
-        <WidgetsContainer interactive={true} />
+        {renderDailySummary()}
+        <DiaryContent
+          diary={currentDiary}
+          toggleModal={toggleModal}
+          interactive={true}
+        />
+        <WidgetsContainer
+          diary={currentDiary}
+          userProfile={props.user.profile}
+          interactive={true}
+        />
       </Loader>
     </div>
   );

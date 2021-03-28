@@ -60,6 +60,53 @@
         ]
       }
     },
+    "/api/Clients/{clientId}/diaries/{diaryDate}": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "operationId": "Clients_ClientDiary",
+        "parameters": [
+          {
+            "name": "ClientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "DiaryDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfCoachingRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Clients/requests": {
       "get": {
         "tags": [

@@ -10,6 +10,7 @@ import "./diarySection.css";
 type DiarySectionProps = {
   items: DiaryEntryDto[];
   toggleModal?: (diaryEntry?: DiaryEntryDto) => void;
+  interactive: boolean;
 };
 
 const DiarySection = (props: DiarySectionProps) => {
@@ -67,6 +68,9 @@ const DiarySection = (props: DiarySectionProps) => {
   );
 
   const renderControls = () => {
+    if (!props.interactive) {
+      return null;
+    }
     return (
       <Row className="my-3">
         <Button color="primary" onClick={handleNewClick}>
