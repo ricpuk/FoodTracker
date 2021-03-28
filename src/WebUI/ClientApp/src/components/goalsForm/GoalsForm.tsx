@@ -23,6 +23,7 @@ interface GoalsFormOwnProps {
   initial: boolean;
   isOpen: boolean;
   toggle: () => void;
+  type: "personal" | "client";
 }
 
 type GoalsFormProps = UserStore.UserState &
@@ -73,10 +74,17 @@ const GoalsForm = (props: GoalsFormProps) => {
     const request = {
       goals,
     };
-    API.post<UserStore.UserGoals>(API_USER_GOALS, request)
+    if (props.type === "personal") {
+    }
+    const url = props.type === "personal" ? API_USER_GOALS : "client url";
+    API.post<UserStore.UserGoals>(url, request)
       .then((response) => {
         const { data } = response;
-        props.setUserGoals(data);
+        if (props.type === "personal") {
+          props.setUserGoals(data);
+        } else {
+          //set client goals
+        }
       })
       .finally(() => setLoading(false));
   };
@@ -210,9 +218,25 @@ const GoalsForm = (props: GoalsFormProps) => {
     </Row>
   );
 
+  const toggleInner = () => {
+    if (initial) {
+      return;
+    }
+    toggle();
+  };
+
   return (
-    <Modal isOpen={isOpen} className={classnames(classBindings)}>
-      <ModalHeader>Set your goals</ModalHeader>
+    <Modal
+      isOpen={isOpen}
+      toggle={toggleInner}
+      className={classnames(classBindings)}
+    >
+      {initial ? (
+        <ModalHeader>Set your starting goals</ModalHeader>
+      ) : (
+        <ModalHeader toggle={toggleInner}>Set goals</ModalHeader>
+      )}
+
       <ModalBody>
         {renderInfoBadge()}
         {renderForm()}

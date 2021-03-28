@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as CoachingStore from "../../store/Coaching";
 import { ApplicationState } from "../../store";
 import { connect } from "react-redux";
@@ -10,7 +10,8 @@ import DailySummary from "../daliySummary/DailySummary";
 import WidgetsContainer from "../widgetsContainer/WidgetsContainer";
 import DiaryContent from "../diaryContent/DiaryContent";
 import DatePicker from "../datePicker/datePicker";
-import { Alert, Media } from "reactstrap";
+import { Alert, Button, Media } from "reactstrap";
+import GoalsForm from "../goalsForm/GoalsForm";
 
 type PathParamsType = {
   clientId: string;
@@ -21,6 +22,7 @@ type ClientPageProps = CoachingStore.CoachingState &
   RouteComponentProps<PathParamsType>;
 
 const ClientPage = (props: ClientPageProps) => {
+  const [goalsOpen, setGoalsOpen] = useState(false);
   const { clientId } = props.match.params;
   const {
     clientsLoading,
@@ -52,6 +54,10 @@ const ClientPage = (props: ClientPageProps) => {
       />
     </div>
   );
+
+  const toggleGoals = () => {
+    setGoalsOpen(!goalsOpen);
+  };
 
   const renderDailySummary = () => {
     const {
@@ -93,13 +99,16 @@ const ClientPage = (props: ClientPageProps) => {
         />
         <div className="flex-fill pl-3 pr-3">
           <div>
-            <a href="#" className="text-dark font-weight-600">
+            <h6 className="text-dark font-weight-600">
               {currentClient.firstName} {currentClient.lastName}
-            </a>
+            </h6>
           </div>
           <div className="text-muted fs-13px">
             {currentClient.shortDescription}
           </div>
+          <Button color="primary" className="mt-3" onClick={toggleGoals}>
+            Adjust goals
+          </Button>
         </div>
       </div>
     );
@@ -126,6 +135,7 @@ const ClientPage = (props: ClientPageProps) => {
           </Alert>
         )}
       </Loader>
+      <GoalsForm initial={false} isOpen={goalsOpen} toggle={toggleGoals} />
     </div>
   );
 };

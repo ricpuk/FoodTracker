@@ -31,7 +31,12 @@ const Home = () => {
   };
   return (
     <React.Fragment>
-      <GoalsForm initial={true} isOpen={goalsOpen} toggle={toggleGoals} />
+      <GoalsForm
+        initial={true}
+        isOpen={goalsOpen}
+        toggle={toggleGoals}
+        type="personal"
+      />
     </React.Fragment>
   );
 };
