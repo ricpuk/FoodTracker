@@ -977,6 +977,27 @@
         }
       },
       "UserProfileDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TrainerProfileDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "trainer": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TrainerProfileDto"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "TrainerProfileDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

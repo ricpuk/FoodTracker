@@ -21,7 +21,7 @@ const TAB_CLIENTS = "clients";
 const TAB_REQUESTS = "coachingRequests";
 
 const Coaching = (props: CoachingProps) => {
-  const [activeTab, setActiveTab] = useState(TAB_REQUESTS);
+  const [activeTab, setActiveTab] = useState(TAB_COACH);
   const { fetchCoaches, user, coaches } = props;
 
   useEffect(() => {
