@@ -135,7 +135,12 @@ const ClientPage = (props: ClientPageProps) => {
           </Alert>
         )}
       </Loader>
-      <GoalsForm initial={false} isOpen={goalsOpen} toggle={toggleGoals} />
+      <GoalsForm
+        initial={false}
+        isOpen={goalsOpen}
+        toggle={toggleGoals}
+        type="client"
+      />
     </div>
   );
 };

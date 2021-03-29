@@ -38,8 +38,8 @@ namespace FoodTracker.Infrastructure.Identity
         public async Task<UserProfile> GetCurrentUserProfileAsync()
         {
             var user = await _userManager.Users
-            .Include(x => x.Profile)
-            .ThenInclude(up => up.UserGoals)
+            .Include(x => x.Profile.UserGoals)
+            .Include(x => x.Profile.Trainer)
             .FirstAsync(u => u.Id == _currentUserService.UserId);
             return user.Profile;
         }

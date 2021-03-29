@@ -10,6 +10,7 @@ export interface UserState {
   goals?: UserGoals;
   profile?: UserProfile;
   goalsLoading: boolean;
+  initialized: boolean;
 }
 
 export interface UserGoals {
@@ -30,6 +31,7 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   shortDescription: string;
+  trainer: UserProfile;
 }
 
 const RESOURCE_URL = "api/user";
@@ -52,7 +54,7 @@ interface RequestUserProfileAction {
 }
 
 interface SetUserProfileAction {
-  type: "SET_PROFILE";
+  type: "RECEIVE_PROFILE";
   profile: UserProfile;
 }
 
@@ -95,13 +97,17 @@ export const actionCreators = {
   fetchUserProfile: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
     const appState = getState();
     if (appState && appState.user && !appState.user.profile) {
-      API.get<UserProfile>(API_USER_PROFILE).then((response) => {
-        const { data, status } = response;
-        if (status === 204) {
-          return;
-        }
-        dispatch({ type: "SET_PROFILE", profile: data });
-      });
+      API.get<UserProfile>(API_USER_PROFILE)
+        .then((response) => {
+          const { data, status } = response;
+          if (status === 204) {
+            return;
+          }
+          dispatch({ type: "RECEIVE_PROFILE", profile: data });
+        })
+        .catch((error) => {
+          //do nothing, should be handled by axios
+        });
 
       dispatch({ type: "REQUEST_PROFILE" });
     }
@@ -115,6 +121,7 @@ const unloadedState: UserState = {
   isLoading: false,
   goals: undefined,
   goalsLoading: false,
+  initialized: false,
 };
 
 export const reducer: Reducer<UserState> = (
@@ -137,6 +144,16 @@ export const reducer: Reducer<UserState> = (
       return {
         ...state,
         goalsLoading: true,
+      };
+    case "REQUEST_PROFILE":
+      return {
+        ...state,
+      };
+    case "RECEIVE_PROFILE":
+      return {
+        ...state,
+        initialized: true,
+        profile: action.profile,
       };
     default:
       return { ...state };

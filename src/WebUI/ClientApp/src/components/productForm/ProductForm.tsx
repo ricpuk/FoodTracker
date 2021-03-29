@@ -24,13 +24,13 @@ const ProductForm = (props: ProductFormProps) => {
   const [productName, setProductName] = useState<string>("");
   const [servings, setServings] = useState<any[]>([{}]);
   const [statusMessage, setStatusMessage] = useState("");
-  const { submit } = props;
+  const { submit, barCode } = props;
   useEffect(() => {
     if (loading) {
       return;
     }
     setLoading(true);
-    API.get<Product>(`api/products/${props.barCode}`)
+    API.get<Product>(`api/products/${barCode}`)
       .then((response) => {
         const { data } = response;
         if (data.complete && data.id && data.servings) {
@@ -43,7 +43,7 @@ const ProductForm = (props: ProductFormProps) => {
         //error
       })
       .finally(() => setLoading(false));
-  }, [loading, submit]);
+  }, [loading, submit, barCode]);
 
   const populateProductState = (data: Product) => {
     if (typeof data !== "object") {

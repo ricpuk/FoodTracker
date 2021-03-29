@@ -1,7 +1,14 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as CoachingStore from "../../store/Coaching";
-import { Button, ListGroup, ListGroupItem, Media, Row } from "reactstrap";
+import {
+  Alert,
+  Button,
+  ListGroup,
+  ListGroupItem,
+  Media,
+  Row,
+} from "reactstrap";
 import { ApplicationState } from "../../store";
 
 type CoachingRequestsProps = CoachingStore.CoachingState &
@@ -63,7 +70,9 @@ const CoachingRequests = (props: CoachingRequestsProps) => {
   if (props.coachingRequests.length === 0) {
     return (
       <React.Fragment>
-        <h5 className="mt-3">You have no coaching requests at the moment.</h5>
+        <Alert color="warning" className="mt-3">
+          <h6 className="mb-0">You have no coaching requests at the moment.</h6>
+        </Alert>
       </React.Fragment>
     );
   }
