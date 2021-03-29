@@ -138,13 +138,11 @@ export const actionCreators = {
   ): AppThunkAction<KnownAction> => (dispatch, getState) => {
     // Only load data if it's something we don't already have (and are not already loading)
     const appState = getState();
-    if (
-      appState &&
-      appState.diaries &&
-      (date !== appState.diaries.date || reload)
-    ) {
+    if (appState && appState.diaries) {
+      debugger;
       API.get<Diary>(`${RESOURCE_URL}/${date}`)
         .then((response) => {
+          debugger;
           const { data } = response;
           const date = data.date.slice(0, 10);
           data.date = date;
@@ -293,16 +291,14 @@ export const reducer: Reducer<DiariesState> = (
         isLoading: true,
       };
     case "RECEIVE_DIARY":
-      if (action.date === state.date) {
-        state.diaries[action.date] = action.diary;
-        return {
-          ...state,
-          diaries: state.diaries,
-          date: action.date,
-          isLoading: false,
-        };
-      }
-      break;
+      debugger;
+      state.diaries[action.date] = action.diary;
+      return {
+        ...state,
+        diaries: state.diaries,
+        date: action.date,
+        isLoading: false,
+      };
     case "TOGGLE_MODAL":
       const modalType = !state.isModalOpen
         ? DiaryModalType.new
