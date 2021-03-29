@@ -25,9 +25,9 @@ const CoachList = (props: CoachListProps) => {
 
   const handleClick = (coach: CoachingStore.CoachInfo) => {
     if (coach.coachingRequested) {
-      return revokeCoachingRequest(coach);
+      return dispatch(revokeCoachingRequest(coach));
     }
-    requestCoaching(coach);
+    dispatch(requestCoaching(coach));
   };
 
   const renderCoach = (coach: CoachingStore.CoachInfo) => (
