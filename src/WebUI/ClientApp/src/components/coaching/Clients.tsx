@@ -43,7 +43,9 @@ const CoachingRequests = (props: ClientsProps) => {
             text="View diary"
             onClick={() => props.setCurrentClient(user)}
           />
-          <Button color="danger ml-3">Stop coaching</Button>
+          <Button color="danger ml-3" onClick={() => props.stopCoaching(user)}>
+            Stop coaching
+          </Button>
         </div>
       </ListGroupItem>
     );

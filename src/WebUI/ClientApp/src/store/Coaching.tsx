@@ -136,6 +136,15 @@ interface SetCurrentClientAction {
   client?: UserProfile;
 }
 
+interface SetClientsLoadingAction {
+  type: "SET_CLIENTS_LOADING";
+}
+
+interface ClientDeletedAction {
+  type: "CLIENT_DELETED";
+  clientId: number;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction =
@@ -154,7 +163,9 @@ type KnownAction =
   | ReceiveClientsAction
   | FetchClientDiaryAction
   | ReceiveClientDiaryAction
-  | SetCurrentClientAction;
+  | SetCurrentClientAction
+  | SetClientsLoadingAction
+  | ClientDeletedAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -346,6 +357,24 @@ export const actionCreators = {
       });
     }
   },
+  stopCoaching: (client: UserProfile): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.coaching) {
+      API.delete(`${CLIENTS_RESOURCE_URL}/${client.id}`).then((response) => {
+        dispatch({
+          type: "CLIENT_DELETED",
+          clientId: client.id,
+        });
+      });
+
+      dispatch({
+        type: "SET_CLIENTS_LOADING",
+      });
+    }
+  },
 };
 
 // ----------------
@@ -482,6 +511,22 @@ export const reducer: Reducer<CoachingState> = (
       return {
         ...state,
         currentClient: action.client,
+      };
+    case "SET_CLIENTS_LOADING":
+      return {
+        ...state,
+        clientsLoading: true,
+      };
+    case "CLIENT_DELETED":
+      const clientIndex = state.clients.findIndex(
+        (x) => x.id === action.clientId
+      );
+      if (clientIndex !== -1) {
+        state.clients.splice(clientIndex, 1);
+      }
+      return {
+        ...state,
+        clientsLoading: false,
       };
 
     default:
