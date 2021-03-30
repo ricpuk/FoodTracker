@@ -10,6 +10,11 @@ namespace FoodTracker.Domain.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ShortDescription { get; set; }
+        public string WebsiteUrl { get; set; }
+        public string YoutubeUrl { get; set; }
+        public string TwitterUrl { get; set; }
+        public string InstagramUrl { get; set; }
+        public string FacebookUrl { get; set; }
         public IList<Diary> Diaries { get; set; } = new List<Diary>();
         public int? TrainerId { get; set; }
         public UserProfile Trainer { get; set; }

@@ -196,7 +196,7 @@ const Profile = (props: ProfileProps) => {
           </Col>
           <Col sm="12" className="mb-3">
             <Card className="h-100">
-              <CardHeader>Water intake</CardHeader>
+              <CardHeader>Water intake (ml)</CardHeader>
               <CardBody>
                 <LineChart data={getDataPoints("water")} color="blue" />
               </CardBody>

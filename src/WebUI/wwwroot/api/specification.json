@@ -1055,7 +1055,7 @@
       "UserProfileDto": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/TrainerProfileDto"
+            "$ref": "#/components/schemas/BaseUserDto"
           },
           {
             "type": "object",
@@ -1065,7 +1065,7 @@
                 "nullable": true,
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/TrainerProfileDto"
+                    "$ref": "#/components/schemas/CoachDto"
                   }
                 ]
               }
@@ -1073,7 +1073,23 @@
           }
         ]
       },
-      "TrainerProfileDto": {
+      "CoachDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseUserDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "coachingRequested": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "BaseUserDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1100,6 +1116,30 @@
           "shortDescription": {
             "type": "string",
             "nullable": true
+          },
+          "websiteUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "youtubeUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitterUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "instagramUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "facebookUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfClients": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -1130,35 +1170,6 @@
             "type": "boolean"
           },
           "hasNextPage": {
-            "type": "boolean"
-          }
-        }
-      },
-      "CoachDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "firstName": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastName": {
-            "type": "string",
-            "nullable": true
-          },
-          "shortDescription": {
-            "type": "string",
-            "nullable": true
-          },
-          "numberOfClients": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "coachingRequested": {
             "type": "boolean"
           }
         }
