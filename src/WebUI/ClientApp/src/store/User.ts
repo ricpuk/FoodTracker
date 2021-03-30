@@ -32,6 +32,14 @@ export interface UserProfile {
   lastName: string;
   shortDescription: string;
   trainer: UserProfile;
+  websiteUrl: string;
+  youtubeUrl: string;
+  twitterUrl: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  numberOfClients: number;
+  fitnessPoints: number;
+  coachingRequested: boolean;
 }
 
 const RESOURCE_URL = "api/user";

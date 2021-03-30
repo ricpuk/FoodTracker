@@ -9,11 +9,11 @@ import {
   Col,
   Row,
 } from "reactstrap";
-import { CoachInfo } from "../../store/Coaching";
 import * as CoachingStore from "../../store/Coaching";
+import { UserProfile } from "../../store/User";
 
 interface CoachListProps {
-  coaches: CoachInfo[];
+  coaches: UserProfile[];
 }
 const CoachList = (props: CoachListProps) => {
   const dispatch = useDispatch();
@@ -23,14 +23,14 @@ const CoachList = (props: CoachListProps) => {
     requestCoaching,
   } = CoachingStore.actionCreators;
 
-  const handleClick = (coach: CoachingStore.CoachInfo) => {
+  const handleClick = (coach: UserProfile) => {
     if (coach.coachingRequested) {
       return dispatch(revokeCoachingRequest(coach));
     }
     dispatch(requestCoaching(coach));
   };
 
-  const renderCoach = (coach: CoachingStore.CoachInfo) => (
+  const renderCoach = (coach: UserProfile) => (
     <Col sm="6" lg="4" key={`${coach.id}`}>
       <Card className="mb-3">
         <img

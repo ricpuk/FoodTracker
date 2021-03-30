@@ -1,31 +1,12 @@
-import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  Row,
-} from "reactstrap";
+import React, { useState } from "react";
+import { Card, CardBody, CardHeader, Col, Row } from "reactstrap";
 import { UserProfile } from "../../store/User";
-import {
-  FiFacebook,
-  FiInstagram,
-  FiTwitter,
-  FiYoutube,
-  FiGlobe,
-} from "react-icons/fi";
-import CanvasJSReact from "../../lib/canvasjs.react";
 import API from "../../utils/api";
 import LineChart from "../lineChart/LineChart";
+import SocialMediaList from "../socialMediaList/SocialMediaList";
 
 interface ProfileProps {
   profile: UserProfile;
-}
-
-interface UserStatsResponse {
-  stats: UserStat[];
 }
 
 interface UserStat {
@@ -37,11 +18,9 @@ interface UserStat {
 const Profile = (props: ProfileProps) => {
   const [statsLoading, setStatsLoading] = useState(false);
   const [stats, setStats] = useState<UserStat[]>();
-  var CanvasJS = CanvasJSReact.CanvasJS;
-  var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
   const { profile } = props;
-  const { firstName, lastName } = profile;
+  const { firstName, lastName, numberOfClients, fitnessPoints } = profile;
 
   const getDataPoints = (type: string) => {
     if (statsLoading || !stats) {
@@ -58,21 +37,6 @@ const Profile = (props: ProfileProps) => {
       }
     });
     return dataPoints;
-  };
-
-  const optionsWeight = {
-    theme: "light2",
-    axisX: {
-      valueFormatString: "MM/DD",
-    },
-    data: [
-      {
-        type: "line",
-        color: "red",
-        dataPoints: [{ x: new Date(2018, 0, 16), y: 86 }],
-      },
-    ],
-    responsive: true,
   };
 
   React.useEffect(() => {
@@ -109,43 +73,7 @@ const Profile = (props: ProfileProps) => {
           </CardBody>
         </Card>
         <Card className="mt-3">
-          <ListGroup>
-            <ListGroupItem className="d-flex justify-content-between align-items-center flex-wrap">
-              <h6 className="mb-0">
-                <FiGlobe size={24} className="mr-2" />
-                Website
-              </h6>
-              <span className="text-secondary">http://test.com</span>
-            </ListGroupItem>
-            <ListGroupItem className="d-flex justify-content-between align-items-center flex-wrap">
-              <h6 className="mb-0">
-                <FiYoutube size={24} className="mr-2" />
-                YouTube
-              </h6>
-              <span className="text-secondary">http://test.com</span>
-            </ListGroupItem>
-            <ListGroupItem className="d-flex justify-content-between align-items-center flex-wrap">
-              <h6 className="mb-0">
-                <FiTwitter size={24} className="mr-2" />
-                Twitter
-              </h6>
-              <span className="text-secondary">http://test.com</span>
-            </ListGroupItem>
-            <ListGroupItem className="d-flex justify-content-between align-items-center flex-wrap">
-              <h6 className="mb-0">
-                <FiInstagram size={24} className="mr-2" />
-                Instagram
-              </h6>
-              <span className="text-secondary">http://test.com</span>
-            </ListGroupItem>
-            <ListGroupItem className="d-flex justify-content-between align-items-center flex-wrap">
-              <h6 className="mb-0">
-                <FiFacebook size={24} className="mr-2" />
-                Facebook
-              </h6>
-              <span className="text-secondary">http://test.com</span>
-            </ListGroupItem>
-          </ListGroup>
+          <SocialMediaList profile={profile} />
         </Card>
       </Col>
       <Col md="8">

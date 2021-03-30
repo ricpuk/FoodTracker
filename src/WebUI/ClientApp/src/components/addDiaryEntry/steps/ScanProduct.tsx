@@ -18,7 +18,6 @@ export default (props: ScanProductProps) => {
   };
 
   const validate = (value: string) => {
-    console.log(value);
     if (!validateCode(value)) {
       setCode("");
       //toast error

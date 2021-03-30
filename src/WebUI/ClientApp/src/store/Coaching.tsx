@@ -10,9 +10,9 @@ import * as DiariesStore from "./Diaries";
 // STATE - This defines the type of data maintained in the Redux store.
 
 export interface CoachingState {
-  coaches: CoachInfo[];
+  coaches: UserProfile[];
   clients: UserProfile[];
-  coach?: UserInfo;
+  coach?: UserProfile;
   coachingRequests: CoachingRequest[];
   coachingRequestsPage?: number;
   coachesPage?: number;
@@ -28,23 +28,7 @@ export interface CoachingState {
 
 export interface CoachingRequest {
   id: number;
-  from: UserInfo;
-}
-
-export interface CoachInfo {
-  id: number;
-  firstName: string;
-  lastName: string;
-  shortDescription: string;
-  numberOfClients: number;
-  coachingRequested: boolean;
-}
-
-export interface UserInfo {
-  id: number;
-  firstName: string;
-  lastName: string;
-  shortDescription: string;
+  from: UserProfile;
 }
 
 const COACH_RESOURCE_URL = "api/coaches";
@@ -62,7 +46,7 @@ interface FetchCoachesAction {
 interface ReceiveCoachesAction {
   type: "RECEIVE_COACHES";
   page: number;
-  coaches: CoachInfo[];
+  coaches: UserProfile[];
 }
 
 interface FetchCoachingRequestsAction {
@@ -183,7 +167,7 @@ export const actionCreators = {
           page: page,
         },
       };
-      API.get<GetListResponse<CoachInfo>>(COACH_RESOURCE_URL, config).then(
+      API.get<GetListResponse<UserProfile>>(COACH_RESOURCE_URL, config).then(
         (response) => {
           const { items } = response.data;
           dispatch({ type: "RECEIVE_COACHES", coaches: items, page: page });
@@ -193,7 +177,7 @@ export const actionCreators = {
       dispatch({ type: "FETCH_COACHES", page: page });
     }
   },
-  requestCoaching: (coach: CoachInfo): AppThunkAction<KnownAction> => (
+  requestCoaching: (coach: UserProfile): AppThunkAction<KnownAction> => (
     dispatch,
     getState
   ) => {
@@ -213,7 +197,7 @@ export const actionCreators = {
       dispatch({ type: "SEND_COACHING_REQUEST" });
     }
   },
-  revokeCoachingRequest: (coach: CoachInfo): AppThunkAction<KnownAction> => (
+  revokeCoachingRequest: (coach: UserProfile): AppThunkAction<KnownAction> => (
     dispatch,
     getState
   ) => {

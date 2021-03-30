@@ -34,10 +34,8 @@ const LineChart = (props: LineChartProps) => {
   };
 
   React.useEffect(() => {
-    console.log(data);
     if (chart) {
       chart.render();
-      debugger;
     }
   }, [data]);
 
