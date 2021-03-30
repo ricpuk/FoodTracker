@@ -4,6 +4,7 @@ import { UserProfile } from "../../store/User";
 import API from "../../utils/api";
 import LineChart from "../lineChart/LineChart";
 import SocialMediaList from "../socialMediaList/SocialMediaList";
+import ProfileInfo from "./ProfileInfo";
 
 interface ProfileProps {
   profile: UserProfile;
@@ -77,42 +78,7 @@ const Profile = (props: ProfileProps) => {
         </Card>
       </Col>
       <Col md="8">
-        <Card className="mb-3">
-          <CardBody className="py-0">
-            <Row className="py-3 border-bottom">
-              <Col sm="3">
-                <h5 className="mb-0">First name</h5>
-              </Col>
-              <Col sm="9" className="text-secondary">
-                Test
-              </Col>
-            </Row>
-            <Row className="py-3 border-bottom">
-              <Col sm="3">
-                <h5 className="mb-0">Last name</h5>
-              </Col>
-              <Col sm="9" className="text-secondary">
-                Test
-              </Col>
-            </Row>
-            <Row className="py-3 border-bottom">
-              <Col sm="3">
-                <h5 className="mb-0">Clients</h5>
-              </Col>
-              <Col sm="9" className="text-secondary">
-                Test
-              </Col>
-            </Row>
-            <Row className="py-3 border-bottom">
-              <Col sm="3">
-                <h5 className="mb-0">Fitness points</h5>
-              </Col>
-              <Col sm="9" className="text-secondary">
-                Test
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
+        <ProfileInfo profile={profile} />
         <Row className="gutters-sm">
           <Col sm="12" className="mb-3">
             <Card className="h-100">
