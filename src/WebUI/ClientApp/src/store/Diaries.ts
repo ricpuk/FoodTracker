@@ -139,10 +139,8 @@ export const actionCreators = {
     // Only load data if it's something we don't already have (and are not already loading)
     const appState = getState();
     if (appState && appState.diaries) {
-      debugger;
       API.get<Diary>(`${RESOURCE_URL}/${date}`)
         .then((response) => {
-          debugger;
           const { data } = response;
           const date = data.date.slice(0, 10);
           data.date = date;
@@ -291,7 +289,6 @@ export const reducer: Reducer<DiariesState> = (
         isLoading: true,
       };
     case "RECEIVE_DIARY":
-      debugger;
       state.diaries[action.date] = action.diary;
       return {
         ...state,

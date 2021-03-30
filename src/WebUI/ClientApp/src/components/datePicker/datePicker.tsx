@@ -2,6 +2,7 @@ import React, { ChangeEvent } from "react";
 import { Input } from "reactstrap";
 import "./datePicker.css";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { toDateString } from "../../utils/dateHelpers";
 
 interface DatePickerProps {
   date: string;
@@ -19,17 +20,13 @@ const DatePicker = (props: DatePickerProps) => {
   const reduceDay = () => {
     const date = new Date(props.date);
     date.setDate(date.getDate() - 1);
-    date.setUTCHours(0, 0, 0, 0);
-    props.dateSelected(date.toISOString().split("T")[0]);
+    props.dateSelected(toDateString(date));
   };
 
   const increaseDay = () => {
-    debugger;
     const date = new Date(props.date);
     date.setDate(date.getDate() + 1);
-    date.setUTCHours(0, 0, 0, 0);
-    const dateStr = date.toISOString().split("T")[0];
-    props.dateSelected(date.toISOString().split("T")[0]);
+    props.dateSelected(toDateString(date));
   };
 
   return (
