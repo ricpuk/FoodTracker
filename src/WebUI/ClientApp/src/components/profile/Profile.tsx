@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -17,16 +17,50 @@ import {
   FiGlobe,
 } from "react-icons/fi";
 import CanvasJSReact from "../../lib/canvasjs.react";
+import API from "../../utils/api";
+import LineChart from "../lineChart/LineChart";
 
 interface ProfileProps {
   profile: UserProfile;
 }
 
+interface UserStatsResponse {
+  stats: UserStat[];
+}
+
+interface UserStat {
+  date: Date;
+  waterIntake: number;
+  weight: number;
+}
+
 const Profile = (props: ProfileProps) => {
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [stats, setStats] = useState<UserStat[]>();
   var CanvasJS = CanvasJSReact.CanvasJS;
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-  const options = {
+  const { profile } = props;
+  const { firstName, lastName } = profile;
+
+  const getDataPoints = (type: string) => {
+    if (statsLoading || !stats) {
+      return [];
+    }
+    const dataPoints: any[] = [];
+    stats.map((value) => {
+      if (type === "water") {
+        dataPoints.push({ x: new Date(value.date), y: value.waterIntake });
+      } else {
+        if (value.weight > 0) {
+          dataPoints.push({ x: new Date(value.date), y: value.weight });
+        }
+      }
+    });
+    return dataPoints;
+  };
+
+  const optionsWeight = {
     theme: "light2",
     axisX: {
       valueFormatString: "MM/DD",
@@ -34,14 +68,23 @@ const Profile = (props: ProfileProps) => {
     data: [
       {
         type: "line",
-        color: "blue",
+        color: "red",
         dataPoints: [{ x: new Date(2018, 0, 16), y: 86 }],
       },
     ],
     responsive: true,
   };
-  const { profile } = props;
-  const { firstName, lastName } = profile;
+
+  React.useEffect(() => {
+    setStatsLoading(true);
+    API.get<UserStat[]>(`api/users/profile/${profile.id}/stats`)
+      .then((response) => {
+        const { data } = response;
+        setStats(data);
+      })
+      .finally(() => setStatsLoading(false));
+  }, []);
+
   return (
     <Row className="gutters-sm">
       <Col md="4" className="mb-3">
@@ -145,12 +188,9 @@ const Profile = (props: ProfileProps) => {
         <Row className="gutters-sm">
           <Col sm="12" className="mb-3">
             <Card className="h-100">
-              <CardHeader>Weight</CardHeader>
+              <CardHeader>Weight (kg)</CardHeader>
               <CardBody>
-                <CanvasJSChart
-                  options={options}
-                  /* onRef = {ref => this.chart = ref} */
-                />
+                <LineChart data={getDataPoints("weight")} color="red" />
               </CardBody>
             </Card>
           </Col>
@@ -158,10 +198,7 @@ const Profile = (props: ProfileProps) => {
             <Card className="h-100">
               <CardHeader>Water intake</CardHeader>
               <CardBody>
-                <CanvasJSChart
-                  options={options}
-                  /* onRef = {ref => this.chart = ref} */
-                />
+                <LineChart data={getDataPoints("water")} color="blue" />
               </CardBody>
             </Card>
           </Col>

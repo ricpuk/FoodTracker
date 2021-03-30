@@ -2,6 +2,7 @@
 using FoodTracker.Application.Users.Commands;
 using FoodTracker.Application.Users.Queries.GetUserCurrentGoals;
 using FoodTracker.Application.Users.Queries.GetUserProfile;
+using FoodTracker.Application.Users.Queries.GetUserStats;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,12 @@ namespace FoodTracker.WebUI.Controllers
         public async Task<IActionResult> ProfileAsync()
         {
             var query = new GetCurrentUserProfileQuery();
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("profile/{profileId}/stats")]
+        public async Task<IActionResult> ProfileAsync([FromRoute] GetUserStatsQuery query)
+        {
             return Ok(await Mediator.Send(query));
         }
 
