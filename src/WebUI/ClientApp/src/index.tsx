@@ -30,7 +30,7 @@ ReactDOM.render(
     </ConnectedRouter>
     <ReduxToastr
       className="custom-toast"
-      timeOut={1500000}
+      timeOut={1500}
       newestOnTop={false}
       preventDuplicates
       position="top-right"
