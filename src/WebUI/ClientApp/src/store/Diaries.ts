@@ -3,6 +3,7 @@ import API from "../utils/api";
 import { AppThunkAction } from ".";
 import { Product } from "./Products";
 import { UserGoals } from "./User";
+import Toaster from "../utils/toaster";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -107,6 +108,10 @@ interface LogWaterAction {
   type: "LOG_WATER";
 }
 
+interface ReceiveDiaryErrorAction {
+  type: "RECEIVE_DIARY_ERROR";
+}
+
 export enum DiaryModalType {
   new = "new",
   edit = "edit",
@@ -125,7 +130,8 @@ type KnownAction =
   | LogWeightAction
   | LogWaterAction
   | LogWaterResponseAction
-  | LogWeightResponseAction;
+  | LogWeightResponseAction
+  | ReceiveDiaryErrorAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -147,7 +153,10 @@ export const actionCreators = {
           dispatch({ type: "RECEIVE_DIARY", diary: data, date: date });
         })
         .catch((error) => {
-          console.log(error);
+          Toaster.error("Error", "Failed to fetch diary.");
+        })
+        .finally(() => {
+          dispatch({ type: "RECEIVE_DIARY_ERROR" });
         });
 
       dispatch({ type: "REQUEST_DIARY", date: date });
@@ -222,9 +231,13 @@ export const actionCreators = {
             date: date,
             waterIntake: data,
           });
+          Toaster.success(
+            "Success",
+            "Your water intake was logged successfully."
+          );
         })
         .catch((error) => {
-          console.log(error);
+          Toaster.error("Error", "Failed to log water intake.");
         });
       dispatch({ type: "LOG_WATER" });
     }
@@ -248,9 +261,13 @@ export const actionCreators = {
             date: date,
             amount: weight,
           });
+          Toaster.success(
+            "Success",
+            "Your weight entry was saved successfully."
+          );
         })
         .catch((error) => {
-          console.log(error);
+          Toaster.error("Error", "Failed to log your weight.");
         });
       dispatch({ type: "LOG_WEIGHT" });
     }
@@ -356,6 +373,12 @@ export const reducer: Reducer<DiariesState> = (
       return {
         ...state,
         isWeightLoading: false,
+      };
+    }
+    case "RECEIVE_DIARY_ERROR": {
+      return {
+        ...state,
+        isLoading: false,
       };
     }
   }

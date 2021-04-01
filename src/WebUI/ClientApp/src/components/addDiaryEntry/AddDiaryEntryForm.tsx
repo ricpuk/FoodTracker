@@ -11,6 +11,7 @@ import FinishEntry from "./steps/FinishEntry";
 import API, { API_DIARY_ENTRIES } from "../../utils/api";
 import ScanProduct from "./steps/ScanProduct";
 import ProductForm from "../productForm/ProductForm";
+import Toaster from "../../utils/toaster";
 
 interface OwnProps {
   diaryId: number;
@@ -142,10 +143,11 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
         }
         data.product = product;
         props.addDiaryEntry(data);
+        Toaster.success("Success", "New entry added successfully.");
         props.toggleModalState();
       })
       .catch((error) => {
-        //Display error toast
+        Toaster.error("Error", "Failed to add a new entry.");
       })
       .finally(() => {
         setIsLoading(false);
@@ -163,10 +165,11 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
     )
       .then(() => {
         props.removeEditedDiaryEntry(editedEntry.id);
+        Toaster.success("Success", "Diary entry has been deleted.");
         props.toggleModalState();
       })
       .catch((error) => {
-        //Display error toast
+        Toaster.error("Error", "Diary entry deletion failed.");
       })
       .finally(() => {
         setIsLoading(false);

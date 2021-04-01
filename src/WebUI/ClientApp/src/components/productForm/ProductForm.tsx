@@ -6,6 +6,7 @@ import API from "../../utils/api";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import classnames from "classnames";
 import "./productForm.css";
+import Toaster from "../../utils/toaster";
 
 interface ProductFormProps {
   submit: (product: Product) => void;
@@ -40,7 +41,7 @@ const ProductForm = (props: ProductFormProps) => {
         populateProductState(data);
       })
       .catch((err) => {
-        //error
+        Toaster.error("Error", "Something went wrong.");
       })
       .finally(() => setLoading(false));
   }, [loading, submit, barCode]);
@@ -125,7 +126,7 @@ const ProductForm = (props: ProductFormProps) => {
         props.submit(data);
       })
       .catch((err) => {
-        //toast error
+        Toaster.error("Error", "Failed to add a new product.");
       })
       .finally(() => setLoading(false));
   };

@@ -18,7 +18,7 @@ const Home = () => {
         navigateToDiaries();
       })
       .catch((err) => {
-        //toast err
+        Toaster.error("Error", "Failed to fetch your goals.");
       })
       .finally(() => {
         setLoading(false);
@@ -34,9 +34,6 @@ const Home = () => {
   };
   return (
     <React.Fragment>
-      <Button onClick={() => Toaster.info("test", "test2")} type="button">
-        Toastr Success
-      </Button>
       <GoalsForm
         initial={true}
         isOpen={goalsOpen}
