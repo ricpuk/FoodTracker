@@ -1192,9 +1192,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "isCompleted": {
-            "type": "boolean"
-          },
           "entries": {
             "type": "array",
             "nullable": true,
@@ -1253,18 +1250,10 @@
             "format": "int32",
             "nullable": true
           },
-          "waterIntake": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
           "numberOfServings": {
             "type": "number",
             "format": "double",
             "nullable": true
-          },
-          "entryType": {
-            "$ref": "#/components/schemas/DiaryEntryType"
           },
           "diarySection": {
             "$ref": "#/components/schemas/DiarySection"
@@ -1290,6 +1279,10 @@
             "type": "string",
             "nullable": true
           },
+          "versionId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "servings": {
             "type": "array",
             "nullable": true,
@@ -1307,11 +1300,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "productId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "versionId": {
+          "productVersionId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1340,18 +1329,6 @@
             "format": "double"
           }
         }
-      },
-      "DiaryEntryType": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Food",
-          "Water"
-        ],
-        "enum": [
-          0,
-          1
-        ]
       },
       "DiarySection": {
         "type": "integer",
@@ -1513,7 +1490,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "barCode": {
+          "name": {
             "type": "string",
             "nullable": true
           },

@@ -40,11 +40,12 @@ namespace FoodTracker.Application.Clients.Queries.GetClientsDiary
 
             var diary = await _dbContext.Diaries
                 .Include(x => x.Entries)
-                .ThenInclude(de => de.Product)
-                .ThenInclude(p => p.ProductServings)
+                    .ThenInclude(de => de.ProductVersion)
+                        .ThenInclude(pv => pv.ProductServings)
                 .Include(x => x.UserGoals)
                 .SingleOrDefaultAsync(x => x.Date == request.DiaryDate.Date && x.UserProfileId == request.ClientId, cancellationToken);
             var diaryDto = _mapper.Map<DiaryDto>(diary);
+            AssignEntries(diaryDto, diary);
 
             return diaryDto;
         }
@@ -57,6 +58,13 @@ namespace FoodTracker.Application.Clients.Queries.GetClientsDiary
                 throw new ForbiddenAccessException();
             }
 
+        }
+
+        private void AssignEntries(DiaryDto dto, Diary entity)
+        {
+            foreach (var diaryEntry in entity.Entries)
+            {
+            }
         }
     }
 }

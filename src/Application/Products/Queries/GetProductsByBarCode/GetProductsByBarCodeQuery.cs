@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using FoodTracker.Application.Common.Exceptions;
 using FoodTracker.Application.Common.Interfaces;
-using FoodTracker.Application.Common.Mappings;
-using FoodTracker.Application.Common.Models;
 using MediatR;
 using System.Linq;
 using System.Threading;
@@ -41,13 +37,13 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
 
         private async Task<ProductDto> FetchProduct(string barCode)
         {
-            var product = _dbContext.Products.Include(x => x.ProductServings)
+            var product = _dbContext.Products
+                .Include(x => x.ProductVersions).ThenInclude(pv => pv.ProductServings)
                 .FirstOrDefault(x => x.BarCode == barCode);
 
             if (product != null)
             {
-                var dto = _mapper.Map<ProductDto>(product);
-                dto.Complete = true;
+                var dto = new ProductDto(product) {Complete = true};
                 return dto;
             }
 

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FoodTracker.Application.Common.DTOs;
+using FoodTracker.Application.Common.Exceptions;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Domain.Entities;
 using MediatR;
@@ -55,7 +56,7 @@ namespace FoodTracker.Application.Diaries.Commands
             var userProfile = await _dbContext.UserProfiles.FindAsync(profileId);
             if (userProfile == null)
             {
-                throw new Exception(); //TODO proper exception
+                throw new NotFoundException(); //TODO proper exception
             }
 
             var goals = userProfile.UserGoals;

@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using FoodTracker.Domain.Common;
+﻿using FoodTracker.Domain.Common;
 
 namespace FoodTracker.Domain.Entities
 {
     public class ProductServing : AuditableEntity
     {
         public int Id { get; set; }
-        public int ProductId { get; set; }
-        public List<ProductServingVersion> ProductServingVersions { get; set; }
+        public int ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
+        public double ServingSize { get; set; }
+        public string ServingSizeUnit { get; set; }
+        public double Calories { get; set; }
+        public double Protein { get; set; }
+        public double Carbohydrates { get; set; }
+        public double Fats { get; set; }
     }
 
 

@@ -6,6 +6,7 @@ using AutoMapper;
 using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Application.Diaries.Commands;
+using FoodTracker.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,12 +39,16 @@ namespace FoodTracker.Application.Diaries.Queries
             var diary = _dbContext.Diaries
                 .Include(x => x.UserGoals)
                 .Include(x => x.Entries)
-                .ThenInclude(e => e.Product)
-                .ThenInclude(e => e.ProductServings)
+                    .ThenInclude(e => e.ProductVersion)
+                        .ThenInclude(pv => pv.Product)
+                .Include(x => x.Entries)
+                    .ThenInclude(e => e.ProductVersion)
+                        .ThenInclude(x => x.ProductServings)
                 .SingleOrDefault(x => x.UserProfileId == userProfile.Id && x.Date.Date == diaryDate);
             if (diary != null)
             {
-                return _mapper.Map<DiaryDto>(diary);
+                var dto = new DiaryDto(diary);
+                return dto;
             }
             var command = new CreateDiaryCommand
             {

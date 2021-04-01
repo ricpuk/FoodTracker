@@ -36,41 +36,18 @@ namespace FoodTracker.Application.Products.Commands.CreateProduct
                     new()
                     {
                         Name = request.Name,
+                        ProductServings = _mapper.Map<IList<ProductServingDto>, IList<ProductServing>>(request.Servings)
                     }
                 },
-                ProductServings = CreateProductServings(request.Servings)
+                
             };
 
             await _dbContext.Products.AddAsync(product, cancellationToken);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<ProductDto>(product);
+            return new ProductDto(product);
             
-        }
-
-        private IList<ProductServing> CreateProductServings(IList<ProductServingDto> servingDtos)
-        {
-            var result = new List<ProductServing>();
-            foreach (var productServingDto in servingDtos)
-            {
-                var serving = _mapper.Map<ProductServing>(productServingDto);
-                serving.ProductServingVersions = new List<ProductServingVersion>
-                {
-                    new()
-                    {
-                        Calories = productServingDto.Calories,
-                        Carbohydrates = productServingDto.Carbohydrates,
-                        Fats = productServingDto.Fats,
-                        Protein = productServingDto.Protein,
-                        ServingSize = productServingDto.ServingSize,
-                        ServingSizeUnit = productServingDto.ServingSizeUnit
-                    }
-                };
-                result.Add(serving);
-            }
-
-            return result;
         }
     }
 }

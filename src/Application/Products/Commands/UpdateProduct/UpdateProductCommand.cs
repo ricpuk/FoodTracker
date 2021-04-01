@@ -11,7 +11,7 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
     public class UpdateProductCommand : IRequest
     {
         public int Id { get; set; }
-        public string BarCode { get; set; }
+        public string Name { get; set; }
         public int Calories { get; set; }
         public double Protein { get; set; }
         public double Carbohydrates { get; set; }
@@ -37,34 +37,44 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
                 throw new NotFoundException(nameof(Product), request.Id);
             }
 
-            entity.BarCode = request.BarCode;
-            entity.ProductServings = CreateProductServings(request);
+            entity.ProductVersions.Add(new ProductVersion
+            {
+                Name = request.Name,
+                //ProductServings = CreateProductServings(request)
+            });
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }
 
-        private static List<ProductServing> CreateProductServings(UpdateProductCommand command)
-        {
-            return new()
-            {
-                new ProductServing
-                {
-                    ProductServingVersions = new List<ProductServingVersion>()
-                    {
-                        new()
-                        {
-                            Calories = command.Calories,
-                            Protein = command.Protein,
-                            Carbohydrates = command.Carbohydrates,
-                            Fats = command.Fats,
-                        }
-                    }
+        //private static List<ProductServing> CreateProductServings(UpdateProductCommand command)
+        //{
+        //    var result = new List<ProductServing>();
 
-                }
-            };
-        }
+        //    foreach (var VARIABLE in command.)
+        //    {
+                
+        //    }
+
+        //    //return new()
+        //    //{
+        //    //    new ProductServing
+        //    //    {
+        //    //        ProductServingVersions = new List<ProductServingVersion>()
+        //    //        {
+        //    //            new()
+        //    //            {
+        //    //                Calories = command.Calories,
+        //    //                Protein = command.Protein,
+        //    //                Carbohydrates = command.Carbohydrates,
+        //    //                Fats = command.Fats,
+        //    //            }
+        //    //        }
+
+        //    //    }
+        //    //};
+        //}
     }
 
 

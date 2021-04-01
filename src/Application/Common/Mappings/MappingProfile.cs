@@ -14,20 +14,18 @@ namespace FoodTracker.Application.Common.Mappings
         public MappingProfile()
         {
             ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
-            CreateMap<Product, ProductDto>()
-                .ForMember(p => p.Servings, 
-                    opt => opt.MapFrom(e => e.ProductServings));
             CreateMap<ProductServing, ProductServingDto>();
             CreateMap<ProductServingDto, ProductServing>();
             CreateMap<DataServiceProduct, ProductDto>()
                 .ForMember(p => p.Servings, opt => opt.Ignore());
 
-            CreateMap<DiaryEntry, DiaryEntryDto>();
+            CreateMap<DiaryEntry, DiaryEntryDto>()
+                .ForMember(de => de.Product, opt => opt.MapFrom(x => x.ProductVersion));
 
             CreateMap<DiaryEntryDto, DiaryEntry>()
-                .ForMember(x => x.Product, opt => opt.Ignore())
-                .ForMember(x => x.ProductId,
-                    opt => opt.MapFrom(x => x.Product.Id));
+                .ForMember(x => x.ProductVersion, opt => opt.Ignore())
+                .ForMember(x => x.ProductVersionId,
+                    opt => opt.MapFrom(x => x.Product.VersionId));
 
             CreateMap<UserGoalsDto, UserGoals>();
 

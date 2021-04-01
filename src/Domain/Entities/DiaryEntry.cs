@@ -8,9 +8,10 @@ namespace FoodTracker.Domain.Entities
         public int Id { get; set; }
         public int DiaryId { get; set; }
         public DateTime TimeLogged { get; set; }
-        public int? ProductId { get; set; }
-        public Product Product { get; set; }
-        public int? ServingId { get; set; }
+        public int ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
+        public int ServingId { get; set; }
+        public ProductServing Serving { get; set; }
         public double? NumberOfServings { get; set; }
         public int? WaterIntake { get; set; }
         public DiaryEntryType EntryType { get; set; }

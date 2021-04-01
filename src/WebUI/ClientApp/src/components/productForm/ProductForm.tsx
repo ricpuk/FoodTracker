@@ -22,12 +22,13 @@ const NAME_CARBS = "carbohydrates";
 
 const ProductForm = (props: ProductFormProps) => {
   const [loading, setLoading] = useState(false);
+  const [productLoaded, setProductLoaded] = useState(false);
   const [productName, setProductName] = useState<string>("");
   const [servings, setServings] = useState<any[]>([{}]);
   const [statusMessage, setStatusMessage] = useState("");
   const { submit, barCode } = props;
   useEffect(() => {
-    if (loading) {
+    if (loading || productLoaded) {
       return;
     }
     setLoading(true);
@@ -43,8 +44,11 @@ const ProductForm = (props: ProductFormProps) => {
       .catch((err) => {
         Toaster.error("Error", "Something went wrong.");
       })
-      .finally(() => setLoading(false));
-  }, [loading, submit, barCode]);
+      .finally(() => {
+        setLoading(false);
+        setProductLoaded(true);
+      });
+  }, [productLoaded, loading, submit, barCode]);
 
   const populateProductState = (data: Product) => {
     if (typeof data !== "object") {

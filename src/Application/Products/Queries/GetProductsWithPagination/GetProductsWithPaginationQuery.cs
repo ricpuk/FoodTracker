@@ -35,8 +35,7 @@ namespace FoodTracker.Application.Products.Queries.GetProductsWithPagination
             var query = _dbContext.Products
                 .OrderByDescending(p => p.Created)
                 .Include(x => x.ProductVersions)
-                .Include(x => x.ProductServings)
-                    .ThenInclude(ps => ps.ProductServingVersions)
+                .ThenInclude(pv => pv.ProductServings)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(request.Query))
@@ -52,41 +51,13 @@ namespace FoodTracker.Application.Products.Queries.GetProductsWithPagination
         private PaginatedList<ProductDto> ProjectToDto(PaginatedList<Product> products)
         {
             var result = new List<ProductDto>();
-            foreach (var product in products.Items)
-            {
-                var productDto = new ProductDto();
-                productDto.Name = product.ProductVersions.OrderByDescending(x => x.Id).First().Name;
-                productDto.BarCode = product.BarCode;
-                productDto.Id = productDto.Id;
-                productDto.Servings = ConstructServingDtos(product.ProductServings);
+            foreach (var product in products.Items) {
+
+                var productDto = new ProductDto(product);
                 result.Add(productDto);
             }
 
             return new PaginatedList<ProductDto>(result, products.PageIndex, products.TotalPages, products.TotalCount, true);
-        }
-
-        private List<ProductServingDto> ConstructServingDtos(IList<ProductServing> productServings)
-        {
-            var result = new List<ProductServingDto>();
-            foreach (var productServing in productServings)
-            {
-                var latestVersion = productServing.ProductServingVersions.OrderByDescending(x => x.Id).First();
-                var serving = new ProductServingDto
-                {
-                    Calories = latestVersion.Calories,
-                    ServingSize = latestVersion.ServingSize,
-                    Carbohydrates = latestVersion.Carbohydrates,
-                    Fats = latestVersion.Fats,
-                    Protein = latestVersion.Protein,
-                    ServingSizeUnit = latestVersion.ServingSizeUnit,
-                    Id = productServing.Id,
-                    VersionId = latestVersion.Id,
-                    ProductId = productServing.ProductId
-                };
-                result.Add(serving);
-            }
-
-            return result;
         }
     }
 }
