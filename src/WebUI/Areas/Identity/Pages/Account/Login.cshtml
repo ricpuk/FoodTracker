@@ -5,50 +5,74 @@
     ViewData["Title"] = "Log in";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col">
-        <section>
-            <form id="account" method="post">
-                <h4>Use a local account to log in.</h4>
-                <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe">
-                            <input asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
+
+<div class="container">
+
+
+    <div class="login_container">
+        <div class="row justify-content-center">
+            <div class="col-xs-12 col-sm-6 card shadow-lg mt-5">
+                <h3 class="authTitle">Login or <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Sign up</a></h3>
+
+                <form id="account" class="loginForm card-body" action="" autocomplete="off" method="POST">
+                    <div class="input-group mb-1">
+                        <div class="input-group-prepend ">
+                            <span class="input-group-text">
+                                <i class="fa fa-user"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Email address" asp-for="Input.Email">
                     </div>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Log in</button>
-                </div>
-                <div class="form-group">
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+                    <div class="mb-3">
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="input-group mb-1">
+                        <div class="input-group-prepend ">
+                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                        </div>
+                        <input type="password" class="form-control" placeholder="Password" asp-for="Input.Password">
+                    </div>
+                    <div class="mb-3">
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" asp-for="Input.RememberMe">
+                        <label class="form-check-label" asp-for="Input.RememberMe">@Html.DisplayNameFor(m => m.Input.RememberMe)</label>
+                    </div>
+                    <button class="btn btn-primary btn-block" type="submit">Login</button>
+
+
+                </form>
+            </div>
+        </div>
     </div>
+
+
+
 </div>
+
+@*<div class="card">
+    <div class="card-header">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <form id="account" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control"/>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+        </form>
+    </div>
+</div>*@
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Alert, Button, Col, Input, Row } from "reactstrap";
+import { Alert, Button, Col, Input, Row, Spinner } from "reactstrap";
 import { Product, ProductServing } from "../../store/Products";
 import API from "../../utils/api";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -245,11 +245,17 @@ const ProductForm = (props: ProductFormProps) => {
         color="success"
         className="mt-2 w-100"
         onClick={addServing}
+        disabled={loading}
       >
         Add serving
       </Button>
-      <Button color="primary" className="mt-2 w-100" onClick={submitForm}>
-        Submit
+      <Button
+        color="primary"
+        className="mt-2 w-100"
+        onClick={submitForm}
+        disabled={loading}
+      >
+        {loading ? <Spinner color="light" /> : "Submit"}
       </Button>
     </React.Fragment>
   );

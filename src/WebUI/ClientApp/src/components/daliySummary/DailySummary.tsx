@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import React from "react";
 import { Card, CardHeader, CardBody, Row, Col, Spinner } from "reactstrap";
 import { UserGoals } from "../../store/User";
@@ -28,7 +29,18 @@ const DailySummary = (props: DailySumamryProps) => {
     if (!goals) {
       return "Error";
     }
-    return goals.caloriesGoal - value;
+    const result = goals.caloriesGoal - value;
+    return (
+      <span
+        className={classnames({
+          "text-danger": result < 0,
+          "text-success": result >= 0,
+          "font-weight-bold": true,
+        })}
+      >
+        {result}
+      </span>
+    );
   };
 
   const renderGoalsConsumedCalories = (value: number) => {
