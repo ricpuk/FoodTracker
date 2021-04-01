@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Button, Toast, ToastBody, ToastHeader } from "reactstrap";
 import API, { API_USER_GOALS } from "../utils/api";
 import GoalsForm from "./goalsForm/GoalsForm";
+import { toastr } from "react-redux-toastr";
+import Toaster from "../utils/toaster";
 
 const Home = () => {
   const [goalsOpen, setGoalsOpen] = useState(false);
@@ -31,6 +34,9 @@ const Home = () => {
   };
   return (
     <React.Fragment>
+      <Button onClick={() => Toaster.info("test", "test2")} type="button">
+        Toastr Success
+      </Button>
       <GoalsForm
         initial={true}
         isOpen={goalsOpen}

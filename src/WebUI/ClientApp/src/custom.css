@@ -13,3 +13,22 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.custom-toast .rrt-holder,
+.custom-toast .rrt-left-container,
+.custom-toast .rrt-right-container,
+.custom-toast .close-toastr.toastr-control {
+  display: none;
+}
+
+.redux-toastr.custom-toast .toastr .rrt-middle-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 350px) {
+  .redux-toastr .top-right {
+    width: 100% !important;
+  }
+}

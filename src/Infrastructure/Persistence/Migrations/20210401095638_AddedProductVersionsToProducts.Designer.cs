@@ -3,6 +3,7 @@ using System;
 using FoodTracker.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -10,9 +11,10 @@ using NpgsqlTypes;
 namespace FoodTracker.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210401095638_AddedProductVersionsToProducts")]
+    partial class AddedProductVersionsToProducts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,11 +179,23 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<double>("Calories")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Carbohydrates")
+                        .HasColumnType("double precision");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
+
+                    b.Property<double>("Fats")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Fiber")
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("timestamp without time zone");
@@ -190,32 +204,6 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductServings");
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.ProductServingVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<double>("Calories")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Carbohydrates")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Fats")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("ProductServingId")
                         .HasColumnType("integer");
 
                     b.Property<double>("Protein")
@@ -227,11 +215,14 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                     b.Property<string>("ServingSizeUnit")
                         .HasColumnType("text");
 
+                    b.Property<double>("Sodium")
+                        .HasColumnType("double precision");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductServingId");
+                    b.HasIndex("ProductId");
 
-                    b.ToTable("ProductServingVersion");
+                    b.ToTable("ProductServings");
                 });
 
             modelBuilder.Entity("FoodTracker.Domain.Entities.ProductVersion", b =>
@@ -722,17 +713,6 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FoodTracker.Domain.Entities.ProductServingVersion", b =>
-                {
-                    b.HasOne("FoodTracker.Domain.Entities.ProductServing", "ProductServing")
-                        .WithMany("ProductServingVersions")
-                        .HasForeignKey("ProductServingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductServing");
-                });
-
             modelBuilder.Entity("FoodTracker.Domain.Entities.ProductVersion", b =>
                 {
                     b.HasOne("FoodTracker.Domain.Entities.Product", "Product")
@@ -832,11 +812,6 @@ namespace FoodTracker.Infrastructure.Persistence.Migrations
                     b.Navigation("ProductServings");
 
                     b.Navigation("ProductVersions");
-                });
-
-            modelBuilder.Entity("FoodTracker.Domain.Entities.ProductServing", b =>
-                {
-                    b.Navigation("ProductServingVersions");
                 });
 
             modelBuilder.Entity("FoodTracker.Domain.Entities.UserProfile", b =>

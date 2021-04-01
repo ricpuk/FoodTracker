@@ -32,7 +32,12 @@ namespace FoodTracker.Application.Products.Commands.CreateProduct
             var product = new Product
             {
                 BarCode = request.BarCode,
-                Name = request.Name,
+                ProductVersions = new List<ProductVersion> {
+                    new()
+                    {
+                        Name = request.Name,
+                    }
+                },
                 ProductServings = _mapper.Map<IList<ProductServingDto>, IList<ProductServing>>(request.Servings)
             };
 

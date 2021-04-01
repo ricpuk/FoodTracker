@@ -3,6 +3,7 @@ import * as Products from "./Products";
 import * as Application from "./ApplicationParams";
 import * as LocalUser from "./User";
 import * as Coaching from "./Coaching";
+import { reducer as toastrReducer } from "react-redux-toastr";
 import { User } from "oidc-client";
 import { reducer as oidcReducer } from "redux-oidc";
 
@@ -30,6 +31,7 @@ export const reducers = {
   user: LocalUser.reducer,
   application: Application.reducer,
   coaching: Coaching.reducer,
+  toastr: toastrReducer,
   oidc: oidcReducer,
 };
 

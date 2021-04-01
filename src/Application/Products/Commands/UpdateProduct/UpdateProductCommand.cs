@@ -38,22 +38,32 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
             }
 
             entity.BarCode = request.BarCode;
-            entity.ProductServings = new List<ProductServing>
-            {
-                new()
-                {
-                    Calories = request.Calories,
-                    Protein = request.Protein,
-                    Carbohydrates = request.Carbohydrates,
-                    Fats = request.Fats,
-                    Sodium = request.Sodium
-                }
-
-            };
+            entity.ProductServings = CreateProductServings(request);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
+        }
+
+        private static List<ProductServing> CreateProductServings(UpdateProductCommand command)
+        {
+            return new()
+            {
+                new ProductServing
+                {
+                    ProductServingVersions = new List<ProductServingVersion>()
+                    {
+                        new()
+                        {
+                            Calories = command.Calories,
+                            Protein = command.Protein,
+                            Carbohydrates = command.Carbohydrates,
+                            Fats = command.Fats,
+                        }
+                    }
+
+                }
+            };
         }
     }
 

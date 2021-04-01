@@ -9,6 +9,9 @@ import configureStore from "./store/configureStore";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 import { configureAxios } from "./utils/api";
+import ReduxToastr from "react-redux-toastr";
+
+import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 
 // Create browser history to use in the Redux store
 const baseUrl = document
@@ -25,6 +28,17 @@ ReactDOM.render(
     <ConnectedRouter history={history}>
       <App />
     </ConnectedRouter>
+    <ReduxToastr
+      className="custom-toast"
+      timeOut={1500000}
+      newestOnTop={false}
+      preventDuplicates
+      position="top-right"
+      transitionIn="fadeIn"
+      transitionOut="fadeOut"
+      progressBar
+      closeOnToastrClick
+    />
   </Provider>,
   document.getElementById("root")
 );

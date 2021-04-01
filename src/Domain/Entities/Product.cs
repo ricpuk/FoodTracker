@@ -8,7 +8,7 @@ namespace FoodTracker.Domain.Entities
     {
         public int Id { get; set; }
         public string BarCode { get; set; }
-        public string Name { get; set; }
+        public List<ProductVersion> ProductVersions { get; set; }
         public NpgsqlTsVector SearchVector { get; set; }
         public IList<ProductServing> ProductServings { get; set; } = new List<ProductServing>();
     }
