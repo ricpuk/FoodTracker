@@ -34,7 +34,8 @@ namespace FoodTracker.Application.Products.Queries.GetProductsBySearch
         public async Task<PaginatedList<ProductDto>> Handle(GetProductsBySearchQuery request, CancellationToken cancellationToken)
         {
             var products = await _dbContext.Products
-                .Where(x => x.SearchVector.Matches(request.Query))
+                .Include(x => x.ProductVersions)
+                .Where(x => x.ProductVersions.OrderByDescending(pv => pv.Id).First().Name.Contains(request.Query))
                 .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.Page, 10);
 

@@ -21,6 +21,14 @@ namespace FoodTracker.Application.Common.Models
             Items = items;
         }
 
+        public PaginatedList(List<T> items, int pageIndex, int totalPages, int totalCount, bool fromParent)
+        {
+            Items = items;
+            PageIndex = pageIndex;
+            TotalCount = totalCount;
+            TotalPages = totalPages;
+        }
+
         public PaginatedList(T item)
         {
             Items = new List<T> {item};

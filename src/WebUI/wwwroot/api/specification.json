@@ -1311,6 +1311,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "versionId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "servingSize": {
             "type": "number",
             "format": "double"
@@ -1332,14 +1336,6 @@
             "format": "double"
           },
           "fats": {
-            "type": "number",
-            "format": "double"
-          },
-          "fiber": {
-            "type": "number",
-            "format": "double"
-          },
-          "sodium": {
             "type": "number",
             "format": "double"
           }

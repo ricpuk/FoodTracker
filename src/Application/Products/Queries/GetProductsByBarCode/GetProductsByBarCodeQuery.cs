@@ -68,11 +68,9 @@ namespace FoodTracker.Application.Products.Queries.GetProductsByBarCode
                     Calories = dspServing.Calories,
                     Carbohydrates = dspServing.Carbohydrates,
                     Fats = dspServing.Fats,
-                    Fiber = dspServing.Fiber,
                     Protein = dspServing.Protein,
                     ServingSize = dspServing.ServingSize,
                     ServingSizeUnit = dspServing.ServingSizeUnits,
-                    Sodium = dspServing.Sodium
                 }
             };
 
