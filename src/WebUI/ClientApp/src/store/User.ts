@@ -10,6 +10,8 @@ export interface UserState {
   profile?: UserProfile;
   goalsLoading: boolean;
   initialized: boolean;
+  profileModalOpen: boolean;
+  profileModalLoading: boolean;
 }
 
 export interface UserGoals {
@@ -25,10 +27,6 @@ export interface UserGoals {
 
 export interface UserProfile {
   id: number;
-  startingWeight: number;
-  currentWeight: number;
-  weightGoal: number;
-  waterGoal: number;
   firstName: string;
   lastName: string;
   shortDescription: string;
@@ -67,6 +65,16 @@ interface SetUserProfileAction {
   type: "RECEIVE_PROFILE";
   profile: UserProfile;
 }
+interface UpdateUserProfile {
+  type: "UPDATE_PROFILE";
+}
+interface UpdateUserProfileResponse {
+  type: "UPDATE_PROFILE_RESPONSE";
+  profile: UserProfile;
+}
+interface ToggleProfileModal {
+  type: "TOGGLE_PROFILE_MODAL";
+}
 
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
@@ -74,7 +82,10 @@ type KnownAction =
   | SetUserGoalsAction
   | RequestUserGoalsAction
   | RequestUserProfileAction
-  | SetUserProfileAction;
+  | SetUserProfileAction
+  | UpdateUserProfile
+  | UpdateUserProfileResponse
+  | ToggleProfileModal;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -127,6 +138,15 @@ export const actionCreators = {
       dispatch({ type: "REQUEST_PROFILE" });
     }
   },
+  toggleProfileModal: (): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.user) {
+      dispatch({ type: "TOGGLE_PROFILE_MODAL" });
+    }
+  },
 };
 
 // ----------------
@@ -136,6 +156,8 @@ const unloadedState: UserState = {
   isLoading: false,
   goalsLoading: false,
   initialized: false,
+  profileModalOpen: false,
+  profileModalLoading: false,
 };
 
 export const reducer: Reducer<UserState> = (
@@ -174,6 +196,24 @@ export const reducer: Reducer<UserState> = (
         initialized: true,
         profile: action.profile,
       };
+    case "UPDATE_PROFILE":
+      return {
+        ...state,
+        profileModalLoading: true,
+      };
+    case "UPDATE_PROFILE_RESPONSE":
+      return {
+        ...state,
+        profileModalLoading: false,
+        profile: action.profile,
+        profileModalOpen: false,
+      };
+    case "TOGGLE_PROFILE_MODAL":
+      return {
+        ...state,
+        profileModalOpen: !state.profileModalLoading,
+      };
+
     default:
       return { ...state };
   }

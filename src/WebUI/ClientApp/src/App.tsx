@@ -14,6 +14,7 @@ import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizat
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "./store";
 import FullScreenLoader from "./components/FullScreenLoader";
+import ProfilePage from "./components/profilePage/ProfilePage";
 
 export default () => {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ export default () => {
       <Route exact path="/" component={Home} />
       <AuthorizeRoute exact path="/diary" component={Diary} />
       <AuthorizeRoute exact path="/coaching" component={Coaching} />
+      <AuthorizeRoute exact path="/profile" component={ProfilePage} />
       <AuthorizeRoute path="/coaching/:clientId" component={ClientPage} />
       <Route
         path={AppPaths.ApiAuthorizationPrefix}

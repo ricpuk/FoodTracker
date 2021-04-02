@@ -1,13 +1,21 @@
 import React, { useState } from "react";
-import { Card, CardBody, CardHeader, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Col, Row } from "reactstrap";
 import { UserProfile } from "../../store/User";
 import API from "../../utils/api";
 import LineChart from "../lineChart/LineChart";
+import LinkButton from "../linkButton/LinkButton";
 import SocialMediaList from "../socialMediaList/SocialMediaList";
 import ProfileInfo from "./ProfileInfo";
 
+const MODE_COACH = "coach";
+const MODE_ME = "me";
+const MODE_CLIENT = "client";
+
 interface ProfileProps {
   profile: UserProfile;
+  primaryClick?: () => void;
+  secondaryClick?: () => void;
+  viewMode: typeof MODE_COACH | typeof MODE_ME | typeof MODE_CLIENT;
 }
 
 interface UserStat {
@@ -20,8 +28,8 @@ const Profile = (props: ProfileProps) => {
   const [statsLoading, setStatsLoading] = useState(false);
   const [stats, setStats] = useState<UserStat[]>();
 
-  const { profile } = props;
-  const { firstName, lastName, numberOfClients, fitnessPoints } = profile;
+  const { profile, viewMode, primaryClick, secondaryClick } = props;
+  const { firstName, lastName } = profile;
 
   const getDataPoints = (type: string) => {
     if (statsLoading || !stats) {
@@ -38,6 +46,43 @@ const Profile = (props: ProfileProps) => {
       }
     });
     return dataPoints;
+  };
+
+  const renderButtons = () => {
+    if (viewMode == MODE_ME) {
+      return [
+        <Button
+          color="primary"
+          className="w-100 mr-2"
+          onClick={() => primaryClick && primaryClick()}
+        >
+          Edit profile
+        </Button>,
+        <Button
+          color="secondary"
+          className="w-100 ml-2"
+          onClick={() => secondaryClick && secondaryClick()}
+        >
+          Edit goals
+        </Button>,
+      ];
+    }
+    return [
+      <LinkButton
+        to="diary"
+        color="primary"
+        className="w-100 mr-2"
+        onClick={() => primaryClick && primaryClick()}
+        text="View diary"
+      />,
+      <Button
+        color="secondary"
+        className="w-100 ml-2"
+        onClick={() => secondaryClick && secondaryClick()}
+      >
+        Edit goals
+      </Button>,
+    ];
   };
 
   React.useEffect(() => {
@@ -71,6 +116,9 @@ const Profile = (props: ProfileProps) => {
                 </p>
               </div>
             </div>
+            {viewMode != MODE_COACH && (
+              <div className="d-flex">{renderButtons()}</div>
+            )}
           </CardBody>
         </Card>
         <Card className="mt-3">

@@ -69,7 +69,7 @@ const Coaching = (props: CoachingProps) => {
       <TabContent activeTab={activeTab}>
         <TabPane tabId={TAB_COACH} className="p-3">
           {user.trainer ? (
-            <Profile profile={user.trainer} />
+            <Profile profile={user.trainer} viewMode="coach" />
           ) : (
             <CoachList coaches={coaches} />
           )}

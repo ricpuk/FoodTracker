@@ -57,7 +57,7 @@ export const LoginMenu = () => {
       <Fragment>
         <NavItem>
           <NavLink tag={Link} className="text-dark" to={profilePath}>
-            Hello {userName}
+            Profile
           </NavLink>
         </NavItem>
         <NavItem>
@@ -75,7 +75,7 @@ export const LoginMenu = () => {
     return anonymousView(registerPath, loginPath);
   }
 
-  const profilePath = `${AppPaths.Profile}`;
+  const profilePath = "/profile";
   const logoutPath: PathState = {
     pathname: `${AppPaths.LogOut}`,
     state: { local: true },

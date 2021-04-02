@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import API, { API_USER_GOALS } from "../utils/api";
 import GoalsForm from "./goalsForm/GoalsForm";
 import Toaster from "../utils/toaster";
+import { history } from "../index";
 
 const Home = () => {
   const [goalsOpen, setGoalsOpen] = useState(false);
@@ -28,7 +29,7 @@ const Home = () => {
   };
 
   const navigateToDiaries = () => {
-    //nav code here
+    history.push("/diary");
   };
   return (
     <React.Fragment>

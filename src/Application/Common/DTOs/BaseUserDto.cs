@@ -9,8 +9,6 @@ namespace FoodTracker.Application.Common.DTOs
     public class BaseUserDto
     {
         public int Id { get; set; }
-        public double StartingWeight { get; set; }
-        public double WeightGoal { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ShortDescription { get; set; }
@@ -20,5 +18,6 @@ namespace FoodTracker.Application.Common.DTOs
         public string InstagramUrl { get; set; }
         public string FacebookUrl { get; set; }
         public int NumberOfClients { get; set; }
+        public UserGoalsDto Goals { get; set; }
     }
 }

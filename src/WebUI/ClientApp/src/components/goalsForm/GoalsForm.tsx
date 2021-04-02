@@ -19,8 +19,10 @@ import { ApplicationState } from "../../store";
 import classnames from "classnames";
 import { useAppParams } from "../../utils/hooks";
 import API, { API_USER_GOALS } from "../../utils/api";
+import { history } from "../../index";
 
 interface GoalsFormOwnProps {
+  goals?: UserStore.UserGoals;
   initial: boolean;
   isOpen: boolean;
   toggle: () => void;
@@ -42,15 +44,35 @@ enum FormNames {
 }
 
 const GoalsForm = (props: GoalsFormProps) => {
-  const { initial, isOpen, toggle } = props;
+  const { initial, isOpen, toggle, goals } = props;
+  const deconstructGoals = () => {
+    if (!goals) {
+      return undefined;
+    }
+    const { caloriesGoal, proteinGoal, carbohydratesGoal, fatsGoal } = goals;
+    return {
+      carbs: Math.round(((carbohydratesGoal * 4) / caloriesGoal) * 100),
+      fats: Math.round(((fatsGoal * 9) / caloriesGoal) * 100),
+      proteins: Math.round(((proteinGoal * 4) / caloriesGoal) * 100),
+    };
+  };
+  const deconstructed = deconstructGoals();
   const [loading, setLoading] = useState(false);
-  const [calories, setCalories] = useState(1800);
-  const [carbs, setCarbs] = useState(50);
-  const [protein, setProtein] = useState(30);
-  const [currentWeight, setCurrentWeight] = useState(0);
-  const [targetWeight, setTargetWeight] = useState(0);
-  const [waterIntage, setWaterIntake] = useState(2000);
-  const [fat, setFat] = useState(20);
+  const [calories, setCalories] = useState(goals ? goals.caloriesGoal : 1800);
+  const [carbs, setCarbs] = useState(deconstructed ? deconstructed.carbs : 50);
+  const [protein, setProtein] = useState(
+    deconstructed ? deconstructed.proteins : 30
+  );
+  const [currentWeight, setCurrentWeight] = useState(
+    goals ? goals.startingWeight : 0
+  );
+  const [targetWeight, setTargetWeight] = useState(
+    goals ? goals.weightGoal : 0
+  );
+  const [waterIntage, setWaterIntake] = useState(
+    goals ? goals.waterGoal : 2000
+  );
+  const [fat, setFat] = useState(deconstructed ? deconstructed.fats : 20);
   const [isMobile] = useAppParams();
 
   const totalPercentage = () => {
@@ -104,13 +126,19 @@ const GoalsForm = (props: GoalsFormProps) => {
           //set client goals
         }
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        toggle();
+        if (initial) {
+          history.push("/diary");
+        }
+      });
   };
 
   const constructGoals = () => {
     const caloriesFromCarbs = (calories * carbs) / 100;
-    const caloriesFromFat = (calories * carbs) / 100;
-    const caloriesFromProtein = (calories * carbs) / 100;
+    const caloriesFromFat = (calories * fat) / 100;
+    const caloriesFromProtein = (calories * protein) / 100;
     const result: UserStore.UserGoals = {
       id: 0,
       caloriesGoal: calories,
@@ -121,6 +149,8 @@ const GoalsForm = (props: GoalsFormProps) => {
       startingWeight: currentWeight,
       weightGoal: targetWeight,
     };
+
+    debugger;
     return result;
   };
 
