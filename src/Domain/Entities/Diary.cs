@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using FoodTracker.Domain.Common;
 
 namespace FoodTracker.Domain.Entities
 {
-    public class Diary : AuditableEntity
+    public class Diary
     {
         public int Id { get; set; }
         public int UserProfileId { get; set; }

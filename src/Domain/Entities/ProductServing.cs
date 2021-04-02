@@ -2,7 +2,7 @@
 
 namespace FoodTracker.Domain.Entities
 {
-    public class ProductServing : AuditableEntity
+    public class ProductServing
     {
         public int Id { get; set; }
         public int ProductVersionId { get; set; }

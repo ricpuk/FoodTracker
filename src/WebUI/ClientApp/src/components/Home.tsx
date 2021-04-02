@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Toast, ToastBody, ToastHeader } from "reactstrap";
 import API, { API_USER_GOALS } from "../utils/api";
 import GoalsForm from "./goalsForm/GoalsForm";
-import { toastr } from "react-redux-toastr";
 import Toaster from "../utils/toaster";
 
 const Home = () => {

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using FoodTracker.Domain.Common;
+﻿using System;
+using System.Collections.Generic;
 
 namespace FoodTracker.Domain.Entities
 {
-    public class UserProfile : AuditableEntity
+    public class UserProfile
     {
         public int Id { get; set; }
 
@@ -20,8 +20,8 @@ namespace FoodTracker.Domain.Entities
         public UserProfile Trainer { get; set; }
         public IList<UserProfile> Trainees { get; set; } = new List<UserProfile>();
         public UserGoals UserGoals { get; set; }
-        public double StartingWeight { get; set; }
-        public double WeightGoal { get; set; }
+        public DateTime NotificationsLastSeen { get; set; }
+        public List<Notification> Notifications { get; set; } = new List<Notification>();
 
     }
 }

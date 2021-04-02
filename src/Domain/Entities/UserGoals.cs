@@ -11,5 +11,7 @@ namespace FoodTracker.Domain.Entities
         public double CarbohydratesGoal { get; set; }
         public double FatsGoal { get; set; }
         public double WaterGoal { get; set; }
+        public double StartingWeight { get; set; }
+        public double WeightGoal { get; set; }
     }
 }

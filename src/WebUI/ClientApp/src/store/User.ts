@@ -20,6 +20,8 @@ export interface UserGoals {
   carbohydratesGoal: number;
   fatsGoal: number;
   waterGoal: number;
+  startingWeight: number;
+  weightGoal: number;
 }
 
 export interface UserProfile {

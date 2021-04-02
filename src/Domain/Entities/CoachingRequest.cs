@@ -9,7 +9,7 @@ namespace FoodTracker.Domain.Entities
         Declined,
         Revoked
     }
-    public class CoachingRequest : AuditableEntity
+    public class CoachingRequest
     {
         public int Id { get; set; }
         public int FromId { get; set; }

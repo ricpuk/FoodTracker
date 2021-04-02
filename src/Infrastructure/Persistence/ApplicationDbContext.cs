@@ -38,6 +38,7 @@ namespace FoodTracker.Infrastructure.Persistence
         public DbSet<UserGoals> UserGoals { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<CoachingRequest> CoachingRequests { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

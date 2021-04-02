@@ -30,10 +30,14 @@ type GoalsFormProps = UserStore.UserState &
   typeof UserStore.actionCreators &
   GoalsFormOwnProps;
 
-enum NutrientNames {
+enum FormNames {
   Carbs = "carbs",
   Protein = "protein",
   Fat = "Fat",
+  Calories = "calories",
+  CurrentWeight = "currentWeight",
+  TargetWeight = "targetWeight",
+  WaterIntake = "waterIntake",
 }
 
 const GoalsForm = (props: GoalsFormProps) => {
@@ -42,6 +46,9 @@ const GoalsForm = (props: GoalsFormProps) => {
   const [calories, setCalories] = useState(1800);
   const [carbs, setCarbs] = useState(50);
   const [protein, setProtein] = useState(30);
+  const [currentWeight, setCurrentWeight] = useState(0);
+  const [targetWeight, setTargetWeight] = useState(0);
+  const [waterIntage, setWaterIntake] = useState(2000);
   const [fat, setFat] = useState(20);
   const [isMobile] = useAppParams();
 
@@ -56,14 +63,26 @@ const GoalsForm = (props: GoalsFormProps) => {
     const { value, name } = target;
     const valueParsed = Number(value);
     switch (name) {
-      case NutrientNames.Carbs:
+      case FormNames.Carbs:
         setCarbs(valueParsed);
         break;
-      case NutrientNames.Fat:
+      case FormNames.Fat:
         setFat(valueParsed);
         break;
-      case NutrientNames.Protein:
+      case FormNames.Protein:
         setProtein(valueParsed);
+        break;
+      case FormNames.Calories:
+        setCalories(valueParsed);
+        break;
+      case FormNames.CurrentWeight:
+        setCurrentWeight(valueParsed);
+        break;
+      case FormNames.TargetWeight:
+        setTargetWeight(valueParsed);
+        break;
+      case FormNames.WaterIntake:
+        setWaterIntake(valueParsed);
         break;
     }
   };
@@ -74,8 +93,6 @@ const GoalsForm = (props: GoalsFormProps) => {
     const request = {
       goals,
     };
-    if (props.type === "personal") {
-    }
     const url = props.type === "personal" ? API_USER_GOALS : "client url";
     API.post<UserStore.UserGoals>(url, request)
       .then((response) => {
@@ -99,9 +116,10 @@ const GoalsForm = (props: GoalsFormProps) => {
       carbohydratesGoal: Math.round(caloriesFromCarbs / 4),
       proteinGoal: Math.round(caloriesFromProtein / 4),
       fatsGoal: Math.round(caloriesFromFat / 9),
-      waterGoal: 2000,
+      waterGoal: waterIntage,
+      startingWeight: currentWeight,
+      weightGoal: targetWeight,
     };
-
     return result;
   };
 
@@ -126,6 +144,51 @@ const GoalsForm = (props: GoalsFormProps) => {
   };
   const renderForm = () => (
     <React.Fragment>
+      <Row className="border-bottom px-3">
+        <Col xs="8" className="d-flex flex-column justify-content-center">
+          Starting weight (kg)
+        </Col>
+        <Col xs="4">
+          <Input
+            type="number"
+            className="border-0 no-hov p-0 text-right"
+            placeholder="82"
+            value={currentWeight}
+            name={FormNames.CurrentWeight}
+            onChange={handleChange}
+          />
+        </Col>
+      </Row>
+      <Row className="border-bottom px-3">
+        <Col xs="8" className="d-flex flex-column justify-content-center">
+          Target weight (kg)
+        </Col>
+        <Col xs="4">
+          <Input
+            type="number"
+            className="border-0 no-hov p-0 text-right"
+            placeholder="82"
+            value={targetWeight}
+            name={FormNames.TargetWeight}
+            onChange={handleChange}
+          />
+        </Col>
+      </Row>
+      <Row className="border-bottom px-3">
+        <Col xs="8" className="d-flex flex-column justify-content-center">
+          Water intake (ml)
+        </Col>
+        <Col xs="4">
+          <Input
+            type="number"
+            className="border-0 no-hov p-0 text-right"
+            placeholder="82"
+            value={waterIntage}
+            name={FormNames.WaterIntake}
+            onChange={handleChange}
+          />
+        </Col>
+      </Row>
       <Row className="border-bottom px-3">
         <Col xs="8" className="d-flex flex-column justify-content-center">
           Calories
@@ -158,7 +221,7 @@ const GoalsForm = (props: GoalsFormProps) => {
               max={100}
               placeholder="50"
               value={carbs}
-              name={NutrientNames.Carbs}
+              name={FormNames.Carbs}
               onChange={handleChange}
             />
             <InputGroupAddon addonType="append">
@@ -174,7 +237,7 @@ const GoalsForm = (props: GoalsFormProps) => {
               max={100}
               placeholder="30"
               value={protein}
-              name={NutrientNames.Protein}
+              name={FormNames.Protein}
               onChange={handleChange}
             />
             <InputGroupAddon addonType="append">
@@ -190,7 +253,7 @@ const GoalsForm = (props: GoalsFormProps) => {
               max={100}
               placeholder="20"
               value={fat}
-              name={NutrientNames.Fat}
+              name={FormNames.Fat}
               onChange={handleChange}
             />
             <InputGroupAddon addonType="append">
@@ -258,7 +321,7 @@ const mapStateToProps = (
   state: ApplicationState,
   ownProps: GoalsFormOwnProps
 ) => {
-  return { ...state, ...ownProps };
+  return { ...state.user, ...ownProps };
 };
 
 export default connect(
