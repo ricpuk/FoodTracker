@@ -5,6 +5,7 @@ import { ApplicationState } from "../../store";
 import Profile from "../profile/Profile";
 import * as UserStore from "../../store/User";
 import GoalsForm from "../goalsForm/GoalsForm";
+import EditProfile from "../editProfile/EditProfile";
 
 type ProfilePageProps = UserStore.UserState & typeof UserStore.actionCreators;
 
@@ -46,6 +47,7 @@ const ProfilePage = (props: ProfilePageProps) => {
         toggle={toggleGoals}
         type="personal"
       />
+      <EditProfile />
     </React.Fragment>
   );
 };

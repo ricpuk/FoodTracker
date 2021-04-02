@@ -211,7 +211,7 @@ export const reducer: Reducer<UserState> = (
     case "TOGGLE_PROFILE_MODAL":
       return {
         ...state,
-        profileModalOpen: !state.profileModalLoading,
+        profileModalOpen: !state.profileModalOpen,
       };
 
     default:
