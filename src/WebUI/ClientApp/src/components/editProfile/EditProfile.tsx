@@ -35,6 +35,7 @@ const EditProfile = (props: EditProfileProps) => {
     profileModalOpen,
     profile,
     toggleProfileModal,
+    updateUserProfile,
   } = props;
 
   const [firstName, setFirstName] = useState(profile ? profile.firstName : "");
@@ -87,6 +88,25 @@ const EditProfile = (props: EditProfileProps) => {
         setYoutube(value);
         break;
     }
+  };
+
+  const submit = () => {
+    debugger;
+    const profile: UserStore.UserProfile = {
+      id: 0,
+      numberOfClients: 0,
+      trainer: undefined,
+      coachingRequested: false,
+      firstName: firstName,
+      lastName: lastName,
+      shortDescription: shortDescription,
+      websiteUrl: website,
+      youtubeUrl: youtube,
+      twitterUrl: twitter,
+      facebookUrl: facebook,
+      instagramUrl: instagram,
+    };
+    updateUserProfile(profile);
   };
 
   const inputFields = [
@@ -172,7 +192,7 @@ const EditProfile = (props: EditProfileProps) => {
           color="primary"
           disabled={profileModalLoading}
           className="mt-3 w-100"
-          //   onClick={submit}
+          onClick={submit}
         >
           {profileModalLoading ? <Spinner color="light" /> : "Submit"}
         </Button>

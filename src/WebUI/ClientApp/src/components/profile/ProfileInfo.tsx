@@ -11,7 +11,6 @@ const ProfileInfo = (props: ProfileInfoProps) => {
     firstName,
     lastName,
     shortDescription,
-    fitnessPoints,
     numberOfClients,
   } = props.profile;
   return (
@@ -47,14 +46,6 @@ const ProfileInfo = (props: ProfileInfoProps) => {
           </Col>
           <Col sm="8" className="text-secondary">
             {numberOfClients}
-          </Col>
-        </Row>
-        <Row className="py-3 border-bottom">
-          <Col sm="4">
-            <h5 className="mb-0">Fitness points</h5>
-          </Col>
-          <Col sm="8" className="text-secondary">
-            {fitnessPoints}
           </Col>
         </Row>
       </CardBody>

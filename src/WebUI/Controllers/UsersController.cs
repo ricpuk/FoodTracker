@@ -25,6 +25,12 @@ namespace FoodTracker.WebUI.Controllers
             return Ok(await Mediator.Send(query));
         }
 
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfileAsync([FromBody] UpdateCurrentUserProfileCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
         [HttpGet("profile/{profileId}/stats")]
         public async Task<IActionResult> ProfileAsync([FromRoute] GetUserStatsQuery query)
         {

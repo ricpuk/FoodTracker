@@ -956,6 +956,42 @@
             "JWT": []
           }
         ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users_UpdateProfile",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCurrentUserProfileCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Users/profile/{profileId}/stats": {
@@ -1521,6 +1557,20 @@
           "sodium": {
             "type": "number",
             "format": "double"
+          }
+        }
+      },
+      "UpdateCurrentUserProfileCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "profile": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserProfileDto"
+              }
+            ]
           }
         }
       },

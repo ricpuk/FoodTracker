@@ -1,6 +1,7 @@
 import { Action, Reducer } from "redux";
 import { AppThunkAction } from ".";
 import API, { API_USER_GOALS, API_USER_PROFILE } from "../utils/api";
+import Toaster from "../utils/toaster";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -30,14 +31,13 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   shortDescription: string;
-  trainer: UserProfile;
+  trainer?: UserProfile;
   websiteUrl: string;
   youtubeUrl: string;
   twitterUrl: string;
   instagramUrl: string;
   facebookUrl: string;
   numberOfClients: number;
-  fitnessPoints: number;
   coachingRequested: boolean;
   goals?: UserGoals;
 }
@@ -136,6 +136,31 @@ export const actionCreators = {
         });
 
       dispatch({ type: "REQUEST_PROFILE" });
+    }
+  },
+  updateUserProfile: (profile: UserProfile): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.user) {
+      const request = {
+        profile: profile,
+      };
+      API.put<UserProfile>(API_USER_PROFILE, request)
+        .then((response) => {
+          const { data } = response;
+          dispatch({ type: "UPDATE_PROFILE_RESPONSE", profile: data });
+          Toaster.success("Success", "Profile updated.");
+        })
+        .catch((error) => {
+          Toaster.error(
+            "Error",
+            "There was an issue while updating your profile."
+          );
+        });
+
+      dispatch({ type: "UPDATE_PROFILE" });
     }
   },
   toggleProfileModal: (): AppThunkAction<KnownAction> => (
