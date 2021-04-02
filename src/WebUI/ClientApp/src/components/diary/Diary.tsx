@@ -35,11 +35,17 @@ const Diary = (props: DiaryProps) => {
   const getGoals = () => {
     const diary = props.diaries[props.date];
     if (!diary) {
-      return props.user.goals;
+      if (props.user.profile) {
+        return props.user.profile.goals;
+      }
+      return undefined;
     }
     const { userGoals } = diary;
     if (!userGoals) {
-      return props.user.goals;
+      if (props.user.profile) {
+        return props.user.profile.goals;
+      }
+      return undefined;
     }
     return userGoals;
   };

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace FoodTracker.Domain.Entities
 {
@@ -19,9 +21,12 @@ namespace FoodTracker.Domain.Entities
         public int? TrainerId { get; set; }
         public UserProfile Trainer { get; set; }
         public IList<UserProfile> Trainees { get; set; } = new List<UserProfile>();
-        public UserGoals UserGoals { get; set; }
+        public List<UserGoals> UserGoals { get; set; }
         public DateTime NotificationsLastSeen { get; set; }
         public List<Notification> Notifications { get; set; } = new List<Notification>();
+
+        [NotMapped]
+        public UserGoals CurrentUserGoals => UserGoals.OrderByDescending(x => x.Id).FirstOrDefault();
 
     }
 }

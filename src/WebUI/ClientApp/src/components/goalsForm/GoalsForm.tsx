@@ -13,6 +13,7 @@ import {
   ModalBody,
   ModalHeader,
   Row,
+  Spinner,
 } from "reactstrap";
 import { ApplicationState } from "../../store";
 import classnames from "classnames";
@@ -198,6 +199,9 @@ const GoalsForm = (props: GoalsFormProps) => {
             type="number"
             placeholder="1500"
             className="border-0 no-hov p-0 text-right"
+            value={calories}
+            name={FormNames.Calories}
+            onChange={handleChange}
           />
         </Col>
       </Row>
@@ -306,11 +310,11 @@ const GoalsForm = (props: GoalsFormProps) => {
         {renderSummary()}
         <Button
           color="primary"
-          disabled={!isValid()}
+          disabled={!isValid() || loading}
           className="mt-3 w-100"
           onClick={submit}
         >
-          Submit
+          {loading ? <Spinner color="light" /> : "Submit"}
         </Button>
       </ModalBody>
     </Modal>

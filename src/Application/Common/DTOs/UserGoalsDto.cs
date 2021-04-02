@@ -18,6 +18,8 @@ namespace FoodTracker.Application.Common.DTOs
             CarbohydratesGoal = goals.CarbohydratesGoal;
             FatsGoal = goals.FatsGoal;
             WaterGoal = goals.WaterGoal;
+            StartingWeight = goals.StartingWeight;
+            WeightGoal = goals.WeightGoal;
         }
         public int Id { get; set; }
         public double CaloriesGoal { get; set; }
@@ -25,5 +27,7 @@ namespace FoodTracker.Application.Common.DTOs
         public double CarbohydratesGoal { get; set; }
         public double FatsGoal { get; set; }
         public double WaterGoal { get; set; }
+        public double StartingWeight { get; set; }
+        public double WeightGoal { get; set; }
     }
 }

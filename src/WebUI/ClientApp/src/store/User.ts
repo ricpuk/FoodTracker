@@ -7,7 +7,6 @@ import API, { API_USER_GOALS, API_USER_PROFILE } from "../utils/api";
 
 export interface UserState {
   isLoading: boolean;
-  goals?: UserGoals;
   profile?: UserProfile;
   goalsLoading: boolean;
   initialized: boolean;
@@ -42,6 +41,7 @@ export interface UserProfile {
   numberOfClients: number;
   fitnessPoints: number;
   coachingRequested: boolean;
+  goals?: UserGoals;
 }
 
 const RESOURCE_URL = "api/user";
@@ -92,7 +92,12 @@ export const actionCreators = {
   },
   fetchUserGoals: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
     const appState = getState();
-    if (appState && appState.user && !appState.user.goals) {
+    if (
+      appState &&
+      appState.user &&
+      appState.user.profile &&
+      !appState.user.profile.goals
+    ) {
       API.get<UserGoals>(API_USER_GOALS).then((response) => {
         const { data, status } = response;
         if (status === 204) {
@@ -129,7 +134,6 @@ export const actionCreators = {
 
 const unloadedState: UserState = {
   isLoading: false,
-  goals: undefined,
   goalsLoading: false,
   initialized: false,
 };
@@ -145,9 +149,14 @@ export const reducer: Reducer<UserState> = (
   const action = incomingAction as KnownAction;
   switch (action.type) {
     case "SET_GOALS":
+      if (!state.profile) {
+        return { ...state, goalsLoading: false };
+      }
+      const profile = state.profile;
+      profile.goals = action.goals;
       return {
         ...state,
-        goals: action.goals,
+        profile: profile,
         goalsLoading: false,
       };
     case "REQUEST_GOALS":

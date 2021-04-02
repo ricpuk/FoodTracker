@@ -1371,6 +1371,14 @@
           "waterGoal": {
             "type": "number",
             "format": "double"
+          },
+          "startingWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "weightGoal": {
+            "type": "number",
+            "format": "double"
           }
         }
       },

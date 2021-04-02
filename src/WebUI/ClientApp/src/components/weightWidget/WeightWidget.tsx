@@ -60,7 +60,8 @@ const WeightWidget = (props: WeightWidgetProps) => {
     }
 
     const desired = Math.abs(goalTo - goalFrom);
-    const change = Math.abs(currentWeight - goalFrom);
+    const change =
+      currentWeight >= goalFrom ? 0 : Math.abs(currentWeight - goalFrom);
 
     return (
       <div className="d-flex mb-2">

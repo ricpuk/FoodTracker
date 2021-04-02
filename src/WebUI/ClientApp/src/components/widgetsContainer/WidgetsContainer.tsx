@@ -19,18 +19,29 @@ type WidgetContainerProps = typeof DiariesStore.actionCreators & {
 } & WidgetsContainerOwnProps;
 
 const WidgetsContainer = (props: WidgetContainerProps) => {
-  const { userProfile, interactive } = props;
-  const { startingWeight, currentWeight, weightGoal, waterGoal } = userProfile
-    ? userProfile
+  const { userProfile, interactive, diary } = props;
+
+  const getGoals = () => {
+    if (diary && diary.userGoals) {
+      return diary.userGoals;
+    }
+    if (userProfile && userProfile.goals) {
+      return userProfile.goals;
+    }
+    return {
+      startingWeight: undefined,
+      weightGoal: undefined,
+      waterGoal: undefined,
+    };
+  };
+
+  const { startingWeight, weightGoal, waterGoal } = getGoals();
+  const { weight, waterIntake } = diary
+    ? diary
     : {
-        startingWeight: undefined,
-        currentWeight: undefined,
-        weightGoal: undefined,
-        waterGoal: undefined,
+        weight: undefined,
+        waterIntake: undefined,
       };
-  const { weight, waterIntake } = props.diary
-    ? props.diary
-    : { weight: currentWeight, waterIntake: undefined };
 
   return (
     <Row>

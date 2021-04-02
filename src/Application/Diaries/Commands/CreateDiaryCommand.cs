@@ -59,12 +59,11 @@ namespace FoodTracker.Application.Diaries.Commands
                 throw new NotFoundException(); //TODO proper exception
             }
 
-            var goals = userProfile.UserGoals;
             var entity = new Diary
             {
                 Date = request.Date.Date,
                 UserProfileId = profileId,
-                UserGoals = goals
+                UserGoals = userProfile.CurrentUserGoals
             };
 
             await _dbContext.Diaries.AddAsync(entity, cancellationToken);

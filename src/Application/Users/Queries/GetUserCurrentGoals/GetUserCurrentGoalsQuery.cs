@@ -29,7 +29,7 @@ namespace FoodTracker.Application.Users.Queries.GetUserCurrentGoals
         public async Task<UserGoalsDto> Handle(GetUserCurrentGoalsQuery request, CancellationToken cancellationToken)
         {
             var profile = await _identityService.GetCurrentUserProfileAsync();
-            var goals = profile.UserGoals;
+            var goals = profile.CurrentUserGoals;
             var goalsDto = _mapper.Map<UserGoalsDto>(goals);
             return goalsDto;
         }
