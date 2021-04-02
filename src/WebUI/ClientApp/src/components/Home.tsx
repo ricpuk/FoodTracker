@@ -23,7 +23,7 @@ const Home = () => {
       .finally(() => {
         setLoading(false);
       });
-  });
+  }, []);
 
   const toggleGoals = () => {
     setGoalsOpen(!goalsOpen);

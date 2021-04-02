@@ -2,30 +2,3 @@
     text-align: center;
     line-height: 300%;
 }
-
-
-.login_container .loginOr {
-    position: relative;
-    font-size: 1.5em;
-    color: #aaa;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-}
-
-.login_container .omb_loginForm .input-group.i {
-    width: 2em;
-}
-
-.login_container .loginForm .help-block {
-    color: red;
-}
-
-
-@media (min-width: 768px) {
-    .login_container .forgotPwd {
-        text-align: right;
-        margin-top: 10px;
-    }
-}
