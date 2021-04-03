@@ -18,6 +18,7 @@ namespace FoodTracker.Application.Common.DTOs
         public string InstagramUrl { get; set; }
         public string FacebookUrl { get; set; }
         public int NumberOfClients { get; set; }
+        public string ProfilePicture { get; set; }
         public UserGoalsDto Goals { get; set; }
     }
 }

@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   CardSubtitle,
   CardTitle,
   Col,
@@ -33,14 +34,14 @@ const CoachList = (props: CoachListProps) => {
   const renderCoach = (coach: UserProfile) => (
     <Col sm="6" lg="4" key={`${coach.id}`}>
       <Card className="mb-3">
-        <img
-          src="https://via.placeholder.com/340x120/FFA07A/000000"
-          alt="Cover"
-          className="card-img-top"
-        />
+        <CardHeader style={{ height: 50 }} />
         <CardBody>
           <img
-            src="https://bootdey.com/img/Content/avatar/avatar1.png"
+            src={
+              coach.profilePicture
+                ? coach.profilePicture
+                : require("../../assets/blank.png")
+            }
             style={{ width: 100, marginTop: -65 }}
             alt="User"
             className="img-fluid img-thumbnail rounded-circle d-flex mr-auto ml-auto"

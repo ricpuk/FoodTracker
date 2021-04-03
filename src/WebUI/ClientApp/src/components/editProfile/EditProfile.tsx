@@ -1,4 +1,5 @@
 import classnames from "classnames";
+import { profile } from "console";
 import React, { ChangeEvent, useState } from "react";
 import { connect } from "react-redux";
 import {
@@ -91,9 +92,10 @@ const EditProfile = (props: EditProfileProps) => {
   };
 
   const submit = () => {
-    const profile: UserStore.UserProfile = {
+    const newProfile: UserStore.UserProfile = {
       id: 0,
       numberOfClients: 0,
+      profilePicture: "",
       trainer: undefined,
       coachingRequested: false,
       firstName: firstName,
@@ -105,7 +107,7 @@ const EditProfile = (props: EditProfileProps) => {
       facebookUrl: facebook,
       instagramUrl: instagram,
     };
-    updateUserProfile(profile);
+    updateUserProfile(newProfile);
   };
 
   const inputFields = [

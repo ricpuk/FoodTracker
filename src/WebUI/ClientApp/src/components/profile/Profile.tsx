@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useRef, useState } from "react";
 import { Button, Card, CardBody, CardHeader, Col, Row } from "reactstrap";
 import { UserProfile } from "../../store/User";
 import API from "../../utils/api";
@@ -6,6 +6,11 @@ import LineChart from "../lineChart/LineChart";
 import LinkButton from "../linkButton/LinkButton";
 import SocialMediaList from "../socialMediaList/SocialMediaList";
 import ProfileInfo from "./ProfileInfo";
+import { FiCamera } from "react-icons/fi";
+import "./Profile.css";
+import classnames from "classnames";
+import { useDispatch } from "react-redux";
+import * as UserStore from "../../store/User";
 
 const MODE_COACH = "coach";
 const MODE_ME = "me";
@@ -27,6 +32,8 @@ interface UserStat {
 const Profile = (props: ProfileProps) => {
   const [statsLoading, setStatsLoading] = useState(false);
   const [stats, setStats] = useState<UserStat[]>();
+  const inputFile = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch();
 
   const { profile, viewMode, primaryClick, secondaryClick } = props;
   const { firstName, lastName } = profile;
@@ -46,6 +53,31 @@ const Profile = (props: ProfileProps) => {
       }
     });
     return dataPoints;
+  };
+
+  const openFileDialog = () => {
+    if (viewMode !== "me" || !inputFile || !inputFile.current) {
+      return;
+    }
+    inputFile.current.click();
+  };
+
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (viewMode !== "me") {
+      return;
+    }
+    const { files: newFiles } = e.target;
+    if (newFiles == null) {
+      return;
+    }
+    const uploadedFile = newFiles[0];
+
+    const formData = new FormData();
+    formData.append("file", uploadedFile);
+
+    API.post<string>(`/api/profile/photo`, formData).then((result) => {
+      dispatch(UserStore.actionCreators.updateProfilePicture);
+    });
   };
 
   const renderButtons = () => {
@@ -101,12 +133,47 @@ const Profile = (props: ProfileProps) => {
         <Card>
           <CardBody>
             <div className="d-flex flex-column align-items-center text-center">
-              <img
-                src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                alt="Admin"
-                className="rounded-circle"
-                width="150"
-              />
+              <div
+                className={classnames({
+                  "interactive-container": viewMode === "me",
+                })}
+                style={{ position: "relative" }}
+                onClick={openFileDialog}
+              >
+                <img
+                  src={
+                    profile.profilePicture
+                      ? profile.profilePicture
+                      : require("../../assets/blank.png")
+                  }
+                  alt="Admin"
+                  className="rounded-circle"
+                  width="150"
+                ></img>
+                {viewMode === "me" && (
+                  <div
+                    className="bg-light rounded-circle interactive d-flex flex-column justify-content-center"
+                    style={{
+                      width: 150,
+                      height: 150,
+                      position: "absolute",
+                      top: 0,
+                      opacity: 0.8,
+                    }}
+                  >
+                    <FiCamera className="m-auto" size="60" />
+                  </div>
+                )}
+                <input
+                  type="file"
+                  id="file"
+                  ref={inputFile}
+                  onChange={handleFileUpload}
+                  accept="image/*"
+                  style={{ display: "none" }}
+                />
+              </div>
+
               <div className="mt-3">
                 <h4>
                   {firstName} {lastName}
@@ -117,7 +184,7 @@ const Profile = (props: ProfileProps) => {
               </div>
             </div>
             {viewMode != MODE_COACH && (
-              <div className="d-flex">{renderButtons()}</div>
+              <div className="d-flex mt-2">{renderButtons()}</div>
             )}
           </CardBody>
         </Card>

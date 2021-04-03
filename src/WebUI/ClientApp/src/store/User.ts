@@ -31,6 +31,7 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   shortDescription: string;
+  profilePicture: string;
   trainer?: UserProfile;
   websiteUrl: string;
   youtubeUrl: string;
@@ -75,6 +76,10 @@ interface UpdateUserProfileResponse {
 interface ToggleProfileModal {
   type: "TOGGLE_PROFILE_MODAL";
 }
+interface SetProfilePhotoAction {
+  type: "SET_PROFILE_PHOTO";
+  photo: string;
+}
 
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
@@ -85,7 +90,8 @@ type KnownAction =
   | SetUserProfileAction
   | UpdateUserProfile
   | UpdateUserProfileResponse
-  | ToggleProfileModal;
+  | ToggleProfileModal
+  | SetProfilePhotoAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -172,6 +178,15 @@ export const actionCreators = {
       dispatch({ type: "TOGGLE_PROFILE_MODAL" });
     }
   },
+  updateProfilePicture: (url: string): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.user) {
+      dispatch({ type: "SET_PROFILE_PHOTO", photo: url });
+    }
+  },
 };
 
 // ----------------
@@ -237,6 +252,13 @@ export const reducer: Reducer<UserState> = (
       return {
         ...state,
         profileModalOpen: !state.profileModalOpen,
+      };
+    case "SET_PROFILE_PHOTO":
+      if (state.profile) {
+        state.profile.profilePicture = action.photo;
+      }
+      return {
+        ...state,
       };
 
     default:

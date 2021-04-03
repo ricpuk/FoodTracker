@@ -3,6 +3,7 @@ using FoodTracker.Infrastructure.Identity;
 using FoodTracker.Infrastructure.Persistence;
 using FoodTracker.Infrastructure.Services;
 using FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts;
+using FoodTracker.Infrastructure.Services.S3;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,7 @@ namespace FoodTracker.Infrastructure
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<IDataService, OpenFoodFactsDataService>();
+            services.AddSingleton<IFileUploader, S3FileUploader>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();

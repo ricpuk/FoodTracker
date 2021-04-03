@@ -1169,6 +1169,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "profilePicture": {
+            "type": "string",
+            "nullable": true
+          },
           "goals": {
             "nullable": true,
             "oneOf": [

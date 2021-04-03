@@ -24,6 +24,7 @@ namespace FoodTracker.Domain.Entities
         public List<UserGoals> UserGoals { get; set; }
         public DateTime NotificationsLastSeen { get; set; }
         public List<Notification> Notifications { get; set; } = new List<Notification>();
+        public string ProfilePicture { get; set; }
 
         [NotMapped]
         public UserGoals CurrentUserGoals => UserGoals.OrderByDescending(x => x.Id).FirstOrDefault();

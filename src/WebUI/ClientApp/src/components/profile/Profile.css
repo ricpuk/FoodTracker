@@ -1,0 +1,7 @@
+.interactive-container .interactive {
+  visibility: hidden;
+  cursor: pointer;
+}
+.interactive-container:hover .interactive {
+  visibility: visible;
+}
