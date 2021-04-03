@@ -11,6 +11,7 @@ import "./Profile.css";
 import classnames from "classnames";
 import { useDispatch } from "react-redux";
 import * as UserStore from "../../store/User";
+import Toaster from "../../utils/toaster";
 
 const MODE_COACH = "coach";
 const MODE_ME = "me";
@@ -75,9 +76,14 @@ const Profile = (props: ProfileProps) => {
     const formData = new FormData();
     formData.append("file", uploadedFile);
 
-    API.post<string>(`/api/profile/photo`, formData).then((result) => {
-      dispatch(UserStore.actionCreators.updateProfilePicture);
-    });
+    API.post<string>(`/api/users/profile/photo`, formData)
+      .then((result) => {
+        dispatch(UserStore.actionCreators.updateProfilePicture(result.data));
+        Toaster.success("Success", "Profile photo uploaded");
+      })
+      .catch((e) => {
+        Toaster.error("Error", "Something went wrong.");
+      });
   };
 
   const renderButtons = () => {

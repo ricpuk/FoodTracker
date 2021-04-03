@@ -994,6 +994,48 @@
         ]
       }
     },
+    "/api/Users/profile/photo": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users_UpdateProfilePhoto",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Users/profile/{profileId}/stats": {
       "get": {
         "tags": [

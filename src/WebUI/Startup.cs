@@ -74,16 +74,21 @@ namespace FoodTracker.WebUI
                 configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
-            services.AddCors(options =>
+            services.AddCors(c =>
             {
-                // this defines a CORS policy called "default"
-                options.AddPolicy("default", policy =>
-                {
-                    policy.WithOrigins("http://localhost:3000", "http://*.ngrok.io")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
             });
+
+            //services.AddCors(options =>
+            //{
+            //    // this defines a CORS policy called "default"
+            //    options.AddPolicy("default", policy =>
+            //    {
+            //        policy.WithOrigins("http://localhost:3000", "http://*.ngrok.io")
+            //            .AllowAnyHeader()
+            //            .AllowAnyMethod();
+            //    });
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

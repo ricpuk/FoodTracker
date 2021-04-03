@@ -29,6 +29,8 @@ namespace FoodTracker.Infrastructure
                         b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
             }
 
+            services.Configure<S3FileUploaderOptions>(configuration.GetSection("AWS"));
+
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
             services.AddScoped<IDomainEventService, DomainEventService>();

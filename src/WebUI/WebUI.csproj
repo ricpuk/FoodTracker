@@ -13,7 +13,7 @@
 
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
-    <UserSecretsId>efad71c6-743c-4b87-9de8-f26d77146f6d</UserSecretsId>
+    <UserSecretsId>9ca97c61-de08-4621-a490-96a2540d48ab</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
