@@ -150,7 +150,6 @@ const GoalsForm = (props: GoalsFormProps) => {
       weightGoal: targetWeight,
     };
 
-    debugger;
     return result;
   };
 

@@ -91,7 +91,6 @@ const EditProfile = (props: EditProfileProps) => {
   };
 
   const submit = () => {
-    debugger;
     const profile: UserStore.UserProfile = {
       id: 0,
       numberOfClients: 0,
