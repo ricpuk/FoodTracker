@@ -42,9 +42,16 @@ namespace FoodTracker.Application.Clients.Queries.GetClientsDiary
                 .Include(x => x.Entries)
                     .ThenInclude(de => de.ProductVersion)
                         .ThenInclude(pv => pv.ProductServings)
+                .Include(x => x.Entries)
+                    .ThenInclude(de => de.ProductVersion)
+                        .ThenInclude(pv => pv.Product)
                 .Include(x => x.UserGoals)
                 .SingleOrDefaultAsync(x => x.Date == request.DiaryDate.Date && x.UserProfileId == request.ClientId, cancellationToken);
-            var diaryDto = _mapper.Map<DiaryDto>(diary);
+            if(diary == null)
+            {
+                throw new NotFoundException("No diary for this client was found");
+            }
+            var diaryDto = new DiaryDto(diary);
             AssignEntries(diaryDto, diary);
 
             return diaryDto;

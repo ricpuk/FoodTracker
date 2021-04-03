@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "./store";
 import FullScreenLoader from "./components/FullScreenLoader";
 import ProfilePage from "./components/profilePage/ProfilePage";
+import ClientDiary from "./components/clientPage/ClientDiary";
 
 export default () => {
   const dispatch = useDispatch();
@@ -46,7 +47,11 @@ export default () => {
       <AuthorizeRoute exact path="/diary" component={Diary} />
       <AuthorizeRoute exact path="/coaching" component={Coaching} />
       <AuthorizeRoute exact path="/profile" component={ProfilePage} />
-      <AuthorizeRoute path="/coaching/:clientId" component={ClientPage} />
+      <AuthorizeRoute exact path="/coaching/:clientId" component={ClientPage} />
+      <AuthorizeRoute
+        path="/coaching/:clientId/diary"
+        component={ClientDiary}
+      />
       <Route
         path={AppPaths.ApiAuthorizationPrefix}
         component={ApiAuthorizationRoutes}

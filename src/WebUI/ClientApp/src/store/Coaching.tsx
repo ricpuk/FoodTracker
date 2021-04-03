@@ -5,6 +5,7 @@ import API from "../utils/api";
 import { GetListResponse } from "../utils/interfaces";
 import { UserProfile } from "./User";
 import * as DiariesStore from "./Diaries";
+import Toaster from "../utils/toaster";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -111,7 +112,7 @@ interface FetchClientDiaryAction {
 interface ReceiveClientDiaryAction {
   type: "RECEIVE_CLIENT_DIARY";
   clientId: string;
-  diary: DiariesStore.Diary;
+  diary?: DiariesStore.Diary;
   date: string;
 }
 
@@ -312,15 +313,27 @@ export const actionCreators = {
     if (appState && appState.coaching) {
       API.get<DiariesStore.Diary>(
         `${CLIENTS_RESOURCE_URL}/${clientId}/diaries/${date}`
-      ).then((response) => {
-        const { data } = response;
-        dispatch({
-          type: "RECEIVE_CLIENT_DIARY",
-          clientId: clientId,
-          date: date,
-          diary: data,
+      )
+        .then((response) => {
+          const { data } = response;
+          dispatch({
+            type: "RECEIVE_CLIENT_DIARY",
+            clientId: clientId,
+            date: date,
+            diary: data,
+          });
+        })
+        .catch((error) => {
+          if (error.response.status !== 404) {
+            Toaster.error("Error", "Something went wrong.");
+          }
+          dispatch({
+            type: "RECEIVE_CLIENT_DIARY",
+            clientId: clientId,
+            date: date,
+            diary: undefined,
+          });
         });
-      });
 
       dispatch({
         type: "FETCH_CLIENT_DIARY",
