@@ -254,11 +254,17 @@ export const reducer: Reducer<UserState> = (
         profileModalOpen: !state.profileModalOpen,
       };
     case "SET_PROFILE_PHOTO":
-      if (state.profile) {
-        state.profile.profilePicture = action.photo;
+      if (!state.profile) {
+        return { ...state };
       }
+      const newProfile: UserProfile = {
+        ...state.profile,
+        profilePicture: action.photo,
+      };
+
       return {
         ...state,
+        profile: newProfile,
       };
 
     default:

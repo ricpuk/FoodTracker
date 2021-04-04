@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FoodTracker.Domain.Entities;
 using FoodTracker.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 
@@ -35,23 +36,28 @@ namespace FoodTracker.Infrastructure.Persistence
                 await roleManager.CreateAsync(role);
             }
 
-            var users = new Dictionary<string, string>
+            var users = new Dictionary<string, dynamic>
             {
-                {"jake","jake@foo.bar"},
-                {"tim", "tim@foo.bar"},
-                {"ed", "ed@foo.bar"},
-                {"ben", "ben@foo.bar"},
-                {"timmy", "timmy@foo.bar"}
+                {"jake",new {Email = "jake@foo.bar", FirstName = "Jake", LastName = "Bar", ShortDescription = "Testing user"}},
+                {"tim", new {Email = "tim@foo.bar", FirstName = "Tim", LastName = "Bar", ShortDescription = "Testing user"}},
+                {"ed", new {Email = "ed@foo.bar", FirstName = "Ed", LastName = "Bar", ShortDescription = "Testing user"}},
+                {"ben", new {Email = "ben@foo.bar", FirstName = "Ben", LastName = "Bar", ShortDescription = "Testing user"}},
+                {"timmy", new {Email = "timmy@foo.bar", FirstName = "Timmy", LastName = "Bar", ShortDescription = "Testing user"}}
             };
 
             foreach (var userkvp in users)
             {
-                var user = new ApplicationUser { UserName = userkvp.Key, Email = userkvp.Value };
-                if (userManager.Users.All(u => u.UserName != user.UserName))
+                var value = userkvp.Value;
+                var userProfile = new UserProfile
                 {
-                    await userManager.CreateAsync(user, "User1!");
-                    await userManager.AddToRolesAsync(user, new[] { role.Name });
-                }
+                    FirstName = value.FirstName,
+                    LastName = value.LastName,
+                    ShortDescription = value.ShortDescription
+                };
+                var user = new ApplicationUser { UserName = userkvp.Key, Email = value.Email, Profile = userProfile};
+                if (!userManager.Users.All(u => u.UserName != user.UserName)) continue;
+                await userManager.CreateAsync(user, "User1!");
+                await userManager.AddToRolesAsync(user, new[] { role.Name });
             }
         }
     }

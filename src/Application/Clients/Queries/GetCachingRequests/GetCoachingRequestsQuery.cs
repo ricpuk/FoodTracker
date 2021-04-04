@@ -33,12 +33,12 @@ namespace FoodTracker.Application.Clients.Queries.GetCachingRequests
 
         public async Task<PaginatedList<CoachingRequestDto>> Handle(GetCoachingRequestsQuery request, CancellationToken cancellationToken)
         {
-            var profile = await _identityService.GetCurrentUserProfileAsync();
+            var profile = await _identityService.GetCurrentUserProfileIdAsync();
 
             var requests = await _dbContext
                 .CoachingRequests
                 .Include(x => x.From)
-                .Where(x => x.ToId == profile.Id && x.Status == CoachingRequestStatus.Sent)
+                .Where(x => x.ToId == profile && x.Status == CoachingRequestStatus.Sent)
                 .ProjectTo<CoachingRequestDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.Page, 100);
 

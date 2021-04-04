@@ -34,7 +34,7 @@ namespace FoodTracker.Application.Diaries.Queries
 
         public async Task<DiaryDto> Handle(GetDiaryByDateQuery request, CancellationToken cancellationToken)
         {
-            var userProfile = await _identityService.GetCurrentUserProfileAsync();
+            var userProfile = await _identityService.GetCurrentUserProfileIdAsync();
             var diaryDate = request.Date.Date;
             var diary = _dbContext.Diaries
                 .Include(x => x.UserGoals)
@@ -44,7 +44,7 @@ namespace FoodTracker.Application.Diaries.Queries
                 .Include(x => x.Entries)
                     .ThenInclude(e => e.ProductVersion)
                         .ThenInclude(x => x.ProductServings)
-                .SingleOrDefault(x => x.UserProfileId == userProfile.Id && x.Date.Date == diaryDate);
+                .SingleOrDefault(x => x.UserProfileId == userProfile && x.Date.Date == diaryDate);
             if (diary != null)
             {
                 var dto = new DiaryDto(diary);
@@ -54,7 +54,7 @@ namespace FoodTracker.Application.Diaries.Queries
             {
                 Date = request.Date,
                 ExistingChecked = true,
-                UserProfileId = userProfile.Id
+                UserProfileId = userProfile
             };
             return await _mediator.Send(command, cancellationToken);
 

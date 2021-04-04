@@ -12,6 +12,7 @@ import classnames from "classnames";
 import { useDispatch } from "react-redux";
 import * as UserStore from "../../store/User";
 import Toaster from "../../utils/toaster";
+import ProfilePicture from "./ProfilePicture";
 
 const MODE_COACH = "coach";
 const MODE_ME = "me";
@@ -146,16 +147,7 @@ const Profile = (props: ProfileProps) => {
                 style={{ position: "relative" }}
                 onClick={openFileDialog}
               >
-                <img
-                  src={
-                    profile.profilePicture
-                      ? profile.profilePicture
-                      : require("../../assets/blank.png")
-                  }
-                  alt="Admin"
-                  className="rounded-circle"
-                  width="150"
-                ></img>
+                <ProfilePicture url={profile.profilePicture} />
                 {viewMode === "me" && (
                   <div
                     className="bg-light rounded-circle interactive d-flex flex-column justify-content-center"

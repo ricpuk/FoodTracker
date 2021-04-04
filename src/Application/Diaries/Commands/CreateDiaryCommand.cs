@@ -79,9 +79,7 @@ namespace FoodTracker.Application.Diaries.Commands
             {
                 return userProfileId.Value;
             }
-
-            var userProfile = await _identityService.GetCurrentUserProfileAsync();
-            return userProfile.Id;
+            return await _identityService.GetCurrentUserProfileIdAsync();
         }
     }
 }

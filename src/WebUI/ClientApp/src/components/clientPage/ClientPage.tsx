@@ -18,9 +18,11 @@ type ClientPageProps = CoachingStore.CoachingState &
 const ClientPage = (props: ClientPageProps) => {
   const [goalsOpen, setGoalsOpen] = useState(false);
   const { clientId } = props.match.params;
-  const { clientsLoading, currentClient } = props;
+  const { clientsLoading, currentClient, fetchClientById } = props;
 
-  React.useEffect(() => {});
+  React.useEffect(() => {
+    fetchClientById(clientId);
+  }, [clientId, fetchClientById]);
 
   const toggleGoals = () => {
     setGoalsOpen(!goalsOpen);
@@ -30,7 +32,13 @@ const ClientPage = (props: ClientPageProps) => {
     if (!currentClient) {
       return null;
     }
-    return <Profile profile={currentClient} viewMode="client" />;
+    return (
+      <Profile
+        profile={currentClient}
+        viewMode="client"
+        secondaryClick={toggleGoals}
+      />
+    );
   };
 
   return (
@@ -40,6 +48,7 @@ const ClientPage = (props: ClientPageProps) => {
         initial={false}
         isOpen={goalsOpen}
         toggle={toggleGoals}
+        goals={currentClient ? currentClient.goals : undefined}
         type="client"
       />
     </div>

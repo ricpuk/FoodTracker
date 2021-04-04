@@ -10,6 +10,8 @@ namespace FoodTracker.Application.Common.Interfaces
 
         Task<UserProfile> GetCurrentUserProfileAsync();
 
+        Task<int> GetCurrentUserProfileIdAsync();
+
         Task<UserProfile> UpdateCurrentUserProfileAsync(UserProfile profile);
 
         Task<bool> IsInRoleAsync(string userId, string role);

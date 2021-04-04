@@ -30,7 +30,8 @@ namespace FoodTracker.Application.Common.Mappings
             CreateMap<UserGoalsDto, UserGoals>();
 
             CreateMap<UserProfile, UserProfileDto>()
-                .ForMember(x => x.Goals, opt => opt.MapFrom(s => s.CurrentUserGoals));
+                .ForMember(x => x.Goals, opt => opt.MapFrom(s => s.CurrentUserGoals))
+                .ForMember(x => x.NumberOfClients, opt => opt.MapFrom(s => s.Trainees.Count));
 
             CreateMap<UserProfile, CoachDto>()
                 .ForMember(x => x.NumberOfClients,

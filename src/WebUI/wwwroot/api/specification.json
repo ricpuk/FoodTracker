@@ -60,6 +60,79 @@
         ]
       }
     },
+    "/api/Clients/{clientId}": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "operationId": "Clients_ClientById",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfCoachingRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Clients"
+        ],
+        "operationId": "Clients_StopCoaching",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Clients/{clientId}/diaries/{diaryDate}": {
       "get": {
         "tags": [
@@ -95,44 +168,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedListOfCoachingRequestDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
-    "/api/Clients/{clientId}": {
-      "delete": {
-        "tags": [
-          "Clients"
-        ],
-        "operationId": "Clients_StopCoaching",
-        "parameters": [
-          {
-            "name": "clientId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
                 }
               }
             }

@@ -35,9 +35,9 @@ namespace FoodTracker.Application.Clients.Queries.GetClients
 
         public async Task<PaginatedList<UserProfileDto>> Handle(GetClientsQuery request, CancellationToken cancellationToken)
         {
-            var userProfile = await _identityService.GetCurrentUserProfileAsync();
+            var userProfile = await _identityService.GetCurrentUserProfileIdAsync();
             var clients = await _dbContext.UserProfiles
-                .Where(x => x.TrainerId == userProfile.Id)
+                .Where(x => x.TrainerId == userProfile)
                 .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.Page, request.PageSize);
             return clients;

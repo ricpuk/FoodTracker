@@ -29,10 +29,10 @@ namespace FoodTracker.Application.CoachingRequests.Commands.DeclineCoachingReque
 
         public async Task<Unit> Handle(DeclineCoachingRequestCommand request, CancellationToken cancellationToken)
         {
-            var userProfile = await _identityService.GetCurrentUserProfileAsync();
+            var userProfile = await _identityService.GetCurrentUserProfileIdAsync();
             var coachingRequest =
                 await _dbContext.CoachingRequests
-                    .Where(x => x.Id == request.RequestId && x.ToId == userProfile.Id).SingleOrDefaultAsync(cancellationToken);
+                    .Where(x => x.Id == request.RequestId && x.ToId == userProfile).SingleOrDefaultAsync(cancellationToken);
 
             if(coachingRequest == null)
             {

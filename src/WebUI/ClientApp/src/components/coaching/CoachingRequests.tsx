@@ -38,7 +38,11 @@ const CoachingRequests = (props: CoachingRequestsProps) => {
       >
         <Media
           left
-          src="https://bootdey.com/img/Content/avatar/avatar2.png"
+          src={
+            user.profilePicture
+              ? user.profilePicture
+              : require("../../assets/blank.png")
+          }
           style={{ width: 75 }}
         />
         <div className="flex-fill pl-3 pr-3">

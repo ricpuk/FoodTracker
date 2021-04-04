@@ -25,11 +25,11 @@ namespace FoodTracker.Application.Coaches.Commands.CreateCoachingRequest
 
         public async Task<Unit> Handle(CreateCoachingRequestCommand request, CancellationToken cancellationToken)
         {
-            var userProfile = await _identityService.GetCurrentUserProfileAsync();
+            var userProfile = await _identityService.GetCurrentUserProfileIdAsync();
 
             var coachingRequest = new CoachingRequest
             {
-                FromId = userProfile.Id,
+                FromId = userProfile,
                 ToId = request.CoachId
             };
 

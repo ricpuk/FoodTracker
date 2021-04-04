@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FoodTracker.Application.Clients.Commands;
 using FoodTracker.Application.Clients.Queries.GetCachingRequests;
+using FoodTracker.Application.Clients.Queries.GetClientById;
 using FoodTracker.Application.Clients.Queries.GetClients;
 using FoodTracker.Application.Clients.Queries.GetClientsDiary;
 using FoodTracker.Application.CoachingRequests.Commands.AcceptCoachingRequest;
@@ -22,6 +23,16 @@ namespace FoodTracker.WebUI.Controllers
         [HttpGet]
         public async Task<ActionResult<PaginatedList<CoachingRequestDto>>> ClientsList([FromQuery] GetClientsQuery query)
         {
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("{clientId}")]
+        public async Task<ActionResult<PaginatedList<CoachingRequestDto>>> ClientById(int clientId)
+        {
+            var query = new GetClientByIdQuery
+            {
+                ClientId = clientId
+            };
             return Ok(await Mediator.Send(query));
         }
 

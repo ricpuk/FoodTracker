@@ -34,16 +34,16 @@ namespace FoodTracker.Application.Coaches.Queries.GetCoaches
 
         public async Task<PaginatedList<CoachDto>> Handle(GetCoachesQuery request, CancellationToken cancellationToken)
         {
-            var profile = await _identityService.GetCurrentUserProfileAsync();
+            var profile = await _identityService.GetCurrentUserProfileIdAsync();
 
             var coaches = await _dbContext
                 .UserProfiles
                 .Include(x => x.Trainees)
-                .Where(x => x.Id != profile.Id)
+                .Where(x => x.Id != profile)
                 .ProjectTo<CoachDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.Page, 100);
 
-            var coachingRequests = await _dbContext.CoachingRequests.Where(x => x.FromId == profile.Id).ToListAsync();
+            var coachingRequests = await _dbContext.CoachingRequests.Where(x => x.FromId == profile).ToListAsync();
 
             foreach (var coachesItem in coaches.Items)
             {

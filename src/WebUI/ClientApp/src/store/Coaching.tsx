@@ -130,6 +130,17 @@ interface ClientDeletedAction {
   clientId: number;
 }
 
+interface FetchClientAction {
+  type: "FETCH_CLIENT";
+  clientId: string;
+}
+
+interface ReceiveClientAction {
+  type: "RECEIVE_CLIENT";
+  clientId: string;
+  client: UserProfile;
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction =
@@ -150,7 +161,9 @@ type KnownAction =
   | ReceiveClientDiaryAction
   | SetCurrentClientAction
   | SetClientsLoadingAction
-  | ClientDeletedAction;
+  | ClientDeletedAction
+  | FetchClientAction
+  | ReceiveClientAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -372,6 +385,25 @@ export const actionCreators = {
       });
     }
   },
+  fetchClientById: (clientId: string): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.coaching) {
+      API.get<UserProfile>(`${CLIENTS_RESOURCE_URL}/${clientId}`).then(
+        (response) => {
+          const { data } = response;
+          dispatch({
+            type: "RECEIVE_CLIENT",
+            clientId: clientId,
+            client: data,
+          });
+        }
+      );
+      dispatch({ type: "FETCH_CLIENT", clientId: clientId });
+    }
+  },
 };
 
 // ----------------
@@ -525,6 +557,22 @@ export const reducer: Reducer<CoachingState> = (
         ...state,
         clientsLoading: false,
       };
+    case "FETCH_CLIENT":
+      return {
+        ...state,
+        clientId: action.clientId,
+        clientsLoading: true,
+      };
+    case "RECEIVE_CLIENT":
+      if (action.clientId === state.clientId) {
+        return {
+          ...state,
+          clientId: action.clientId,
+          currentClient: action.client,
+          clientsLoading: false,
+        };
+      }
+      return { ...state };
 
     default:
       return { ...state };

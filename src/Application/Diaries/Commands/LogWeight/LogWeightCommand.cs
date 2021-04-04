@@ -27,9 +27,9 @@ namespace FoodTracker.Application.Diaries.Commands.LogWeight
 
         public async Task<Unit> Handle(LogWeightCommand request, CancellationToken cancellationToken)
         {
-            var userProfile = await _identityService.GetCurrentUserProfileAsync();
+            var userProfile = await _identityService.GetCurrentUserProfileIdAsync();
             var diary = _dbContext.Diaries.SingleOrDefault(x =>
-                x.UserProfileId == userProfile.Id && x.Date == request.Date.Date);
+                x.UserProfileId == userProfile && x.Date == request.Date.Date);
 
             if (diary == null)
             {

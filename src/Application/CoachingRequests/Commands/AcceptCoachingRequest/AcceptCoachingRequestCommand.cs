@@ -25,17 +25,17 @@ namespace FoodTracker.Application.CoachingRequests.Commands.AcceptCoachingReques
         }
         public async Task<Unit> Handle(AcceptCoachingRequestCommand request, CancellationToken cancellationToken)
         {
-            var userProfile = await _identityService.GetCurrentUserProfileAsync();
+            var userProfile = await _identityService.GetCurrentUserProfileIdAsync();
             var coachingRequest = _dbContext
                 .CoachingRequests
-                .SingleOrDefault(x => x.Id == request.RequestId && x.ToId == userProfile.Id);
+                .SingleOrDefault(x => x.Id == request.RequestId && x.ToId == userProfile);
 
             if (coachingRequest == null)
             {
                 throw new NotFoundException("Coaching request was not found");
             }
 
-            var coachProfile = _dbContext.UserProfiles.Single(x => x.Id == userProfile.Id);
+            var coachProfile = _dbContext.UserProfiles.Single(x => x.Id == userProfile);
             var clientProfile = _dbContext.UserProfiles.Single(x => x.Id == coachingRequest.FromId);
 
             coachProfile.Trainees.Add(clientProfile);

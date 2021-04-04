@@ -28,8 +28,8 @@ namespace FoodTracker.Application.Users.Commands
         public async Task<UserGoalsDto> Handle(SetGoalsCommand request, CancellationToken cancellationToken)
         {
             var goals = _mapper.Map<UserGoals>(request.Goals);
-            var profile = await _identityService.GetCurrentUserProfileAsync();
-            goals.UserProfileId = profile.Id;
+            var profile = await _identityService.GetCurrentUserProfileIdAsync();
+            goals.UserProfileId = profile;
             await _dbContext.UserGoals.AddAsync(goals, cancellationToken);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
