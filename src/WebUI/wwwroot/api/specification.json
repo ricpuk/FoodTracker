@@ -96,6 +96,53 @@
           }
         ]
       },
+      "put": {
+        "tags": [
+          "Clients"
+        ],
+        "operationId": "Clients_UpdateClientGoals",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetClientGoalsCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfCoachingRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
       "delete": {
         "tags": [
           "Clients"
@@ -930,7 +977,7 @@
           }
         ]
       },
-      "post": {
+      "put": {
         "tags": [
           "Users"
         ],
@@ -1295,6 +1342,24 @@
           "weightGoal": {
             "type": "number",
             "format": "double"
+          }
+        }
+      },
+      "SetClientGoalsCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "clientId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "goals": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserGoalsDto"
+              }
+            ]
           }
         }
       },

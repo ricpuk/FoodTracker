@@ -43,7 +43,7 @@ namespace FoodTracker.WebUI.Controllers
             return Ok(await Mediator.Send(query));
         }
 
-        [HttpPost("goals")]
+        [HttpPut("goals")]
         public async Task<IActionResult> SetGoalsAsync([FromBody] SetGoalsCommand command)
         {
             return Ok(await Mediator.Send(command));

@@ -3,7 +3,7 @@ import { Action, Reducer } from "redux";
 import { AppThunkAction } from ".";
 import API from "../utils/api";
 import { GetListResponse } from "../utils/interfaces";
-import { UserProfile } from "./User";
+import { UserGoals, UserProfile } from "./User";
 import * as DiariesStore from "./Diaries";
 import Toaster from "../utils/toaster";
 
@@ -140,6 +140,10 @@ interface ReceiveClientAction {
   clientId: string;
   client: UserProfile;
 }
+interface SetClientGoalsAction {
+  type: "SET_CLIENT_GOALS";
+  goals: UserGoals;
+}
 
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
@@ -163,7 +167,8 @@ type KnownAction =
   | SetClientsLoadingAction
   | ClientDeletedAction
   | FetchClientAction
-  | ReceiveClientAction;
+  | ReceiveClientAction
+  | SetClientGoalsAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -404,6 +409,15 @@ export const actionCreators = {
       dispatch({ type: "FETCH_CLIENT", clientId: clientId });
     }
   },
+  setCurrentClientGoals: (goals: UserGoals): AppThunkAction<KnownAction> => (
+    dispatch,
+    getState
+  ) => {
+    const appState = getState();
+    if (appState && appState.coaching && appState.coaching.currentClient) {
+      dispatch({ type: "SET_CLIENT_GOALS", goals: goals });
+    }
+  },
 };
 
 // ----------------
@@ -573,6 +587,18 @@ export const reducer: Reducer<CoachingState> = (
         };
       }
       return { ...state };
+    case "SET_CLIENT_GOALS":
+      if (!state.currentClient) {
+        return { ...state };
+      }
+      const client: UserProfile = {
+        ...state.currentClient,
+        goals: action.goals,
+      };
+      return {
+        ...state,
+        currentClient: client,
+      };
 
     default:
       return { ...state };

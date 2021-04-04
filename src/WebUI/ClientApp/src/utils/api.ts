@@ -10,6 +10,7 @@ export const API_DIARY_ENTRIES = (diaryId: number) =>
 
 export const API_USER_GOALS = `/api/users/goals`;
 export const API_USER_PROFILE = `/api/users/profile`;
+export const API_CLIENTS = `/api/clients`;
 
 export function configureAxios(history: History<any>) {
   // Add a request interceptor

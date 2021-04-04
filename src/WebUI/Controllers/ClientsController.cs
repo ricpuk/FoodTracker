@@ -36,6 +36,14 @@ namespace FoodTracker.WebUI.Controllers
             return Ok(await Mediator.Send(query));
         }
 
+        [HttpPut("{clientId}")]
+        public async Task<ActionResult<PaginatedList<CoachingRequestDto>>> UpdateClientGoals(int clientId, [FromBody] SetClientGoalsCommand command)
+
+        {
+            command.ClientId = clientId;
+            return Ok(await Mediator.Send(command));
+        }
+
         [HttpGet("{clientId}/diaries/{diaryDate}")]
         public async Task<ActionResult<PaginatedList<CoachingRequestDto>>> ClientDiary([FromRoute] GetClientsDiaryQuery query)
         {

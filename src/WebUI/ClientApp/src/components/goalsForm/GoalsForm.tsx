@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import * as UserStore from "../../store/User";
+import * as CoachingStore from "../../store/Coaching";
 import {
   Alert,
   Button,
@@ -18,11 +19,12 @@ import {
 import { ApplicationState } from "../../store";
 import classnames from "classnames";
 import { useAppParams } from "../../utils/hooks";
-import API, { API_USER_GOALS } from "../../utils/api";
+import API, { API_CLIENTS, API_USER_GOALS } from "../../utils/api";
 import { history } from "../../index";
 
 interface GoalsFormOwnProps {
   goals?: UserStore.UserGoals;
+  clientId?: string;
   initial: boolean;
   isOpen: boolean;
   toggle: () => void;
@@ -74,6 +76,7 @@ const GoalsForm = (props: GoalsFormProps) => {
   );
   const [fat, setFat] = useState(deconstructed ? deconstructed.fats : 20);
   const [isMobile] = useAppParams();
+  const dispatch = useDispatch();
 
   const totalPercentage = () => {
     return carbs + protein + fat;
@@ -116,14 +119,17 @@ const GoalsForm = (props: GoalsFormProps) => {
     const request = {
       goals,
     };
-    const url = props.type === "personal" ? API_USER_GOALS : "client url";
-    API.post<UserStore.UserGoals>(url, request)
+    const url =
+      props.type === "personal"
+        ? API_USER_GOALS
+        : `${API_CLIENTS}/${props.clientId}`;
+    API.put<UserStore.UserGoals>(url, request)
       .then((response) => {
         const { data } = response;
         if (props.type === "personal") {
           props.setUserGoals(data);
         } else {
-          //set client goals
+          dispatch(CoachingStore.actionCreators.setCurrentClientGoals(data));
         }
       })
       .finally(() => {

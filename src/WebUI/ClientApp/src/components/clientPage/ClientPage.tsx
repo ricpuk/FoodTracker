@@ -44,13 +44,16 @@ const ClientPage = (props: ClientPageProps) => {
   return (
     <div>
       <Loader isLoading={clientsLoading}>{renderClientProfile()}</Loader>
-      <GoalsForm
-        initial={false}
-        isOpen={goalsOpen}
-        toggle={toggleGoals}
-        goals={currentClient ? currentClient.goals : undefined}
-        type="client"
-      />
+      {currentClient && (
+        <GoalsForm
+          initial={false}
+          isOpen={goalsOpen}
+          toggle={toggleGoals}
+          goals={currentClient.goals}
+          clientId={clientId}
+          type="client"
+        />
+      )}
     </div>
   );
 };
