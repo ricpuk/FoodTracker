@@ -35,6 +35,7 @@ namespace FoodTracker.WebUI
 
                     await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
                     await ApplicationDbContextSeed.SeedDummyUsersAsync(userManager, roleManager);
+                    await ApplicationDbContextSeed.SeedDummyTrainersAsync(userManager, roleManager);
                 }
                 catch (Exception ex)
                 {

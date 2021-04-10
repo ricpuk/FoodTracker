@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
@@ -44,6 +45,7 @@ namespace FoodTracker.WebUI.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public IList<SelectListItem> Roles { get; set; }
 
         public class InputModel
         {
@@ -79,6 +81,9 @@ namespace FoodTracker.WebUI.Areas.Identity.Pages.Account
             [Display(Name = "Short description")]
             [StringLength(40, ErrorMessage = "The {0} must be at max {1} characters long.")]
             public string ShortDescription { get; set; }
+
+            [Display(Name = "I want to coach people")]
+            public bool Trainer { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -91,10 +96,17 @@ namespace FoodTracker.WebUI.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            Roles = new List<SelectListItem>
+            {
+                new() {Value = IdentityConsts.UserRole, Text ="User"},
+                new() {Value = IdentityConsts.TrainerRole, Text = "Trainer"},
+            };
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+
             var creationResult = await CreateUser();
 
             
@@ -140,6 +152,12 @@ namespace FoodTracker.WebUI.Areas.Identity.Pages.Account
         {
             var user = creationResult.User;
             _logger.LogInformation("User created a new account with password.");
+
+            await _userManager.AddToRoleAsync(user, IdentityConsts.UserRole);
+            if (Input.Trainer)
+            {
+                await _userManager.AddToRoleAsync(user, IdentityConsts.TrainerRole);
+            }
 
             await TrySendConfirmationEmailAsync(user, returnUrl);
 

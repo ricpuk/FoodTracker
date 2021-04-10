@@ -11,7 +11,7 @@ namespace FoodTracker.Infrastructure.Persistence
     {
         public static async Task SeedDefaultUserAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            var administratorRole = new IdentityRole("Administrator");
+            var administratorRole = new IdentityRole(IdentityConsts.AdminRole);
 
             if (roleManager.Roles.All(r => r.Name != administratorRole.Name))
             {
@@ -29,7 +29,7 @@ namespace FoodTracker.Infrastructure.Persistence
 
         public static async Task SeedDummyUsersAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            var role = new IdentityRole("User");
+            var role = new IdentityRole(IdentityConsts.UserRole);
 
             if (roleManager.Roles.All(r => r.Name != role.Name))
             {
@@ -55,6 +55,40 @@ namespace FoodTracker.Infrastructure.Persistence
                     ShortDescription = value.ShortDescription
                 };
                 var user = new ApplicationUser { UserName = userkvp.Key, Email = value.Email, Profile = userProfile};
+                if (!userManager.Users.All(u => u.UserName != user.UserName)) continue;
+                await userManager.CreateAsync(user, "User1!");
+                await userManager.AddToRolesAsync(user, new[] { role.Name });
+            }
+        }
+
+        public static async Task SeedDummyTrainersAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            var role = new IdentityRole(IdentityConsts.TrainerRole);
+
+            if (roleManager.Roles.All(r => r.Name != role.Name))
+            {
+                await roleManager.CreateAsync(role);
+            }
+
+            var users = new Dictionary<string, dynamic>
+            {
+                {"jake",new {Email = "jake.trainer@foo.bar", FirstName = "Jake", LastName = "Bar", ShortDescription = "Testing trainer"}},
+                {"tim", new {Email = "tim.trainer@foo.bar", FirstName = "Tim", LastName = "Bar", ShortDescription = "Testing trainer"}},
+                {"ed", new {Email = "ed.trainer@foo.bar", FirstName = "Ed", LastName = "Bar", ShortDescription = "Testing trainer"}},
+                {"ben", new {Email = "ben.trainer@foo.bar", FirstName = "Ben", LastName = "Bar", ShortDescription = "Testing trainer"}},
+                {"timmy", new {Email = "timmy.trainer@foo.bar", FirstName = "Timmy", LastName = "Bar", ShortDescription = "Testing trainer"}}
+            };
+
+            foreach (var userkvp in users)
+            {
+                var value = userkvp.Value;
+                var userProfile = new UserProfile
+                {
+                    FirstName = value.FirstName,
+                    LastName = value.LastName,
+                    ShortDescription = value.ShortDescription
+                };
+                var user = new ApplicationUser { UserName = userkvp.Key, Email = value.Email, Profile = userProfile };
                 if (!userManager.Users.All(u => u.UserName != user.UserName)) continue;
                 await userManager.CreateAsync(user, "User1!");
                 await userManager.AddToRolesAsync(user, new[] { role.Name });

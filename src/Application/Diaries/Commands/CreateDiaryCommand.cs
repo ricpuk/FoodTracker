@@ -8,6 +8,7 @@ using FoodTracker.Application.Common.Exceptions;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodTracker.Application.Diaries.Commands
 {
@@ -53,7 +54,7 @@ namespace FoodTracker.Application.Diaries.Commands
 
         private async Task<DiaryDto> CreateNewDiary(CreateDiaryCommand request, CancellationToken cancellationToken, int profileId)
         {
-            var userProfile = await _dbContext.UserProfiles.FindAsync(profileId);
+            var userProfile = await _dbContext.UserProfiles.Include(x => x.UserGoals).Where(x => x.Id == profileId).FirstOrDefaultAsync(cancellationToken);
             if (userProfile == null)
             {
                 throw new NotFoundException(); //TODO proper exception

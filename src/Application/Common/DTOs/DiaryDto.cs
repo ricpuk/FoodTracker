@@ -15,7 +15,10 @@ namespace FoodTracker.Application.Common.DTOs
         public DiaryDto(Diary diary)
         {
             Id = diary.Id;
-            UserGoals = new UserGoalsDto(diary.UserGoals);
+            if (diary.UserGoals != null)
+            {
+                UserGoals = new UserGoalsDto(diary.UserGoals);
+            }
             WaterIntake = diary.WaterIntake;
             Weight = diary.Weight;
             Date = diary.Date;
