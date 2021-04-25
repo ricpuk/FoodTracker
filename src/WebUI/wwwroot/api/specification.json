@@ -631,7 +631,7 @@
         "tags": [
           "DiaryEntries"
         ],
-        "operationId": "DiaryEntries_Create2",
+        "operationId": "DiaryEntries_Update",
         "parameters": [
           {
             "name": "diaryId",

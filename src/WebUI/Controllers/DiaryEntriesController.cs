@@ -20,7 +20,7 @@ namespace FoodTracker.WebUI.Controllers
         }
 
         [HttpPut("{entryId}")]
-        public async Task<ActionResult<DiaryDto>> Create(int diaryId, int entryId, UpdateDiaryEntryCommand command)
+        public async Task<ActionResult<DiaryDto>> Update(int diaryId, int entryId, UpdateDiaryEntryCommand command)
         {
             command.SetDiaryId(diaryId);
             command.SetDiaryEntryId(entryId);
