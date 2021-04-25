@@ -23,7 +23,6 @@ namespace FoodTracker.WebUI.Controllers
         [HttpPut("{entryId}")]
         public async Task<ActionResult<DiaryDto>> Update(int diaryId, int entryId, UpdateDiaryEntryCommand command)
         {
-            command.SetDiaryId(diaryId);
             command.SetDiaryEntryId(entryId);
             return Ok(await Mediator.Send(command));
         }
@@ -32,7 +31,6 @@ namespace FoodTracker.WebUI.Controllers
         public async Task<ActionResult> Delete(int diaryId, int entryId)
         {
             var command = new DeleteDiaryEntryCommand();
-            command.SetDiaryId(diaryId);
             command.SetDiaryEntryId(entryId);
             return Ok(await Mediator.Send(command));
         }

@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Interfaces;
+using FoodTracker.Application.Diaries.Queries;
+using FoodTracker.Application.Products;
+using FoodTracker.Application.Products.Commands.CreateProduct;
 using FoodTracker.Domain.Entities;
 using FoodTracker.Infrastructure.Identity;
 using FoodTracker.Infrastructure.Persistence;
@@ -178,6 +183,37 @@ namespace FoodTracker.Application.IntegrationTests
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
             return await context.Set<TEntity>().CountAsync();
+        }
+
+        public static async Task<DiaryDto> GetDiaryByDate(DateTime date)
+        {
+            var query = new GetDiaryByDateQuery
+            {
+                Date = date
+            };
+            return await SendAsync(query);
+        }
+
+        public static async Task<ProductDto> CreateDefaultProduct()
+        {
+            var command = new CreateProductCommand
+            {
+                BarCode = "11111111",
+                Name = "Test product",
+                Servings = new List<ProductServingDto>
+                {
+                    new()
+                    {
+                        Carbohydrates = 20,
+                        Calories = 2000,
+                        Fats = 20,
+                        Protein = 20,
+                        ServingSize = 100,
+                        ServingSizeUnit = "g"
+                    }
+                }
+            };
+            return await SendAsync(command);
         }
 
         [OneTimeTearDown]

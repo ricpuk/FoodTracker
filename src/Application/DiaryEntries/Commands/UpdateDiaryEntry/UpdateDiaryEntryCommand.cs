@@ -11,18 +11,7 @@ namespace FoodTracker.Application.DiaryEntries.Commands.UpdateDiaryEntry
 {
     public class UpdateDiaryEntryCommand : IRequest<DiaryEntryDto>
     {
-        private int _diaryId;
         private int _diaryEntryId;
-
-        public void SetDiaryId(int diaryId)
-        {
-            _diaryId = diaryId;
-        }
-
-        public int GetDiaryId()
-        {
-            return _diaryId;
-        }
 
         public void SetDiaryEntryId(int entryId)
         {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Exceptions;
 using FoodTracker.Application.Diaries.Commands.LogWaterIntake;
 using FoodTracker.Application.Diaries.Commands.LogWeight;
@@ -114,15 +113,6 @@ namespace FoodTracker.Application.IntegrationTests.Diaries.Queries
                 Invoking(() => SendAsync(command))
                 .Should()
                 .Throw<NotFoundException>();
-        }
-
-        private async Task<DiaryDto> GetDiaryByDate(DateTime date)
-        {
-            var query = new GetDiaryByDateQuery
-            {
-                Date = date
-            };
-            return await SendAsync(query);
         }
     }
 }

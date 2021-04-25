@@ -12,18 +12,8 @@ namespace FoodTracker.Application.DiaryEntries.Commands.DeleteDiaryEntry
 {
     public class DeleteDiaryEntryCommand : IRequest<Unit>
     {
-        private int _diaryId;
         private int _diaryEntryId;
 
-        public void SetDiaryId(int diaryId)
-        {
-            _diaryId = diaryId;
-        }
-
-        public int GetDiaryId()
-        {
-            return _diaryId;
-        }
         public void SetDiaryEntryId(int entryId)
         {
             _diaryEntryId = entryId;
