@@ -5,7 +5,7 @@ using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Interfaces;
 using MediatR;
 
-namespace FoodTracker.Application.Users.Queries.GetUserProfile
+namespace FoodTracker.Application.Users.Queries.GetCurrentUserProfile
 {
     public class GetCurrentUserProfileQuery : IRequest<UserProfileDto>
     {

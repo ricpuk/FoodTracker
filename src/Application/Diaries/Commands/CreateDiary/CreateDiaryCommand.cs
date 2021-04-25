@@ -10,13 +10,11 @@ using FoodTracker.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace FoodTracker.Application.Diaries.Commands
+namespace FoodTracker.Application.Diaries.Commands.CreateDiary
 {
     public class CreateDiaryCommand: IRequest<DiaryDto>
     {
         public DateTime Date { get; set; }
-        public bool ExistingChecked { get; init; } = false;
-        public int? UserProfileId { get; set; }
     }
 
     public class CreateDiaryCommandHandler : IRequestHandler<CreateDiaryCommand, DiaryDto>
@@ -33,21 +31,7 @@ namespace FoodTracker.Application.Diaries.Commands
         }
         public async Task<DiaryDto> Handle(CreateDiaryCommand request, CancellationToken cancellationToken)
         {
-            var profileId = await UserProfileIdAsync(request.UserProfileId);
-
-            if (request.ExistingChecked)
-            {
-                return await CreateNewDiary(request, cancellationToken, profileId);
-            }
-
-
-            var existingEntity = _dbContext.Diaries
-                .SingleOrDefault(x => x.UserProfileId == profileId && x.Date == request.Date.Date);
-
-            if (existingEntity != null)
-            {
-                return _mapper.Map<DiaryDto>(existingEntity);
-            }
+            var profileId = await _identityService.GetCurrentUserProfileIdAsync();
 
             return await CreateNewDiary(request, cancellationToken, profileId);
         }
@@ -72,15 +56,6 @@ namespace FoodTracker.Application.Diaries.Commands
 
             return _mapper.Map<DiaryDto>(entity);
 
-        }
-
-        private async Task<int> UserProfileIdAsync(int? userProfileId)
-        {
-            if (userProfileId.HasValue)
-            {
-                return userProfileId.Value;
-            }
-            return await _identityService.GetCurrentUserProfileIdAsync();
         }
     }
 }

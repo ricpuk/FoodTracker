@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Diaries.Commands;
+using FoodTracker.Application.DiaryEntries.Commands.CreateDiaryEntry;
 using FoodTracker.Application.DiaryEntries.Commands.DeleteDiaryEntry;
 using FoodTracker.Application.DiaryEntries.Commands.UpdateDiaryEntry;
 using Microsoft.AspNetCore.Authorization;

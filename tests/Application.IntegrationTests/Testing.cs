@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FoodTracker.Application.Common.Interfaces;
+using FoodTracker.Domain.Entities;
 using FoodTracker.Infrastructure.Identity;
 using FoodTracker.Infrastructure.Persistence;
 using FoodTracker.WebUI;
@@ -43,7 +44,7 @@ namespace FoodTracker.Application.IntegrationTests
 
             services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>
                 w.EnvironmentName == "Development" &&
-                w.ApplicationName == "CleanArchitecture.WebUI"));
+                w.ApplicationName == "FoodTracker.WebUI"));
 
             services.AddLogging();
 
@@ -109,7 +110,7 @@ namespace FoodTracker.Application.IntegrationTests
 
             var userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
 
-            var user = new ApplicationUser { UserName = userName, Email = userName };
+            var user = new ApplicationUser { UserName = userName, Email = userName, Profile = new UserProfile()};
 
             var result = await userManager.CreateAsync(user, password);
 

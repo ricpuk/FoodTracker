@@ -7,7 +7,7 @@ using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Domain.Entities;
 using MediatR;
 
-namespace FoodTracker.Application.Diaries.Commands
+namespace FoodTracker.Application.DiaryEntries.Commands.CreateDiaryEntry
 {
     public class CreateDiaryEntryCommand : IRequest<DiaryEntryDto>
     {

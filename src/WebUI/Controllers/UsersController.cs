@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FoodTracker.Application.Users.Commands;
+using FoodTracker.Application.Users.Queries.GetCurrentUserProfile;
 using FoodTracker.Application.Users.Queries.GetUserCurrentGoals;
-using FoodTracker.Application.Users.Queries.GetUserProfile;
 using FoodTracker.Application.Users.Queries.GetUserStats;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -6,13 +6,14 @@ using AutoMapper;
 using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Application.Diaries.Commands;
+using FoodTracker.Application.Diaries.Commands.CreateDiary;
 using FoodTracker.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FoodTracker.Application.Diaries.Queries
 {
-    public class GetDiaryByDateQuery : IRequest<DiaryDto>, IRequest<Unit>
+    public class GetDiaryByDateQuery : IRequest<DiaryDto>
     {
         public DateTime Date { get; set; }
     }
@@ -52,9 +53,7 @@ namespace FoodTracker.Application.Diaries.Queries
             }
             var command = new CreateDiaryCommand
             {
-                Date = request.Date,
-                ExistingChecked = true,
-                UserProfileId = userProfile
+                Date = request.Date
             };
             return await _mediator.Send(command, cancellationToken);
 
