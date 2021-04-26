@@ -1,4 +1,6 @@
 ﻿using FoodTracker.Domain.Common;
+using System;
+using System.Collections.Generic;
 
 namespace FoodTracker.Domain.Entities
 {
@@ -13,5 +15,10 @@ namespace FoodTracker.Domain.Entities
         public double WaterGoal { get; set; }
         public double StartingWeight { get; set; }
         public double WeightGoal { get; set; }
+
+        public static implicit operator List<object>(UserGoals v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

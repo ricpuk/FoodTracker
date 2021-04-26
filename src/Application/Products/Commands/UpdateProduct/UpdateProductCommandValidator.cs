@@ -7,10 +7,7 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
         public UpdateProductCommandValidator()
         {
             RuleFor(p => p.Id).NotEmpty();
-            RuleFor(p => p.Carbohydrates).NotEmpty();
-            RuleFor(p => p.Calories).NotEmpty();
-            RuleFor(p => p.Protein).NotEmpty();
-            RuleFor(p => p.Fats).NotEmpty();
+            RuleFor(p => p.Servings).NotEmpty();
         }
 
     }

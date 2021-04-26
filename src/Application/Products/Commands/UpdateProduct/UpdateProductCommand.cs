@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using FoodTracker.Application.Common.Exceptions;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Domain.Entities;
@@ -12,20 +13,18 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Calories { get; set; }
-        public double Protein { get; set; }
-        public double Carbohydrates { get; set; }
-        public double Fats { get; set; }
-        public double Sodium { get; set; }
+        public IList<ProductServingDto> Servings { get; set; }
     }
 
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Unit>
     {
         private readonly IApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public UpdateProductCommandHandler(IApplicationDbContext dbContext)
+        public UpdateProductCommandHandler(IApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -40,41 +39,13 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
             entity.ProductVersions.Add(new ProductVersion
             {
                 Name = request.Name,
-                //ProductServings = CreateProductServings(request)
+                ProductServings = _mapper.Map<IList<ProductServingDto>, IList<ProductServing>>(request.Servings)
             });
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }
-
-        //private static List<ProductServing> CreateProductServings(UpdateProductCommand command)
-        //{
-        //    var result = new List<ProductServing>();
-
-        //    foreach (var VARIABLE in command.)
-        //    {
-                
-        //    }
-
-        //    //return new()
-        //    //{
-        //    //    new ProductServing
-        //    //    {
-        //    //        ProductServingVersions = new List<ProductServingVersion>()
-        //    //        {
-        //    //            new()
-        //    //            {
-        //    //                Calories = command.Calories,
-        //    //                Protein = command.Protein,
-        //    //                Carbohydrates = command.Carbohydrates,
-        //    //                Fats = command.Fats,
-        //    //            }
-        //    //        }
-
-        //    //    }
-        //    //};
-        //}
     }
 
 

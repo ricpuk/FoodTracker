@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Interfaces;
+using FoodTracker.Application.Common.Models;
 using FoodTracker.Application.Diaries.Queries;
 using FoodTracker.Application.Products;
 using FoodTracker.Application.Products.Commands.CreateProduct;
@@ -14,6 +15,7 @@ using FoodTracker.Infrastructure.Persistence;
 using FoodTracker.WebUI;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -66,6 +68,35 @@ namespace FoodTracker.Application.IntegrationTests
             services.AddTransient(provider =>
                 Mock.Of<ICurrentUserService>(s => s.UserId == _currentUserId));
 
+            var fileUploaderServiceDescriptor = services.FirstOrDefault(d =>
+                d.ServiceType == typeof(IFileUploader));
+
+            services.Remove(fileUploaderServiceDescriptor);
+
+            var fileUploaderMock = new Mock<IFileUploader>();
+            fileUploaderMock.Setup(x => x.UploadAsync(It.IsAny<IFormFile>()))
+                .Returns(Task.FromResult("Test.png"));
+
+            services.AddTransient(provider => fileUploaderMock.Object);
+
+            var dataServiceDesc = services.FirstOrDefault(d =>
+                d.ServiceType == typeof(IDataService));
+
+            services.Remove(dataServiceDesc);
+
+            var dataServiceMock = new Mock<IDataService>();
+            dataServiceMock.Setup(x => x.FetchProduct("22222222"))
+                .Returns(Task.FromResult<DataServiceProduct>(null));
+            dataServiceMock.Setup(x => x.FetchProduct("11111111"))
+                .Returns(Task.FromResult<DataServiceProduct>(new DataServiceProduct
+                {
+                    BarCode = "11111111",
+                    Name = "Test",
+                    Serving = new DataServiceProductServing()
+                }));
+
+            services.AddTransient(provider => dataServiceMock.Object);
+
             _scopeFactory = services.BuildServiceProvider().GetService<IServiceScopeFactory>();
 
             _checkpoint = new Checkpoint
@@ -115,7 +146,21 @@ namespace FoodTracker.Application.IntegrationTests
 
             var userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
 
-            var user = new ApplicationUser { UserName = userName, Email = userName, Profile = new UserProfile()};
+            var userProfile = new UserProfile
+            {
+                UserGoals = new List<UserGoals> 
+                {
+                    new() {
+                    CaloriesGoal = 2000,
+                    CarbohydratesGoal = 200,
+                    FatsGoal = 200,
+                    ProteinGoal = 200,
+                    StartingWeight = 85
+                    }
+                }
+            };
+
+            var user = new ApplicationUser { UserName = userName, Email = userName, Profile = userProfile };
 
             var result = await userManager.CreateAsync(user, password);
 
@@ -143,6 +188,15 @@ namespace FoodTracker.Application.IntegrationTests
             throw new Exception($"Unable to create {userName}.{Environment.NewLine}{errors}");
         }
 
+        public static async Task<UserProfile> GetCurrentUserProfileAsync()
+        {
+            using var scope = _scopeFactory.CreateScope();
+
+            var identityService = scope.ServiceProvider.GetService<IIdentityService>();
+
+            return await identityService.GetCurrentUserProfileAsync();
+        }
+
         public static async Task ResetState()
         {
             await using (var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection")))
@@ -162,6 +216,15 @@ namespace FoodTracker.Application.IntegrationTests
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
             return await context.FindAsync<TEntity>(keyValues);
+        }
+
+        public static ApplicationDbContext GetContext()
+        {
+            var scope = _scopeFactory.CreateScope();
+
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            return context;
         }
 
         public static async Task AddAsync<TEntity>(TEntity entity)
@@ -214,6 +277,17 @@ namespace FoodTracker.Application.IntegrationTests
                 }
             };
             return await SendAsync(command);
+        }
+
+        public static async Task SeedDefaultUsers()
+        {
+            using var scope = _scopeFactory.CreateScope();
+
+            var userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+            var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+
+            await ApplicationDbContextSeed.SeedDummyUsersAsync(userManager, roleManager);
+            await ApplicationDbContextSeed.SeedDummyTrainersAsync(userManager, roleManager);
         }
 
         [OneTimeTearDown]

@@ -1684,25 +1684,12 @@
             "type": "string",
             "nullable": true
           },
-          "calories": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "protein": {
-            "type": "number",
-            "format": "double"
-          },
-          "carbohydrates": {
-            "type": "number",
-            "format": "double"
-          },
-          "fats": {
-            "type": "number",
-            "format": "double"
-          },
-          "sodium": {
-            "type": "number",
-            "format": "double"
+          "servings": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ProductServingDto"
+            }
           }
         }
       },
