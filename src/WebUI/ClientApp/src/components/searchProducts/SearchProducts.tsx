@@ -89,7 +89,8 @@ const SearchProducts = (props: SearchProductsState) => {
             >
               <Col xs="10">
                 {product.name}
-                {serving && ` - ${serving.calories} ${serving.servingSizeUnit}`}
+                {serving &&
+                  ` - ${serving.servingSize} ${serving.servingSizeUnit}`}
               </Col>
               <Col xs="2">{serving && serving.calories}</Col>
             </Row>

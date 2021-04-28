@@ -23,7 +23,8 @@ export default (props: CaloriesBreakdownProps) => {
   const round = (num: number, precision: number) =>
     Number(Math.round(Number(`${num}e+${precision}`)) + "e-" + precision);
 
-  const percentage = (value: number) => `${round((value / max) * 100, 1)}%`;
+  const percentage = (value: number) => round((value / max) * 100, 1);
+  const percentageString = (value: number) => `${percentage(value)}%`;
 
   const proteinId = `${prefix}-protein-tt`;
   const carbsId = `${prefix}-carbs-tt`;
@@ -36,12 +37,22 @@ export default (props: CaloriesBreakdownProps) => {
         <Progress
           bar
           color="primary"
-          value={proteinCals}
+          value={percentage(proteinCals)}
           id={proteinId}
         ></Progress>
-        <Progress bar color="success" value={carbsCals} id={carbsId} />
-        <Progress bar color="danger" value={fatsCals} id={fatsId} />
-        <Progress bar color="light" value={remaining} id={remainingId} />
+        <Progress
+          bar
+          color="success"
+          value={percentage(carbsCals)}
+          id={carbsId}
+        />
+        <Progress bar color="danger" value={percentage(fatsCals)} id={fatsId} />
+        <Progress
+          bar
+          color="light"
+          value={percentage(remaining)}
+          id={remainingId}
+        />
       </Progress>
       <Tooltip
         placement="bottom"
@@ -49,7 +60,7 @@ export default (props: CaloriesBreakdownProps) => {
         target={proteinId}
         toggle={() => setProteinOpen(!proteinOpen)}
       >
-        Protein {percentage(proteinCals)}
+        Protein {percentageString(proteinCals)}
       </Tooltip>
       <Tooltip
         placement="bottom"
@@ -57,7 +68,7 @@ export default (props: CaloriesBreakdownProps) => {
         target={carbsId}
         toggle={() => setCarbsOpen(!carbsOpen)}
       >
-        Carbs: {percentage(carbsCals)}
+        Carbs: {percentageString(carbsCals)}
       </Tooltip>
       <Tooltip
         placement="bottom"
@@ -65,7 +76,7 @@ export default (props: CaloriesBreakdownProps) => {
         target={fatsId}
         toggle={() => setFatsOpen(!fatsOpen)}
       >
-        Fats {percentage(fatsCals)}
+        Fats {percentageString(fatsCals)}
       </Tooltip>
       <Tooltip
         placement="bottom"
@@ -73,7 +84,7 @@ export default (props: CaloriesBreakdownProps) => {
         target={remainingId}
         toggle={() => setRemainingOpen(!remainingOpen)}
       >
-        Remaining {percentage(remaining)}
+        Remaining {percentageString(remaining)}
       </Tooltip>
     </React.Fragment>
   );
