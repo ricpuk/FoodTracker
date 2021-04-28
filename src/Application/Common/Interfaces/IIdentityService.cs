@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FoodTracker.Application.Common.Models;
 using FoodTracker.Domain.Entities;
 
@@ -21,5 +22,6 @@ namespace FoodTracker.Application.Common.Interfaces
         Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
 
         Task<Result> DeleteUserAsync(string userId);
+        Task<string> GetCurrentUserRole();
     }
 }

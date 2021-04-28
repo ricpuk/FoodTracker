@@ -1,9 +1,11 @@
-﻿using FoodTracker.Application.Common.Interfaces;
+﻿using System.IdentityModel.Tokens.Jwt;
+using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Infrastructure.Identity;
 using FoodTracker.Infrastructure.Persistence;
 using FoodTracker.Infrastructure.Services;
 using FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts;
 using FoodTracker.Infrastructure.Services.S3;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +57,7 @@ namespace FoodTracker.Infrastructure
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator"));
+                options.AddPolicy("CanPurge", policy => policy.RequireRole(IdentityConsts.AdminRole));
             });
 
             return services;

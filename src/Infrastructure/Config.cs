@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FoodTracker.Infrastructure.Identity;
 using IdentityServer4.Models;
 
 namespace FoodTracker.Infrastructure
@@ -9,7 +10,7 @@ namespace FoodTracker.Infrastructure
             new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile(),
+                new IdentityResources.Profile()
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>

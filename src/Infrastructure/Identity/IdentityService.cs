@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Application.Common.Models;
@@ -109,11 +110,31 @@ namespace FoodTracker.Infrastructure.Identity
             return Result.Success();
         }
 
+        public async Task<string> GetCurrentUserRole()
+        {
+            var user = await _userManager.Users.FirstAsync(u => u.Id == _currentUserService.UserId);
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains(IdentityConsts.AdminRole))
+            {
+                return IdentityConsts.AdminRole;
+            }
+
+            if (roles.Contains(IdentityConsts.TrainerRole))
+            {
+                return IdentityConsts.TrainerRole;
+            }
+
+            return IdentityConsts.UserRole;
+
+        }
+
         public async Task<Result> DeleteUserAsync(ApplicationUser user)
         {
             var result = await _userManager.DeleteAsync(user);
 
             return result.ToApplicationResult();
         }
+
+
     }
 }

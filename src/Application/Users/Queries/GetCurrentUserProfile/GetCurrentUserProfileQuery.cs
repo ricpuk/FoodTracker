@@ -26,6 +26,7 @@ namespace FoodTracker.Application.Users.Queries.GetCurrentUserProfile
         {
             var userProfile = await _identityService.GetCurrentUserProfileAsync();
             var userProfileDto = _mapper.Map<UserProfileDto>(userProfile);
+            userProfileDto.Role = await _identityService.GetCurrentUserRole();
             return userProfileDto;
         }
     }
