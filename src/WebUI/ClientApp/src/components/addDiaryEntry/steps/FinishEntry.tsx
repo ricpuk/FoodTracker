@@ -2,6 +2,10 @@ import React, { ChangeEvent } from "react";
 import { Button, Col, FormGroup, Input, Row, Spinner } from "reactstrap";
 import { DiaryModalType } from "../../../store/Diaries";
 import { Product } from "../../../store/Products";
+import {
+  servingValue,
+  servingValueNumeric,
+} from "../../../utils/nutritionHelper";
 import CaloriesBreakdown from "../../caloriesBreakdown/CaloriesBreakdown";
 import { UpdateType } from "../AddDiaryEntryForm";
 import "./styles.css";
@@ -112,18 +116,12 @@ const FinishEntry = (props: FinishEntryProps) => {
     );
   };
 
-  const round = (num: number, precision: number) =>
-    Number(Math.round(Number(`${num}e+${precision}`)) + "e-" + precision);
-
-  const servingValue = (value: number) =>
-    `${round(value * numberOfServings, 1)}g`;
-
   const renderNutritionalFacts = () => (
     <Row className="mt-3">
       <Col xs="3" className="d-flex justify-content-center flex-wrap">
         <div className="d-flex flex-column">
           <div className="text-center font-weight-bold">
-            {servingValue(serving.calories)}
+            {servingValueNumeric(serving.calories, numberOfServings)}
           </div>
           <div className="text-center">Calories</div>
         </div>
@@ -131,7 +129,7 @@ const FinishEntry = (props: FinishEntryProps) => {
       <Col xs="3" className="d-flex justify-content-center">
         <div className="d-flex flex-column">
           <div className="text-center font-weight-bold">
-            {servingValue(serving.carbohydrates)}
+            {servingValue(serving.carbohydrates, numberOfServings)}
           </div>
           <div className="text-center">Carbs</div>
         </div>
@@ -139,7 +137,7 @@ const FinishEntry = (props: FinishEntryProps) => {
       <Col xs="3" className="d-flex justify-content-center">
         <div className="d-flex flex-column">
           <div className="text-center font-weight-bold">
-            {servingValue(serving.fats)}
+            {servingValue(serving.fats, numberOfServings)}
           </div>
           <div className="text-center">Fat</div>
         </div>
@@ -147,7 +145,7 @@ const FinishEntry = (props: FinishEntryProps) => {
       <Col xs="3" className="d-flex justify-content-center">
         <div className="d-flex flex-column">
           <div className="text-center font-weight-bold">
-            {servingValue(serving.protein)}
+            {servingValue(serving.protein, numberOfServings)}
           </div>
           <div className="text-center">Protein</div>
         </div>

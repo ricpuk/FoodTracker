@@ -2,6 +2,7 @@ import classNames from "classnames";
 import React from "react";
 import { Col, Row } from "reactstrap";
 import { DiaryEntry } from "../../store/Diaries";
+import { servingValueNumeric } from "../../utils/nutritionHelper";
 import "./DiaryEntry.css";
 
 interface DiaryEntryProps {
@@ -35,18 +36,18 @@ export default (props: DiaryEntryProps) => {
         {serving.servingSizeUnit}
       </Col>
       <Col xs="4" md="2" className="nutritional-value">
-        <span>{serving.calories * numberOfServings}</span>
+        <span>{servingValueNumeric(serving.calories, numberOfServings)}</span>
       </Col>
       {props.canFitAllColumns && (
         <>
           <Col md="2" className="nutritional-value">
-            {serving.carbohydrates * numberOfServings}
+            {servingValueNumeric(serving.carbohydrates, numberOfServings)}
           </Col>
           <Col md="2" className="nutritional-value">
-            {serving.fats * numberOfServings}
+            {servingValueNumeric(serving.fats, numberOfServings)}
           </Col>
           <Col md="2" className="nutritional-value">
-            {serving.protein * numberOfServings}
+            {servingValueNumeric(serving.protein, numberOfServings)}
           </Col>
         </>
       )}

@@ -4,11 +4,13 @@ import { withRouter } from "react-router";
 import "./barCodeScanner.css";
 import { Spinner } from "reactstrap";
 import classNames from "classnames";
+import { useDeviceDetect } from "../../utils/hooks";
 
 const BarCodeScanner = (props) => {
   const [cameraInit, setCameraInit] = useState(false);
   const [cameraError, setCameraError] = useState(false);
   const [scanThrottled, setScanThrottled] = useState(false);
+  const isMobile = useDeviceDetect();
   const onInitSuccess = () => {
     Quagga.start();
     setCameraInit(true);
@@ -28,7 +30,7 @@ const BarCodeScanner = (props) => {
     }, 1000);
   };
   useEffect(() => {
-    if (cameraInit) {
+    if (cameraInit || !isMobile) {
       return;
     }
     if (navigator.mediaDevices) {
@@ -91,6 +93,19 @@ const BarCodeScanner = (props) => {
 
     Quagga.onDetected(onDetected);
   };
+
+  if (isMobile) {
+    return (
+      <div className="video__container">
+        <div className="skeleton__unsopported">
+          <div>
+            <p>You are not on a mobile device.</p>
+            <p>Please enter barcode manually below.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="video__container">

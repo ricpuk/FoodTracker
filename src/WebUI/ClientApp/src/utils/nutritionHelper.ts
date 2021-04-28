@@ -38,3 +38,12 @@ export const getTotalNutrientsConsumed = (diary?: DiariesStore.Diary) => {
 
   return result;
 };
+
+const round = (num: number, precision: number) =>
+  Number(Math.round(Number(`${num}e+${precision}`)) + "e-" + precision);
+
+export const servingValue = (value: number, numberOfServings: number) =>
+  `${round(value * numberOfServings, 1)}g`;
+
+export const servingValueNumeric = (value: number, numberOfServings: number) =>
+  round(value * numberOfServings, 1);
