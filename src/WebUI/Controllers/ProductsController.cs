@@ -15,18 +15,6 @@ namespace FoodTracker.WebUI.Controllers
     [Authorize]
     public class ProductsController : ApiControllerBase
     {
-        [HttpGet("list")]
-        [Administrator]
-        public async Task<ActionResult<PaginatedList<ProductDto>>> AdminList([FromQuery] string query, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
-        {
-            var sQuery = new GetProductsWithPaginationQuery
-            {
-                Query = query,
-                Page = page,
-                PageSize = pageSize
-            };
-            return Ok(await Mediator.Send(sQuery));
-        }
         [HttpGet]
         public async Task<ActionResult<PaginatedList<ProductDto>>> Index([FromQuery] string query, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
         {

@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import "./NavMenu.css";
 import { LoginMenu } from "./api-authorization/LoginMenu";
+import { AdminMenu } from "./api-authorization/AdminMenu";
 
 export default class NavMenu extends React.PureComponent<
   { isMobile: boolean },
@@ -38,6 +39,7 @@ export default class NavMenu extends React.PureComponent<
               navbar
             >
               <ul className="navbar-nav flex-grow">
+                <AdminMenu />
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to={"/diary"}>
                     Diary

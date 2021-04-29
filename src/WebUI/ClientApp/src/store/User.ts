@@ -41,6 +41,7 @@ export interface UserProfile {
   numberOfClients: number;
   coachingRequested: boolean;
   goals?: UserGoals;
+  role?: "Administrator" | "Trainer" | "User";
 }
 
 const RESOURCE_URL = "api/user";
@@ -129,11 +130,6 @@ export const actionCreators = {
   fetchUserProfile: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
     const appState = getState();
     if (appState && appState.user && !appState.user.profile) {
-      API.get("/api/products/list")
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => console.log(error));
       API.get<UserProfile>(API_USER_PROFILE)
         .then((response) => {
           const { data, status } = response;
