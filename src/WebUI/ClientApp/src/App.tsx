@@ -16,6 +16,8 @@ import { ApplicationState } from "./store";
 import FullScreenLoader from "./components/FullScreenLoader";
 import ProfilePage from "./components/profilePage/ProfilePage";
 import ClientDiary from "./components/clientPage/ClientDiary";
+import ProductsPage from "./components/admin/ProductsPage";
+import ReportsPage from "./components/admin/ReportsPage";
 
 export default () => {
   const dispatch = useDispatch();
@@ -52,6 +54,8 @@ export default () => {
         path="/coaching/:clientId/diary"
         component={ClientDiary}
       />
+      <AuthorizeRoute path="/admin/products" component={ProductsPage} />
+      <AuthorizeRoute path="/admin/reports" component={ReportsPage} />
       <Route
         path={AppPaths.ApiAuthorizationPrefix}
         component={ApiAuthorizationRoutes}
