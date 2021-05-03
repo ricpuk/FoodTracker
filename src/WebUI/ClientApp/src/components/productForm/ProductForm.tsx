@@ -50,7 +50,7 @@ const ProductForm = (props: ProductFormProps) => {
         setLoading(false);
         setProductLoaded(true);
       });
-  }, [productLoaded, loading, submit, barCode]);
+  }, []);
 
   const populateProductState = (data: Product) => {
     if (typeof data !== "object") {

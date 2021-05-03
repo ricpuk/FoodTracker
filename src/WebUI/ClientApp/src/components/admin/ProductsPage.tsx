@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { AxiosRequestConfig } from "axios";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Input, Modal, ModalBody, ModalHeader } from "reactstrap";
 import { Product } from "../../store/Products";
 
@@ -14,18 +15,28 @@ const ProductsPage = () => {
   const [product, setProduct] = useState<Product>();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [search, setSearch] = useState<string>("");
   const toggleEdit = () => setEditOpen(!editOpen);
 
   useEffect(() => {
     if (isLoading) {
       return;
     }
+    runSearch();
+  }, []);
+
+  const runSearch = () => {
+    const config: AxiosRequestConfig = {
+      params: {
+        query: search,
+      },
+    };
     setIsLoading(true);
-    API.get<GetListResponse<Product>>(API_ADMIN_PRODUCTS)
+    API.get<GetListResponse<Product>>(API_ADMIN_PRODUCTS, config)
       .then((response) => setProducts(response.data.items))
       .catch((error) => Toaster.error("Error", error.message))
       .finally(() => setIsLoading(false));
-  }, []);
+  };
 
   const handleEdit = (product: Product) => {
     setProduct(product);
@@ -74,8 +85,15 @@ const ProductsPage = () => {
   return (
     <div>
       <div className="d-flex mb-3">
-        <Input placeholder="search" className="mr-2" />
-        <Button color="primary" className="ml-2">
+        <Input
+          value={search}
+          placeholder="search"
+          className="mr-2"
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            setSearch(event.target.value)
+          }
+        />
+        <Button color="primary" className="ml-2" onClick={runSearch}>
           Search
         </Button>
       </div>
