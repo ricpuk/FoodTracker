@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FoodTracker.Application.Common.Models;
 using FoodTracker.Application.Products;
+using FoodTracker.Application.Products.Commands.DeleteProduct;
 using FoodTracker.Application.Products.Commands.UpdateProduct;
 using FoodTracker.Application.Products.Queries.GetProductsWithPagination;
-using FoodTracker.WebUI.Filters;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 
 namespace FoodTracker.WebUI.Controllers.Admin
 {
@@ -31,6 +26,17 @@ namespace FoodTracker.WebUI.Controllers.Admin
         public async Task<ActionResult> Update(int id, UpdateProductCommand command)
         {
             command.Id = id;
+
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var command = new DeleteProductCommand
+            {
+                Id = id
+            };
 
             await Mediator.Send(command);
 

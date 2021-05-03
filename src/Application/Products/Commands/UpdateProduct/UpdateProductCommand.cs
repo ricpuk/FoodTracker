@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FoodTracker.Application.Products.Commands.UpdateProduct
 {
-    public class UpdateProductCommand : IRequest
+    public class UpdateProductCommand : IRequest<ProductDto>
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public IList<ProductServingDto> Servings { get; set; }
     }
 
-    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Unit>
+    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, ProductDto>
     {
         private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -29,7 +29,7 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+        public async Task<ProductDto> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             var entity = await _dbContext.Products
                 .Include(x => x.ProductVersions)
@@ -41,15 +41,20 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
                 throw new NotFoundException(nameof(Product), request.Id);
             }
 
+            var servings = _mapper.Map<IList<ProductServingDto>, IList<ProductServing>>(request.Servings);
+            foreach (var productServing in servings)
+            {
+                productServing.Id = 0;
+            }
             entity.ProductVersions.Add(new ProductVersion
             {
                 Name = request.Name,
-                ProductServings = _mapper.Map<IList<ProductServingDto>, IList<ProductServing>>(request.Servings)
+                ProductServings = servings
             });
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return new ProductDto(entity);
         }
     }
 

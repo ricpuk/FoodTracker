@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Alert, Button, Col, Input, Row, Spinner } from "reactstrap";
 import { Product, ProductServing } from "../../store/Products";
-import API from "../../utils/api";
+import API, { API_ADMIN_PRODUCTS } from "../../utils/api";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import classnames from "classnames";
 import "./productForm.css";
@@ -11,6 +11,7 @@ import Toaster from "../../utils/toaster";
 interface ProductFormProps {
   submit: (product: Product) => void;
   barCode: string;
+  edit?: boolean;
 }
 
 const NAME_SERVING_SIZE = "servingSize";
@@ -26,7 +27,8 @@ const ProductForm = (props: ProductFormProps) => {
   const [productName, setProductName] = useState<string>("");
   const [servings, setServings] = useState<any[]>([{}]);
   const [statusMessage, setStatusMessage] = useState("");
-  const { submit, barCode } = props;
+  const [id, setId] = useState<number>();
+  const { submit, barCode, edit } = props;
   useEffect(() => {
     if (loading || productLoaded) {
       return;
@@ -35,7 +37,7 @@ const ProductForm = (props: ProductFormProps) => {
     API.get<Product>(`api/products/${barCode}`)
       .then((response) => {
         const { data } = response;
-        if (data.complete && data.id && data.servings) {
+        if (data.complete && data.id && data.servings && !edit) {
           submit(data);
           return;
         }
@@ -60,6 +62,9 @@ const ProductForm = (props: ProductFormProps) => {
 
     if (data.name) {
       setProductName(data.name);
+    }
+    if (data.id && edit) {
+      setId(data.id);
     }
     if (data.servings && data.servings.length > 0) {
       const fetchedServings = data.servings.map((x) => x);
@@ -114,6 +119,19 @@ const ProductForm = (props: ProductFormProps) => {
     setServings(arr);
   };
 
+  const handleEdit = (product: Product) => {
+    API.put<Product>(`${API_ADMIN_PRODUCTS}/${id}`, product)
+      .then((response) => {
+        const { data } = response;
+        debugger;
+        props.submit(data);
+      })
+      .catch((err) => {
+        Toaster.error("Error", "Failed to update product.");
+      })
+      .finally(() => setLoading(false));
+  };
+
   const submitForm = () => {
     setLoading(true);
     const product: Product = {
@@ -123,6 +141,11 @@ const ProductForm = (props: ProductFormProps) => {
       name: productName,
       servings: servings,
     };
+
+    if (edit) {
+      handleEdit(product);
+      return;
+    }
 
     API.post<Product>("/api/products", product)
       .then((response) => {
@@ -138,7 +161,9 @@ const ProductForm = (props: ProductFormProps) => {
   return (
     <React.Fragment>
       {statusMessage && <Alert color="warning my-2">{statusMessage}</Alert>}
-      <Row className="border-bottom border-top">
+      <Row
+        className={classnames({ "border-bottom": true, "border-top": !edit })}
+      >
         <Col className="d-flex flex-column justify-content-center">
           {props.barCode}
         </Col>
