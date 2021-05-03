@@ -6,6 +6,7 @@ import {
   Alert,
   Button,
   Col,
+  Form,
   Input,
   Modal,
   ModalBody,
@@ -91,7 +92,8 @@ const EditProfile = (props: EditProfileProps) => {
     }
   };
 
-  const submit = () => {
+  const submit = (event: any) => {
+    event.preventDefault();
     const newProfile: UserStore.UserProfile = {
       id: 0,
       numberOfClients: 0,
@@ -115,49 +117,57 @@ const EditProfile = (props: EditProfileProps) => {
       label: "Name",
       value: firstName,
       name: FormNames.FirstName,
-      placeholder: "First name",
+      placeholder: "First name (required)",
+      required: true,
     },
     {
       label: "Last name",
       value: lastName,
       name: FormNames.LastName,
-      placeholder: "Last name",
+      placeholder: "Last name (required)",
+      required: true,
     },
     {
       label: "Short description",
       value: shortDescription,
       name: FormNames.ShortDescription,
-      placeholder: "Short description",
+      placeholder: "Short description (required)",
+      required: true,
     },
     {
       label: "Website",
       value: website,
       name: FormNames.Website,
       placeholder: "Website",
+      required: false,
     },
     {
       label: "Youtube",
       value: youtube,
       name: FormNames.Youtube,
       placeholder: "Youtube",
+      required: false,
     },
     {
       label: "Twitter",
       value: twitter,
       name: FormNames.Twitter,
       placeholder: "Twitter",
+      required: false,
     },
     {
       label: "Instagram",
       value: instagram,
       name: FormNames.Instagram,
       placeholder: "Instagram",
+      required: false,
     },
     {
       label: "Facebook",
       value: facebook,
       name: FormNames.Facebook,
       placeholder: "Facebook",
+      required: false,
     },
   ];
 
@@ -175,6 +185,7 @@ const EditProfile = (props: EditProfileProps) => {
             name={x.name}
             placeholder={x.placeholder}
             onChange={handleChange}
+            required={x.required}
           />
         </Col>
       </Row>
@@ -188,15 +199,16 @@ const EditProfile = (props: EditProfileProps) => {
     >
       <ModalHeader toggle={toggleInner}>Update profile</ModalHeader>
       <ModalBody>
-        {renderForm()}
-        <Button
-          color="primary"
-          disabled={profileModalLoading}
-          className="mt-3 w-100"
-          onClick={submit}
-        >
-          {profileModalLoading ? <Spinner color="light" /> : "Submit"}
-        </Button>
+        <Form onSubmit={submit}>
+          {renderForm()}
+          <Button
+            color="primary"
+            disabled={profileModalLoading}
+            className="mt-3 w-100"
+          >
+            {profileModalLoading ? <Spinner color="light" /> : "Submit"}
+          </Button>
+        </Form>
       </ModalBody>
     </Modal>
   );

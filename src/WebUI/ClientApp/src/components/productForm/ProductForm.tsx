@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Alert, Button, Col, Input, Row, Spinner } from "reactstrap";
+import { Alert, Button, Col, Form, Input, Row, Spinner } from "reactstrap";
 import { Product, ProductServing } from "../../store/Products";
 import API, { API_ADMIN_PRODUCTS } from "../../utils/api";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -131,7 +131,8 @@ const ProductForm = (props: ProductFormProps) => {
       .finally(() => setLoading(false));
   };
 
-  const submitForm = () => {
+  const submitForm = (event: any) => {
+    event.preventDefault();
     setLoading(true);
     const product: Product = {
       barCode: props.barCode,
@@ -160,127 +161,139 @@ const ProductForm = (props: ProductFormProps) => {
   return (
     <React.Fragment>
       {statusMessage && <Alert color="warning my-2">{statusMessage}</Alert>}
-      <Row
-        className={classnames({ "border-bottom": true, "border-top": !edit })}
-      >
-        <Col className="d-flex flex-column justify-content-center">
-          {props.barCode}
-        </Col>
-        <Col xs="1">
-          <Input className="invisible p-0" />
-        </Col>
-      </Row>
-      <Row className="border-bottom">
-        <Col className="d-flex flex-column justify-content-center">
-          <Input
-            className="border-0 no-hov p-0"
-            placeholder="Product name"
-            value={productName}
-            name="name"
-            onChange={handleChange}
-          />
-        </Col>
-      </Row>
-      <Row className="border-bottom">
-        <Col
-          xs="12"
-          className="d-flex flex-column justify-content-center font-weight-bold py-2"
+      <Form onSubmit={submitForm}>
+        <Row
+          className={classnames({ "border-bottom": true, "border-top": !edit })}
         >
-          Servings
-        </Col>
-      </Row>
-      {servings.map((serving: ProductServing, index: number) => (
+          <Col className="d-flex flex-column justify-content-center">
+            {props.barCode}
+          </Col>
+          <Col xs="1">
+            <Input className="invisible p-0" />
+          </Col>
+        </Row>
         <Row className="border-bottom">
-          <Col xs="6">
+          <Col className="d-flex flex-column justify-content-center">
             <Input
-              type="number"
-              placeholder="Serving size"
+              required
               className="border-0 no-hov p-0"
-              value={serving.servingSize}
-              name={NAME_SERVING_SIZE}
-              onChange={(e) => handleServingValueUpdate(e, index)}
-            />
-          </Col>
-          <Col xs="5" className="d-flex">
-            <Input
-              placeholder="Units (g, ml, etc...)"
-              className="border-0 no-hov p-0"
-              value={serving.servingSizeUnit}
-              name={NAME_SERVING_SIZE_UNIT}
-              onChange={(e) => handleServingValueUpdate(e, index)}
-            />
-          </Col>
-          <Col xs="1" className="p-0 d-flex flex-column justify-content-center">
-            <FontAwesomeIcon
-              icon={faTimes}
-              size="lg"
-              className={classnames({
-                "icon-hover": true,
-                invisible: index === 0,
-              })}
-              color="red"
-              onClick={() => deleteServing(index)}
-            />
-          </Col>
-          <Col xs="6">
-            <Input
-              type="number"
-              placeholder="Cals"
-              className="border-0 no-hov p-0"
-              value={serving.calories}
-              name={NAME_CALORIES}
-              onChange={(e) => handleServingValueUpdate(e, index)}
-            />
-          </Col>
-          <Col xs="6">
-            <Input
-              type="number"
-              placeholder="Protein (g)"
-              className="border-0 no-hov p-0"
-              value={serving.protein}
-              name={NAME_PROTEIN}
-              onChange={(e) => handleServingValueUpdate(e, index)}
-            />
-          </Col>
-          <Col xs="6">
-            <Input
-              type="number"
-              placeholder="Fat (g)"
-              className="border-0 no-hov p-0"
-              value={serving.fats}
-              name={NAME_FATS}
-              onChange={(e) => handleServingValueUpdate(e, index)}
-            />
-          </Col>
-          <Col xs="6">
-            <Input
-              type="number"
-              placeholder="Carbs (g)"
-              className="border-0 no-hov p-0"
-              value={serving.carbohydrates}
-              name={NAME_CARBS}
-              onChange={(e) => handleServingValueUpdate(e, index)}
+              placeholder="Product name (required)"
+              value={productName}
+              name="name"
+              onChange={handleChange}
             />
           </Col>
         </Row>
-      ))}
-      <Button
-        outline
-        color="success"
-        className="mt-2 w-100"
-        onClick={addServing}
-        disabled={loading}
-      >
-        Add serving
-      </Button>
-      <Button
-        color="primary"
-        className="mt-2 w-100"
-        onClick={submitForm}
-        disabled={loading}
-      >
-        {loading ? <Spinner color="light" /> : "Submit"}
-      </Button>
+        <Row className="border-bottom">
+          <Col
+            xs="12"
+            className="d-flex flex-column justify-content-center font-weight-bold py-2"
+          >
+            Servings
+          </Col>
+        </Row>
+        {servings.map((serving: ProductServing, index: number) => (
+          <Row className="border-bottom">
+            <Col xs="6">
+              <Input
+                required
+                type="number"
+                placeholder="Serving size (required)"
+                className="border-0 no-hov p-0"
+                value={serving.servingSize}
+                name={NAME_SERVING_SIZE}
+                onChange={(e) => handleServingValueUpdate(e, index)}
+              />
+            </Col>
+            <Col xs="5" className="d-flex">
+              <Input
+                required
+                placeholder="Units (g, ml, etc...) (required)"
+                className="border-0 no-hov p-0"
+                value={serving.servingSizeUnit}
+                name={NAME_SERVING_SIZE_UNIT}
+                onChange={(e) => handleServingValueUpdate(e, index)}
+              />
+            </Col>
+            <Col
+              xs="1"
+              className="p-0 d-flex flex-column justify-content-center"
+            >
+              <FontAwesomeIcon
+                icon={faTimes}
+                size="lg"
+                className={classnames({
+                  "icon-hover": true,
+                  invisible: index === 0,
+                })}
+                color="red"
+                onClick={() => deleteServing(index)}
+              />
+            </Col>
+            <Col xs="6">
+              <Input
+                required
+                type="number"
+                placeholder="Cals (required)"
+                className="border-0 no-hov p-0"
+                value={serving.calories}
+                name={NAME_CALORIES}
+                onChange={(e) => handleServingValueUpdate(e, index)}
+              />
+            </Col>
+            <Col xs="6">
+              <Input
+                required
+                type="number"
+                placeholder="Protein (g) (required)"
+                className="border-0 no-hov p-0"
+                value={serving.protein}
+                name={NAME_PROTEIN}
+                onChange={(e) => handleServingValueUpdate(e, index)}
+              />
+            </Col>
+            <Col xs="6">
+              <Input
+                required
+                type="number"
+                placeholder="Fat (g) (required)"
+                className="border-0 no-hov p-0"
+                value={serving.fats}
+                name={NAME_FATS}
+                onChange={(e) => handleServingValueUpdate(e, index)}
+              />
+            </Col>
+            <Col xs="6">
+              <Input
+                required
+                type="number"
+                placeholder="Carbs (g) (required)"
+                className="border-0 no-hov p-0"
+                value={serving.carbohydrates}
+                name={NAME_CARBS}
+                onChange={(e) => handleServingValueUpdate(e, index)}
+              />
+            </Col>
+          </Row>
+        ))}
+        <Button
+          outline
+          color="success"
+          className="mt-2 w-100"
+          onClick={addServing}
+          disabled={loading}
+        >
+          Add serving
+        </Button>
+        <Button
+          color="primary"
+          className="mt-2 w-100"
+          disabled={loading}
+          type="submit"
+        >
+          {loading ? <Spinner color="light" /> : "Submit"}
+        </Button>
+      </Form>
     </React.Fragment>
   );
 };

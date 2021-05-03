@@ -6,6 +6,7 @@ import {
   Alert,
   Button,
   Col,
+  Form,
   Input,
   InputGroup,
   InputGroupAddon,
@@ -113,7 +114,8 @@ const GoalsForm = (props: GoalsFormProps) => {
     }
   };
 
-  const submit = () => {
+  const submit = (event: any) => {
+    event.preventDefault();
     setLoading(true);
     const goals = constructGoals();
     const request = {
@@ -212,10 +214,11 @@ const GoalsForm = (props: GoalsFormProps) => {
       </Row>
       <Row className="border-bottom px-3">
         <Col xs="8" className="d-flex flex-column justify-content-center">
-          Water intake (ml)
+          Water intake (ml) (required)
         </Col>
         <Col xs="4">
           <Input
+            required
             type="number"
             className="border-0 no-hov p-0 text-right"
             placeholder="82"
@@ -227,10 +230,11 @@ const GoalsForm = (props: GoalsFormProps) => {
       </Row>
       <Row className="border-bottom px-3">
         <Col xs="8" className="d-flex flex-column justify-content-center">
-          Calories
+          Calories (required)
         </Col>
         <Col xs="4">
           <Input
+            required
             type="number"
             placeholder="1500"
             className="border-0 no-hov p-0 text-right"
@@ -340,17 +344,18 @@ const GoalsForm = (props: GoalsFormProps) => {
       )}
 
       <ModalBody>
-        {renderInfoBadge()}
-        {renderForm()}
-        {renderSummary()}
-        <Button
-          color="primary"
-          disabled={!isValid() || loading}
-          className="mt-3 w-100"
-          onClick={submit}
-        >
-          {loading ? <Spinner color="light" /> : "Submit"}
-        </Button>
+        <Form onSubmit={submit}>
+          {renderInfoBadge()}
+          {renderForm()}
+          {renderSummary()}
+          <Button
+            color="primary"
+            disabled={!isValid() || loading}
+            className="mt-3 w-100"
+          >
+            {loading ? <Spinner color="light" /> : "Submit"}
+          </Button>
+        </Form>
       </ModalBody>
     </Modal>
   );
