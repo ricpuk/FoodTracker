@@ -23,13 +23,30 @@ export default (props: CaloriesBreakdownProps) => {
   const round = (num: number, precision: number) =>
     Number(Math.round(Number(`${num}e+${precision}`)) + "e-" + precision);
 
-  const percentage = (value: number) => round((value / max) * 100, 1);
+  const relative = (value: number) => {
+    if (max == 0) {
+      return 0;
+    }
+    return value / max;
+  };
+
+  const percentage = (value: number) => round(relative(value) * 100, 1);
   const percentageString = (value: number) => `${percentage(value)}%`;
 
   const proteinId = `${prefix}-protein-tt`;
   const carbsId = `${prefix}-carbs-tt`;
   const fatsId = `${prefix}-fats-tt`;
   const remainingId = `${prefix}-remaining-tt`;
+
+  if (!carbs && !protein && !fats) {
+    return (
+      <React.Fragment>
+        <Progress max={100} multi>
+          <Progress bar color="light" value={100} id={remainingId}></Progress>
+        </Progress>
+      </React.Fragment>
+    );
+  }
 
   return (
     <React.Fragment>

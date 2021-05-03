@@ -73,6 +73,8 @@ const ProductsPage = () => {
       product,
       ...products.slice(productIndex + 1),
     ]);
+    Toaster.success("Success", "Success updated product.");
+    toggleEdit();
   };
 
   const getBarCode = () => {

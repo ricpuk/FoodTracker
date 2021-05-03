@@ -123,7 +123,6 @@ const ProductForm = (props: ProductFormProps) => {
     API.put<Product>(`${API_ADMIN_PRODUCTS}/${id}`, product)
       .then((response) => {
         const { data } = response;
-        debugger;
         props.submit(data);
       })
       .catch((err) => {
