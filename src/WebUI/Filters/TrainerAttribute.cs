@@ -26,7 +26,7 @@ namespace FoodTracker.WebUI.Filters
 
             public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
             {
-                var isTrainer = await _identityService.IsInRoleAsync(_currentUserService.UserId, IdentityConsts.TrainerRole);
+                var isTrainer = _currentUserService.UserId != null && await _identityService.IsInRoleAsync(_currentUserService.UserId, IdentityConsts.TrainerRole);
                 if (!isTrainer)
                 {
                     context.Result = new ForbidResult();

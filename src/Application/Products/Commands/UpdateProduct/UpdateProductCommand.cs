@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,6 +7,7 @@ using FoodTracker.Application.Common.Exceptions;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodTracker.Application.Products.Commands.UpdateProduct
 {
@@ -29,7 +31,10 @@ namespace FoodTracker.Application.Products.Commands.UpdateProduct
 
         public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.Products.FindAsync(request.Id, cancellationToken);
+            var entity = await _dbContext.Products
+                .Include(x => x.ProductVersions)
+                .ThenInclude(pv => pv.ProductServings)
+                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             if (entity == null)
             {

@@ -43,18 +43,5 @@ namespace FoodTracker.WebUI.Controllers
         {
             return Ok(await Mediator.Send(command));
         }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, UpdateProductCommand command)
-        {
-            if (id != command.Id)
-            {
-                return BadRequest();
-            }
-
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
     }
 }
