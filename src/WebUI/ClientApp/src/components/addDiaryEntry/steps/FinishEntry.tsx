@@ -1,5 +1,14 @@
-import React, { ChangeEvent } from "react";
-import { Button, Col, FormGroup, Input, Row, Spinner } from "reactstrap";
+import React, { ChangeEvent, Fragment, useState } from "react";
+import {
+  Button,
+  Col,
+  Collapse,
+  FormGroup,
+  Input,
+  Row,
+  Spinner,
+} from "reactstrap";
+import { ProductReportReason } from "../../../enums/ProductReportReasons";
 import { DiaryModalType } from "../../../store/Diaries";
 import { Product } from "../../../store/Products";
 import {
@@ -7,6 +16,7 @@ import {
   servingValueNumeric,
 } from "../../../utils/nutritionHelper";
 import CaloriesBreakdown from "../../caloriesBreakdown/CaloriesBreakdown";
+import ProductReportReasonList from "../../productReportReasonList/ProductReportReasonList";
 import { UpdateType } from "../AddDiaryEntryForm";
 import "./styles.css";
 
@@ -22,6 +32,7 @@ interface FinishEntryProps {
 }
 
 const FinishEntry = (props: FinishEntryProps) => {
+  const [reportOpen, setReportOpen] = useState(false);
   const { product, numberOfServings } = props;
 
   if (!product) {
@@ -153,6 +164,29 @@ const FinishEntry = (props: FinishEntryProps) => {
     </Row>
   );
 
+  const handleReport = (reason: ProductReportReason) => {
+    setReportOpen(!reportOpen);
+  };
+
+  const renderProductReport = () => (
+    <div className="w-100 mb-2">
+      <div className="d-flex">
+        <Button
+          onClick={() => setReportOpen(!reportOpen)}
+          className="mx-1"
+          block
+          color="secondary"
+          disabled={props.blocked}
+        >
+          {!props.blocked ? "Report product" : <Spinner color="light" />}
+        </Button>
+      </div>
+      <Collapse isOpen={reportOpen} className="pt-2">
+        <ProductReportReasonList onClick={handleReport} />
+      </Collapse>
+    </div>
+  );
+
   const renderControls = () => {
     if (props.blocked) {
       return (
@@ -167,26 +201,29 @@ const FinishEntry = (props: FinishEntryProps) => {
     }
 
     return (
-      <div className="d-flex">
-        <Button
-          onClick={props.onSubmit}
-          className="w-100 mx-1"
-          color="primary"
-          disabled={props.blocked}
-        >
-          {!props.blocked ? "Submit" : <Spinner color="light" />}
-        </Button>
-        {props.modalType === DiaryModalType.edit && (
+      <Fragment>
+        {props.modalType === DiaryModalType.new && renderProductReport()}
+        <div className="d-flex">
           <Button
-            onClick={props.onDelete}
+            onClick={props.onSubmit}
             className="w-100 mx-1"
-            color="danger"
+            color="primary"
             disabled={props.blocked}
           >
-            {!props.blocked ? "Delete" : <Spinner color="light" />}
+            {!props.blocked ? "Submit" : <Spinner color="light" />}
           </Button>
-        )}
-      </div>
+          {props.modalType === DiaryModalType.edit && (
+            <Button
+              onClick={props.onDelete}
+              className="w-100 mx-1"
+              color="danger"
+              disabled={props.blocked}
+            >
+              {!props.blocked ? "Delete" : <Spinner color="light" />}
+            </Button>
+          )}
+        </div>
+      </Fragment>
     );
   };
 

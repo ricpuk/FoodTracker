@@ -4,9 +4,6 @@ using FoodTracker.Application.Products.Queries.GetProductsByBarCode;
 using FoodTracker.Application.Products.Queries.GetProductsWithPagination;
 using System.Threading.Tasks;
 using FoodTracker.Application.Products.Commands.CreateProduct;
-using FoodTracker.Application.Products.Commands.UpdateProduct;
-using FoodTracker.Infrastructure.Identity;
-using FoodTracker.WebUI.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
