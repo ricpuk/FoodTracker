@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ProductReportReason } from "../../enums/ProductReportReasons";
 import { Product } from "../../store/Products";
 
 import API, { API_ADMIN_REPORTS } from "../../utils/api";
@@ -10,7 +11,7 @@ import ReportsList from "./reportsList/ReportsList";
 export interface Report {
   id: number;
   product: Product;
-  reason: string;
+  reason: ProductReportReason;
   status: string;
 }
 

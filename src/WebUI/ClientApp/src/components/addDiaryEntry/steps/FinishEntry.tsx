@@ -11,10 +11,12 @@ import {
 import { ProductReportReason } from "../../../enums/ProductReportReasons";
 import { DiaryModalType } from "../../../store/Diaries";
 import { Product } from "../../../store/Products";
+import API, { API_PRODUCT_REPORTS } from "../../../utils/api";
 import {
   servingValue,
   servingValueNumeric,
 } from "../../../utils/nutritionHelper";
+import Toaster from "../../../utils/toaster";
 import CaloriesBreakdown from "../../caloriesBreakdown/CaloriesBreakdown";
 import ProductReportReasonList from "../../productReportReasonList/ProductReportReasonList";
 import { UpdateType } from "../AddDiaryEntryForm";
@@ -33,6 +35,7 @@ interface FinishEntryProps {
 
 const FinishEntry = (props: FinishEntryProps) => {
   const [reportOpen, setReportOpen] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
   const { product, numberOfServings } = props;
 
   if (!product) {
@@ -166,6 +169,20 @@ const FinishEntry = (props: FinishEntryProps) => {
 
   const handleReport = (reason: ProductReportReason) => {
     setReportOpen(!reportOpen);
+    setReportLoading(true);
+    const request = {
+      productId: product.id,
+      reason: reason,
+    };
+    API.post(API_PRODUCT_REPORTS, request)
+      .then((response) => {
+        Toaster.success(
+          "Success",
+          "Your product report was submitted sucessfully."
+        );
+      })
+      .catch((error) => Toaster.error("Error", error.message))
+      .finally(() => setReportLoading(false));
   };
 
   const renderProductReport = () => (
@@ -188,7 +205,7 @@ const FinishEntry = (props: FinishEntryProps) => {
   );
 
   const renderControls = () => {
-    if (props.blocked) {
+    if (props.blocked || reportLoading) {
       return (
         <div className="d-flex justify-content-center">
           <Spinner

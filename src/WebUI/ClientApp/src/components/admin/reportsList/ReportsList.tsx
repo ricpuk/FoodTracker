@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Alert, Button, Spinner, Table } from "reactstrap";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import { Report } from "../ReportsPage";
+import { ProductReportReason } from "../../../enums/ProductReportReasons";
 
 interface ReportsListProps {
   reports?: Report[];
@@ -14,18 +15,28 @@ export default (props: ReportsListProps) => {
   const renderControls = (report: Report) => (
     <Fragment>
       <Button color="primary" className="mr-1">
-        <FiEdit3 />
-      </Button>
-      <Button color="danger" className="ml-1">
-        <FiTrash2 />
+        Resolved
       </Button>
     </Fragment>
   );
 
+  const parseReason = (reason: ProductReportReason) => {
+    switch (reason) {
+      case ProductReportReason.InappropriateEntry:
+        return "Inappropriate entry";
+      case ProductReportReason.WrongData:
+        return "Wrong data";
+      case ProductReportReason.WrongProduct:
+        return "Wrong product";
+      default:
+        return "Reason unkown";
+    }
+  };
+
   const renderRow = (report: Report) => (
     <tr key={report.id}>
       <th scope="row">{report.id}</th>
-      <td>{report.reason}</td>
+      <td>{parseReason(report.reason)}</td>
       <td>{report.product.barCode}</td>
       <td>{report.product.name}</td>
       <td style={{ whiteSpace: "nowrap" }}>{renderControls(report)}</td>

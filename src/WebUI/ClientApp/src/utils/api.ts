@@ -12,7 +12,8 @@ export const API_USER_GOALS = `/api/users/goals`;
 export const API_USER_PROFILE = `/api/users/profile`;
 export const API_CLIENTS = `/api/clients`;
 export const API_ADMIN_PRODUCTS = `/api/admin/products`;
-export const API_ADMIN_REPORTS = `/api/admin/reports`;
+export const API_ADMIN_REPORTS = `/api/admin/productreports`;
+export const API_PRODUCT_REPORTS = `/api/productreports`;
 
 export function configureAxios(history: History<any>) {
   // Add a request interceptor
