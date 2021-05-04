@@ -19,6 +19,22 @@ const ReportsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [reports, setReports] = useState<Report[]>();
 
+  const resolved = (report: Report) => {
+    setIsLoading(true);
+    API.put(`${API_ADMIN_REPORTS}/${report.id}`)
+      .then((response) => {
+        Toaster.success("Success", "Report has been resolved.");
+        if (!reports) {
+          return;
+        }
+        const index = reports.findIndex((x) => x.id === report.id);
+
+        setReports([...reports.slice(0, index), ...reports.slice(index + 1)]);
+      })
+      .catch((error) => Toaster.error("Error", error.message))
+      .finally(() => setIsLoading(false));
+  };
+
   useEffect(() => {
     if (isLoading) {
       return;
@@ -34,7 +50,11 @@ const ReportsPage = () => {
 
   return (
     <div>
-      <ReportsList isLoading={isLoading} reports={reports} />
+      <ReportsList
+        isLoading={isLoading}
+        reports={reports}
+        onResolved={resolved}
+      />
     </div>
   );
 };

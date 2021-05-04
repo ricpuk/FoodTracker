@@ -7,14 +7,19 @@ import { ProductReportReason } from "../../../enums/ProductReportReasons";
 interface ReportsListProps {
   reports?: Report[];
   isLoading: boolean;
+  onResolved: (report: Report) => void;
 }
 
 export default (props: ReportsListProps) => {
-  const { isLoading, reports } = props;
+  const { isLoading, reports, onResolved } = props;
 
   const renderControls = (report: Report) => (
     <Fragment>
-      <Button color="primary" className="mr-1">
+      <Button
+        color="primary"
+        className="mr-1"
+        onClick={() => onResolved(report)}
+      >
         Resolved
       </Button>
     </Fragment>
