@@ -29,8 +29,7 @@ namespace FoodTracker.Application.IntegrationTests.ProductReports.Commands
             var response = await SendAsync(query);
 
             var report = GetContext().ProductReports
-                .Where(x => x.ProductId == product.Id)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.ProductId == product.Id);
 
             var command = new ResolveProductReportCommand
             {
@@ -40,8 +39,7 @@ namespace FoodTracker.Application.IntegrationTests.ProductReports.Commands
             response = await SendAsync(command);
 
             report = GetContext().ProductReports
-                .Where(x => x.ProductId == product.Id)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.ProductId == product.Id);
 
             report.Resolved.Should().Be(true);
         }
