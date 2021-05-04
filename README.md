@@ -11,12 +11,11 @@ This is a solution template for creating a Single Page App (SPA) with Angular an
 
 * ASP.NET Core 5
 * Entity Framework Core 5
-* Angular 10
+* React
 * MediatR
 * AutoMapper
 * FluentValidation
 * NUnit, FluentAssertions, Moq & Respawn
-* Docker
 
 ## Getting Started
 
