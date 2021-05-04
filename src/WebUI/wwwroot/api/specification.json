@@ -764,6 +764,39 @@
         }
       }
     },
+    "/api/ProductReports": {
+      "post": {
+        "tags": [
+          "ProductReports"
+        ],
+        "operationId": "ProductReports_Index",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductReportCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Products": {
       "get": {
         "tags": [
@@ -1700,6 +1733,33 @@
             "format": "int32"
           }
         }
+      },
+      "CreateProductReportCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/ProductReportReason"
+          }
+        }
+      },
+      "ProductReportReason": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "WrongProduct",
+          "WrongData",
+          "InappropriateEntry"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
       },
       "PaginatedListOfProductDto": {
         "type": "object",
