@@ -32,6 +32,14 @@ const Coaching = (props: CoachingProps) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
+  const renderCoachTab = () => {
+    return user.trainer ? (
+      <Profile profile={user.trainer} viewMode="coach" />
+    ) : (
+      <CoachList coaches={coaches} />
+    );
+  };
+
   return (
     <Loader isLoading={props.coachesLoading}>
       <Nav tabs>
@@ -68,17 +76,13 @@ const Coaching = (props: CoachingProps) => {
       </Nav>
       <TabContent activeTab={activeTab}>
         <TabPane tabId={TAB_COACH} className="p-3">
-          {user.trainer ? (
-            <Profile profile={user.trainer} viewMode="coach" />
-          ) : (
-            <CoachList coaches={coaches} />
-          )}
+          {TAB_COACH === activeTab && renderCoachTab()}
         </TabPane>
         <TabPane tabId={TAB_CLIENTS} className="p-3">
-          <Clients />
+          {TAB_CLIENTS === activeTab && <Clients />}
         </TabPane>
         <TabPane tabId={TAB_REQUESTS}>
-          <CoachingRequests />
+          {TAB_REQUESTS === activeTab && <CoachingRequests />}
         </TabPane>
       </TabContent>
     </Loader>
