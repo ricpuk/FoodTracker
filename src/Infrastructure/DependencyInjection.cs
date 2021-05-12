@@ -1,11 +1,9 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using FoodTracker.Application.Common.Interfaces;
+﻿using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Infrastructure.Identity;
 using FoodTracker.Infrastructure.Persistence;
 using FoodTracker.Infrastructure.Services;
 using FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts;
 using FoodTracker.Infrastructure.Services.S3;
-using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

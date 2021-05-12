@@ -21,9 +21,9 @@ namespace FoodTracker.Domain.Entities
         public int? TrainerId { get; set; }
         public UserProfile Trainer { get; set; }
         public IList<UserProfile> Trainees { get; set; } = new List<UserProfile>();
-        public List<UserGoals> UserGoals { get; set; } = new List<UserGoals>();
+        public List<UserGoals> UserGoals { get; set; } = new();
         public DateTime NotificationsLastSeen { get; set; }
-        public List<Notification> Notifications { get; set; } = new List<Notification>();
+        public List<Notification> Notifications { get; set; } = new();
         public string ProfilePicture { get; set; }
 
         [NotMapped]

@@ -99,15 +99,14 @@ type KnownAction =
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 
 export const actionCreators = {
-  setUserGoals: (goals: UserGoals): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.user) {
-      dispatch({ type: "SET_GOALS", goals });
-    }
-  },
+  setUserGoals:
+    (goals: UserGoals): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.user) {
+        dispatch({ type: "SET_GOALS", goals });
+      }
+    },
   fetchUserGoals: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
     const appState = getState();
     if (
@@ -130,7 +129,7 @@ export const actionCreators = {
   fetchUserProfile: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
     const appState = getState();
     if (appState && appState.user && !appState.user.profile) {
-      API.get<UserProfile>(API_USER_PROFILE)
+      API.get(API_USER_PROFILE)
         .then((response) => {
           const { data, status } = response;
           if (status === 204) {
@@ -145,49 +144,45 @@ export const actionCreators = {
       dispatch({ type: "REQUEST_PROFILE" });
     }
   },
-  updateUserProfile: (profile: UserProfile): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.user) {
-      const request = {
-        profile: profile,
-      };
-      API.put<UserProfile>(API_USER_PROFILE, request)
-        .then((response) => {
-          const { data } = response;
-          dispatch({ type: "UPDATE_PROFILE_RESPONSE", profile: data });
-          Toaster.success("Success", "Profile updated.");
-        })
-        .catch((error) => {
-          Toaster.error(
-            "Error",
-            "There was an issue while updating your profile."
-          );
-        });
+  updateUserProfile:
+    (profile: UserProfile): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.user) {
+        const request = {
+          profile: profile,
+        };
+        API.put<UserProfile>(API_USER_PROFILE, request)
+          .then((response) => {
+            const { data } = response;
+            dispatch({ type: "UPDATE_PROFILE_RESPONSE", profile: data });
+            Toaster.success("Success", "Profile updated.");
+          })
+          .catch((error) => {
+            Toaster.error(
+              "Error",
+              "There was an issue while updating your profile."
+            );
+          });
 
-      dispatch({ type: "UPDATE_PROFILE" });
-    }
-  },
-  toggleProfileModal: (): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.user) {
-      dispatch({ type: "TOGGLE_PROFILE_MODAL" });
-    }
-  },
-  updateProfilePicture: (url: string): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.user) {
-      dispatch({ type: "SET_PROFILE_PHOTO", photo: url });
-    }
-  },
+        dispatch({ type: "UPDATE_PROFILE" });
+      }
+    },
+  toggleProfileModal:
+    (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.user) {
+        dispatch({ type: "TOGGLE_PROFILE_MODAL" });
+      }
+    },
+  updateProfilePicture:
+    (url: string): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.user) {
+        dispatch({ type: "SET_PROFILE_PHOTO", photo: url });
+      }
+    },
 };
 
 // ----------------
