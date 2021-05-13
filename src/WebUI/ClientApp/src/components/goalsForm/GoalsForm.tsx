@@ -22,6 +22,7 @@ import classnames from "classnames";
 import { useAppParams } from "../../utils/hooks";
 import API, { API_CLIENTS, API_USER_GOALS } from "../../utils/api";
 import { history } from "../../index";
+import Toaster from "../../utils/toaster";
 
 interface GoalsFormOwnProps {
   goals?: UserStore.UserGoals;
@@ -47,7 +48,7 @@ enum FormNames {
 }
 
 const GoalsForm = (props: GoalsFormProps) => {
-  const { initial, isOpen, toggle, goals } = props;
+  const { initial, isOpen, toggle, goals, type } = props;
   const deconstructGoals = () => {
     if (!goals) {
       return undefined;
@@ -133,6 +134,7 @@ const GoalsForm = (props: GoalsFormProps) => {
         } else {
           dispatch(CoachingStore.actionCreators.setCurrentClientGoals(data));
         }
+        Toaster.success("Success", "Goals successfully updated");
       })
       .finally(() => {
         setLoading(false);
@@ -180,7 +182,8 @@ const GoalsForm = (props: GoalsFormProps) => {
       </Alert>
     );
   };
-  const renderForm = () => (
+
+  const renderWeightInputs = () => (
     <React.Fragment>
       <Row className="border-bottom px-3">
         <Col xs="8" className="d-flex flex-column justify-content-center">
@@ -212,6 +215,12 @@ const GoalsForm = (props: GoalsFormProps) => {
           />
         </Col>
       </Row>
+    </React.Fragment>
+  );
+
+  const renderForm = () => (
+    <React.Fragment>
+      {type === "personal" && renderWeightInputs()}
       <Row className="border-bottom px-3">
         <Col xs="8" className="d-flex flex-column justify-content-center">
           Water intake (ml) (required)
