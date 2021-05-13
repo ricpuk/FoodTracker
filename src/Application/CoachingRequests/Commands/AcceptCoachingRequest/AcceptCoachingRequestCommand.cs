@@ -42,11 +42,21 @@ namespace FoodTracker.Application.CoachingRequests.Commands.AcceptCoachingReques
             clientProfile.Trainer = coachProfile;
             coachingRequest.Status = CoachingRequestStatus.Accepted;
 
+            RevokeOtherRequests(coachingRequest.Id, coachingRequest.FromId);
+
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
 
 
+        }
+
+        private void RevokeOtherRequests(int currentRequestId, int fromId)
+        {
+            var coachingRequests = _dbContext
+                .CoachingRequests
+                .Where(x => x.FromId == fromId && x.Id != currentRequestId);
+            _dbContext.CoachingRequests.RemoveRange(coachingRequests);
         }
     }
 }
