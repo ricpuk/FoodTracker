@@ -128,7 +128,7 @@ export const actionCreators = {
   },
   fetchUserProfile: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
     const appState = getState();
-    if (appState && appState.user && !appState.user.profile) {
+    if (appState && appState.user) {
       API.get(API_USER_PROFILE)
         .then((response) => {
           const { data, status } = response;

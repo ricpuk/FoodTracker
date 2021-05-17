@@ -106,22 +106,36 @@ const Profile = (props: ProfileProps) => {
         </Button>,
       ];
     }
-    return [
-      <LinkButton
-        to="diary"
-        color="primary"
-        className="w-100 mr-2"
-        onClick={() => primaryClick && primaryClick()}
-        text="View diary"
-      />,
-      <Button
-        color="secondary"
-        className="w-100 ml-2"
-        onClick={() => secondaryClick && secondaryClick()}
-      >
-        Edit goals
-      </Button>,
-    ];
+    if (viewMode == MODE_CLIENT) {
+      return [
+        <LinkButton
+          to="diary"
+          color="primary"
+          className="w-100 mr-2"
+          onClick={() => primaryClick && primaryClick()}
+          text="View diary"
+        />,
+        <Button
+          color="secondary"
+          className="w-100 ml-2"
+          onClick={() => secondaryClick && secondaryClick()}
+        >
+          Edit goals
+        </Button>,
+      ];
+    }
+
+    if (viewMode == MODE_COACH) {
+      return (
+        <Button
+          color="danger"
+          className="w-100"
+          onClick={() => secondaryClick && secondaryClick()}
+        >
+          Remove coach
+        </Button>
+      );
+    }
   };
 
   React.useEffect(() => {
@@ -181,9 +195,7 @@ const Profile = (props: ProfileProps) => {
                 </p>
               </div>
             </div>
-            {viewMode != MODE_COACH && (
-              <div className="d-flex mt-2">{renderButtons()}</div>
-            )}
+            <div className="d-flex mt-2">{renderButtons()}</div>
           </CardBody>
         </Card>
         <Card className="mt-3">

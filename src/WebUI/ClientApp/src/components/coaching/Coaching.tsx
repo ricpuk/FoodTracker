@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import * as CoachingStore from "../../store/Coaching";
 import { Nav, TabContent, TabPane, NavItem, NavLink } from "reactstrap";
 import { ApplicationState } from "../../store";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import Loader from "../loader/Loader";
 import CoachingRequests from "./CoachingRequests";
 import "./Coaching.css";
@@ -23,6 +23,7 @@ const TAB_REQUESTS = "coachingRequests";
 const Coaching = (props: CoachingProps) => {
   const [activeTab, setActiveTab] = useState(TAB_COACH);
   const { fetchCoaches, user, coaches } = props;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchCoaches(1);
@@ -32,9 +33,17 @@ const Coaching = (props: CoachingProps) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
+  const removeCoach = () => {
+    props.removeCoach();
+  };
+
   const renderCoachTab = () => {
     return user.trainer ? (
-      <Profile profile={user.trainer} viewMode="coach" />
+      <Profile
+        profile={user.trainer}
+        viewMode="coach"
+        secondaryClick={removeCoach}
+      />
     ) : (
       <CoachList coaches={coaches} />
     );

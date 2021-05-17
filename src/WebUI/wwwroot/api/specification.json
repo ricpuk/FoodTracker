@@ -364,6 +364,24 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Coaches"
+        ],
+        "operationId": "Coaches_RemoveCoach",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfCoachDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/Coaches/{coachId}": {

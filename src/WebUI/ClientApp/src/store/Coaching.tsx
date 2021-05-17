@@ -1,9 +1,10 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosError, AxiosRequestConfig } from "axios";
 import { Action, Reducer } from "redux";
 import { AppThunkAction } from ".";
 import API from "../utils/api";
 import { GetListResponse } from "../utils/interfaces";
 import { UserGoals, UserProfile } from "./User";
+import * as UserStore from "./User";
 import * as DiariesStore from "./Diaries";
 import Toaster from "../utils/toaster";
 
@@ -145,6 +146,10 @@ interface SetClientGoalsAction {
   goals: UserGoals;
 }
 
+interface RemoveCoachAction {
+  type: "REMOVE_COACH";
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction =
@@ -168,254 +173,261 @@ type KnownAction =
   | ClientDeletedAction
   | FetchClientAction
   | ReceiveClientAction
-  | SetClientGoalsAction;
+  | SetClientGoalsAction
+  | RemoveCoachAction;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 
 export const actionCreators = {
-  fetchCoaches: (page: number): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      const config: AxiosRequestConfig = {
-        params: {
-          page: page,
-        },
-      };
-      API.get<GetListResponse<UserProfile>>(COACH_RESOURCE_URL, config).then(
-        (response) => {
-          const { items } = response.data;
-          dispatch({ type: "RECEIVE_COACHES", coaches: items, page: page });
-        }
-      );
-
-      dispatch({ type: "FETCH_COACHES", page: page });
-    }
-  },
-  requestCoaching: (coach: UserProfile): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (
-      appState &&
-      appState.coaching &&
-      appState.coaching.coaches.findIndex((x) => x.id === coach.id) != -1
-    ) {
-      const request = {};
-      API.post(`${COACH_RESOURCE_URL}/${coach.id}`, request).then(
-        (response) => {
-          dispatch({ type: "SEND_COACHING_REQUEST_DONE", coachId: coach.id });
-        }
-      );
-
-      dispatch({ type: "SEND_COACHING_REQUEST" });
-    }
-  },
-  revokeCoachingRequest: (coach: UserProfile): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (
-      appState &&
-      appState.coaching &&
-      appState.coaching.coaches.findIndex((x) => x.id === coach.id) != -1
-    ) {
-      API.delete(`${COACH_RESOURCE_URL}/${coach.id}`).then((response) => {
-        dispatch({ type: "REVOKE_COACHING_REQUEST_DONE", coachId: coach.id });
-      });
-
-      dispatch({ type: "REVOKE_COACHING_REQUEST" });
-    }
-  },
-  fetchCoachingRequests: (page: number): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      const config: AxiosRequestConfig = {
-        params: {
-          page: page,
-        },
-      };
-      API.get<GetListResponse<CoachingRequest>>(
-        `${CLIENTS_RESOURCE_URL}/requests`,
-        config
-      ).then((response) => {
-        const { data } = response;
-        dispatch({
-          type: "RECEIVE_COACHING_REQUESTS",
-          requests: data.items,
-          page: page,
-        });
-      });
-
-      dispatch({ type: "FETCH_COACHING_REQUESTS", page: page });
-    }
-  },
-  acceptCoachingRequest: (requestId: number): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      API.put(`${CLIENTS_RESOURCE_URL}/requests/${requestId}`, {}).then(
-        (response) => {
-          const { data } = response;
-          dispatch({
-            type: "RESPOND_TO_REQUEST_RESPONSE",
-            requestId: requestId,
-          });
-        }
-      );
-
-      dispatch({ type: "RESPOND_TO_REQUEST" });
-    }
-  },
-  declineCoachingRequest: (requestId: number): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      API.delete(`${CLIENTS_RESOURCE_URL}/requests/${requestId}`, {}).then(
-        (response) => {
-          const { data } = response;
-          dispatch({
-            type: "RESPOND_TO_REQUEST_RESPONSE",
-            requestId: requestId,
-          });
-        }
-      );
-
-      dispatch({ type: "RESPOND_TO_REQUEST" });
-    }
-  },
-  fetchClients: (page: number): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      const config: AxiosRequestConfig = {
-        params: {
-          page: page,
-        },
-      };
-      API.get<GetListResponse<UserProfile>>(
-        `${CLIENTS_RESOURCE_URL}/`,
-        config
-      ).then((response) => {
-        const { data } = response;
-        dispatch({
-          type: "RECEIVE_CLIENTS",
-          clients: data.items,
-          page: page,
-        });
-      });
-
-      dispatch({ type: "FETCH_CLIENTS", page: page });
-    }
-  },
-  fetchClientDiary: (
-    clientId: string,
-    date: string
-  ): AppThunkAction<KnownAction> => (dispatch, getState) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      API.get<DiariesStore.Diary>(
-        `${CLIENTS_RESOURCE_URL}/${clientId}/diaries/${date}`
-      )
-        .then((response) => {
-          const { data } = response;
-          dispatch({
-            type: "RECEIVE_CLIENT_DIARY",
-            clientId: clientId,
-            date: date,
-            diary: data,
-          });
-        })
-        .catch((error) => {
-          if (error.response.status !== 404) {
-            Toaster.error("Error", "Something went wrong.");
+  fetchCoaches:
+    (page: number): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        const config: AxiosRequestConfig = {
+          params: {
+            page: page,
+          },
+        };
+        API.get<GetListResponse<UserProfile>>(COACH_RESOURCE_URL, config).then(
+          (response) => {
+            const { items } = response.data;
+            dispatch({ type: "RECEIVE_COACHES", coaches: items, page: page });
           }
-          dispatch({
-            type: "RECEIVE_CLIENT_DIARY",
-            clientId: clientId,
-            date: date,
-            diary: undefined,
-          });
+        );
+
+        dispatch({ type: "FETCH_COACHES", page: page });
+      }
+    },
+  requestCoaching:
+    (coach: UserProfile): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (
+        appState &&
+        appState.coaching &&
+        appState.coaching.coaches.findIndex((x) => x.id === coach.id) != -1
+      ) {
+        const request = {};
+        API.post(`${COACH_RESOURCE_URL}/${coach.id}`, request).then(
+          (response) => {
+            dispatch({ type: "SEND_COACHING_REQUEST_DONE", coachId: coach.id });
+          }
+        );
+
+        dispatch({ type: "SEND_COACHING_REQUEST" });
+      }
+    },
+  revokeCoachingRequest:
+    (coach: UserProfile): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (
+        appState &&
+        appState.coaching &&
+        appState.coaching.coaches.findIndex((x) => x.id === coach.id) != -1
+      ) {
+        API.delete(`${COACH_RESOURCE_URL}/${coach.id}`).then((response) => {
+          dispatch({ type: "REVOKE_COACHING_REQUEST_DONE", coachId: coach.id });
         });
 
-      dispatch({
-        type: "FETCH_CLIENT_DIARY",
-        clientId: clientId,
-        date: date,
-      });
-    }
-  },
-  setCurrentClient: (client?: UserProfile): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      dispatch({
-        type: "SET_CURRENT_CLIENT",
-        client: client,
-      });
-    }
-  },
-  stopCoaching: (client: UserProfile): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      API.delete(`${CLIENTS_RESOURCE_URL}/${client.id}`).then((response) => {
-        dispatch({
-          type: "CLIENT_DELETED",
-          clientId: client.id,
-        });
-      });
-
-      dispatch({
-        type: "SET_CLIENTS_LOADING",
-      });
-    }
-  },
-  fetchClientById: (clientId: string): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
-    const appState = getState();
-    if (appState && appState.coaching) {
-      API.get<UserProfile>(`${CLIENTS_RESOURCE_URL}/${clientId}`).then(
-        (response) => {
+        dispatch({ type: "REVOKE_COACHING_REQUEST" });
+      }
+    },
+  fetchCoachingRequests:
+    (page: number): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        const config: AxiosRequestConfig = {
+          params: {
+            page: page,
+          },
+        };
+        API.get<GetListResponse<CoachingRequest>>(
+          `${CLIENTS_RESOURCE_URL}/requests`,
+          config
+        ).then((response) => {
           const { data } = response;
           dispatch({
-            type: "RECEIVE_CLIENT",
-            clientId: clientId,
-            client: data,
+            type: "RECEIVE_COACHING_REQUESTS",
+            requests: data.items,
+            page: page,
           });
-        }
-      );
-      dispatch({ type: "FETCH_CLIENT", clientId: clientId });
-    }
-  },
-  setCurrentClientGoals: (goals: UserGoals): AppThunkAction<KnownAction> => (
-    dispatch,
-    getState
-  ) => {
+        });
+
+        dispatch({ type: "FETCH_COACHING_REQUESTS", page: page });
+      }
+    },
+  acceptCoachingRequest:
+    (requestId: number): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        API.put(`${CLIENTS_RESOURCE_URL}/requests/${requestId}`, {}).then(
+          (response) => {
+            const { data } = response;
+            dispatch({
+              type: "RESPOND_TO_REQUEST_RESPONSE",
+              requestId: requestId,
+            });
+          }
+        );
+
+        dispatch({ type: "RESPOND_TO_REQUEST" });
+      }
+    },
+  declineCoachingRequest:
+    (requestId: number): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        API.delete(`${CLIENTS_RESOURCE_URL}/requests/${requestId}`, {}).then(
+          (response) => {
+            const { data } = response;
+            dispatch({
+              type: "RESPOND_TO_REQUEST_RESPONSE",
+              requestId: requestId,
+            });
+          }
+        );
+
+        dispatch({ type: "RESPOND_TO_REQUEST" });
+      }
+    },
+  fetchClients:
+    (page: number): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        const config: AxiosRequestConfig = {
+          params: {
+            page: page,
+          },
+        };
+        API.get<GetListResponse<UserProfile>>(
+          `${CLIENTS_RESOURCE_URL}/`,
+          config
+        ).then((response) => {
+          const { data } = response;
+          dispatch({
+            type: "RECEIVE_CLIENTS",
+            clients: data.items,
+            page: page,
+          });
+        });
+
+        dispatch({ type: "FETCH_CLIENTS", page: page });
+      }
+    },
+  fetchClientDiary:
+    (clientId: string, date: string): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        API.get<DiariesStore.Diary>(
+          `${CLIENTS_RESOURCE_URL}/${clientId}/diaries/${date}`
+        )
+          .then((response) => {
+            const { data } = response;
+            dispatch({
+              type: "RECEIVE_CLIENT_DIARY",
+              clientId: clientId,
+              date: date,
+              diary: data,
+            });
+          })
+          .catch((error) => {
+            if (error.response.status !== 404) {
+              Toaster.error("Error", "Something went wrong.");
+            }
+            dispatch({
+              type: "RECEIVE_CLIENT_DIARY",
+              clientId: clientId,
+              date: date,
+              diary: undefined,
+            });
+          });
+
+        dispatch({
+          type: "FETCH_CLIENT_DIARY",
+          clientId: clientId,
+          date: date,
+        });
+      }
+    },
+  setCurrentClient:
+    (client?: UserProfile): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        dispatch({
+          type: "SET_CURRENT_CLIENT",
+          client: client,
+        });
+      }
+    },
+  stopCoaching:
+    (client: UserProfile): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        API.delete(`${CLIENTS_RESOURCE_URL}/${client.id}`).then((response) => {
+          dispatch({
+            type: "CLIENT_DELETED",
+            clientId: client.id,
+          });
+        });
+
+        dispatch({
+          type: "SET_CLIENTS_LOADING",
+        });
+      }
+    },
+  fetchClientById:
+    (clientId: string): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching) {
+        API.get<UserProfile>(`${CLIENTS_RESOURCE_URL}/${clientId}`).then(
+          (response) => {
+            const { data } = response;
+            dispatch({
+              type: "RECEIVE_CLIENT",
+              clientId: clientId,
+              client: data,
+            });
+          }
+        );
+        dispatch({ type: "FETCH_CLIENT", clientId: clientId });
+      }
+    },
+  setCurrentClientGoals:
+    (goals: UserGoals): AppThunkAction<KnownAction> =>
+    (dispatch, getState) => {
+      const appState = getState();
+      if (appState && appState.coaching && appState.coaching.currentClient) {
+        dispatch({ type: "SET_CLIENT_GOALS", goals: goals });
+      }
+    },
+  removeCoach: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
     const appState = getState();
-    if (appState && appState.coaching && appState.coaching.currentClient) {
-      dispatch({ type: "SET_CLIENT_GOALS", goals: goals });
+    if (appState) {
+      API.post(COACH_RESOURCE_URL)
+        .then((response) => {
+          //@ts-ignore
+          dispatch(UserStore.actionCreators.fetchUserProfile());
+          Toaster.success("Coach removed", "Coach was removed successfully.");
+        })
+        .catch((err: Error | AxiosError) => {
+          Toaster.error("Error", err.message);
+        })
+        .finally(() => {
+          dispatch({ type: "REMOVE_COACH" });
+        });
+      dispatch({ type: "REMOVE_COACH" });
     }
   },
 };
@@ -598,6 +610,12 @@ export const reducer: Reducer<CoachingState> = (
       return {
         ...state,
         currentClient: client,
+      };
+
+    case "REMOVE_COACH":
+      return {
+        ...state,
+        coachesLoading: !state.coachesLoading,
       };
 
     default:
