@@ -39,21 +39,21 @@ namespace FoodTracker.Infrastructure.Identity
         public async Task<UserProfile> GetCurrentUserProfileAsync()
         {
             var user = await _userManager.Users
-            .Include(x => x.Profile.UserGoals)
-            .Include(x => x.Profile.Trainer)
-            .Include(x => x.Profile.Trainees)
+            .Include(x => x.UserProfile.UserGoals)
+            .Include(x => x.UserProfile.Trainer)
+            .Include(x => x.UserProfile.Trainees)
             .FirstAsync(u => u.Id == _currentUserService.UserId);
-            return user.Profile;
+            return user.UserProfile;
         }
 
         public async Task<int> GetCurrentUserProfileIdAsync()
         {
             return await _userManager.Users
                 .Where(x => x.Id == _currentUserService.UserId)
-                .Select(x => x.ProfileId)
+                .Select(x => x.UserProfileId)
                 .FirstAsync();
         }
-
+        
         public async Task<UserProfile> UpdateCurrentUserProfileAsync(UserProfile userProfile)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.Id == _currentUserService.UserId);
@@ -61,10 +61,10 @@ namespace FoodTracker.Infrastructure.Identity
             {
                 return userProfile;
             }
-            user.Profile = userProfile;
+            user.UserProfile = userProfile;
             await _userManager.UpdateAsync(user);
 
-            return user.Profile;
+            return user.UserProfile;
         }
 
         public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
@@ -133,6 +133,12 @@ namespace FoodTracker.Infrastructure.Identity
             var result = await _userManager.DeleteAsync(user);
 
             return result.ToApplicationResult();
+        }
+
+        public async Task<IList<string>> GetUsersInRole(string role)
+        {
+            var users = await _userManager.GetUsersInRoleAsync(role);
+            return users.Select(x => x.Id).ToList();
         }
 
 

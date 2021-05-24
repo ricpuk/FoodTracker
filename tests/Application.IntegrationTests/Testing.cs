@@ -160,7 +160,7 @@ namespace FoodTracker.Application.IntegrationTests
                 }
             };
 
-            var user = new ApplicationUser { UserName = userName, Email = userName, Profile = userProfile };
+            var user = new ApplicationUser { UserName = userName, Email = userName, UserProfile = userProfile };
 
             var result = await userManager.CreateAsync(user, password);
 

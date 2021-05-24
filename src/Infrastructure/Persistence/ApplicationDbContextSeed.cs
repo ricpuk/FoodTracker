@@ -54,7 +54,8 @@ namespace FoodTracker.Infrastructure.Persistence
                     LastName = value.LastName,
                     ShortDescription = value.ShortDescription
                 };
-                var user = new ApplicationUser { UserName = value.Email, Email = value.Email, Profile = userProfile};
+                var user = new ApplicationUser { UserName = value.Email, Email = value.Email, UserProfile = userProfile};
+                userProfile.ApplicationUserId = user.Id;
                 if (!userManager.Users.All(u => u.UserName != user.UserName)) continue;
                 await userManager.CreateAsync(user, "User1!");
                 await userManager.AddToRolesAsync(user, new[] { role.Name });
@@ -88,7 +89,8 @@ namespace FoodTracker.Infrastructure.Persistence
                     LastName = value.LastName,
                     ShortDescription = value.ShortDescription
                 };
-                var user = new ApplicationUser { UserName = value.Email, Email = value.Email, Profile = userProfile };
+                var user = new ApplicationUser { UserName = value.Email, Email = value.Email, UserProfile = userProfile };
+                userProfile.ApplicationUserId = user.Id;
                 if (!userManager.Users.All(u => u.UserName != user.UserName)) continue;
                 await userManager.CreateAsync(user, "User1!");
                 await userManager.AddToRolesAsync(user, new[] { role.Name });

@@ -134,13 +134,14 @@ namespace FoodTracker.WebUI.Areas.Identity.Pages.Account
             {
                 UserName = Input.Email,
                 Email = Input.Email,
-                Profile = new UserProfile
+                UserProfile = new UserProfile
                 {
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
-                    ShortDescription = Input.ShortDescription
+                    ShortDescription = Input.ShortDescription,
                 }
             };
+            user.UserProfile.ApplicationUserId = user.Id;
             return new UserCreationResult
             {
                 Result = await _userManager.CreateAsync(user, Input.Password),

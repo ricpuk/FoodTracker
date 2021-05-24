@@ -42,7 +42,7 @@ namespace FoodTracker.Application.CoachingRequests.Commands.AcceptCoachingReques
             clientProfile.Trainer = coachProfile;
             coachingRequest.Status = CoachingRequestStatus.Accepted;
 
-            RevokeOtherRequests(coachingRequest.Id, coachingRequest.FromId);
+            RevokeRequests(coachingRequest.FromId);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -51,11 +51,11 @@ namespace FoodTracker.Application.CoachingRequests.Commands.AcceptCoachingReques
 
         }
 
-        private void RevokeOtherRequests(int currentRequestId, int fromId)
+        private void RevokeRequests(int fromId)
         {
             var coachingRequests = _dbContext
                 .CoachingRequests
-                .Where(x => x.FromId == fromId && x.Id != currentRequestId);
+                .Where(x => x.FromId == fromId);
             _dbContext.CoachingRequests.RemoveRange(coachingRequests);
         }
     }

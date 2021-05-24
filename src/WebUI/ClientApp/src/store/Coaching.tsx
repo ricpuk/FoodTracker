@@ -7,6 +7,7 @@ import { UserGoals, UserProfile } from "./User";
 import * as UserStore from "./User";
 import * as DiariesStore from "./Diaries";
 import Toaster from "../utils/toaster";
+import ProductForm from "../components/productForm/ProductForm";
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -77,6 +78,7 @@ interface RevokeCoachingRequestAction {
 interface RevokeCoachingRequestActionDone {
   type: "REVOKE_COACHING_REQUEST_DONE";
   coachId: number;
+  success: boolean;
 }
 
 interface FetchCoachingRequestsAction {
@@ -213,7 +215,10 @@ export const actionCreators = {
         const request = {};
         API.post(`${COACH_RESOURCE_URL}/${coach.id}`, request).then(
           (response) => {
-            dispatch({ type: "SEND_COACHING_REQUEST_DONE", coachId: coach.id });
+            dispatch({
+              type: "SEND_COACHING_REQUEST_DONE",
+              coachId: coach.id,
+            });
           }
         );
 
@@ -229,9 +234,21 @@ export const actionCreators = {
         appState.coaching &&
         appState.coaching.coaches.findIndex((x) => x.id === coach.id) != -1
       ) {
-        API.delete(`${COACH_RESOURCE_URL}/${coach.id}`).then((response) => {
-          dispatch({ type: "REVOKE_COACHING_REQUEST_DONE", coachId: coach.id });
-        });
+        API.delete(`${COACH_RESOURCE_URL}/${coach.id}`)
+          .then((response) => {
+            dispatch({
+              type: "REVOKE_COACHING_REQUEST_DONE",
+              coachId: coach.id,
+              success: true,
+            });
+          })
+          .catch((err) =>
+            dispatch({
+              type: "REVOKE_COACHING_REQUEST_DONE",
+              coachId: coach.id,
+              success: false,
+            })
+          );
 
         dispatch({ type: "REVOKE_COACHING_REQUEST" });
       }
@@ -498,6 +515,11 @@ export const reducer: Reducer<CoachingState> = (
       );
       if (indexRevoke !== -1) {
         state.coaches[indexRevoke].coachingRequested = false;
+      }
+      if (action.success) {
+        Toaster.success("Request revoked", "You have revoked the request");
+      } else {
+        Toaster.error("Not found", "The request was not found");
       }
       return {
         ...state,

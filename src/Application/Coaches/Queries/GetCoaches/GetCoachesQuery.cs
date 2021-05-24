@@ -36,10 +36,12 @@ namespace FoodTracker.Application.Coaches.Queries.GetCoaches
         {
             var profile = await _identityService.GetCurrentUserProfileIdAsync();
 
+            var coachesIds = await _identityService.GetUsersInRole("Trainer");
+
             var coaches = await _dbContext
                 .UserProfiles
                 .Include(x => x.Trainees)
-                .Where(x => x.Id != profile)
+                .Where(x => x.Id != profile && coachesIds.Contains(x.ApplicationUserId))
                 .ProjectTo<CoachDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.Page, 100);
 
