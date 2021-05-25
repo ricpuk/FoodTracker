@@ -91,12 +91,16 @@ const Coaching = (props: CoachingProps) => {
         <TabPane tabId={TAB_COACH} className="p-3">
           {TAB_COACH === activeTab && renderCoachTab()}
         </TabPane>
-        <TabPane tabId={TAB_CLIENTS} className="p-3">
-          {TAB_CLIENTS === activeTab && <Clients />}
-        </TabPane>
-        <TabPane tabId={TAB_REQUESTS}>
-          {TAB_REQUESTS === activeTab && <CoachingRequests />}
-        </TabPane>
+        {user.role === "Trainer" && (
+          <React.Fragment>
+            <TabPane tabId={TAB_CLIENTS} className="p-3">
+              {TAB_CLIENTS === activeTab && <Clients />}
+            </TabPane>
+            <TabPane tabId={TAB_REQUESTS}>
+              {TAB_REQUESTS === activeTab && <CoachingRequests />}
+            </TabPane>
+          </React.Fragment>
+        )}
       </TabContent>
     </Loader>
   );
