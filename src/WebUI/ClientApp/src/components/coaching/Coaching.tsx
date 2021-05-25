@@ -62,26 +62,30 @@ const Coaching = (props: CoachingProps) => {
             Coach
           </NavLink>
         </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === TAB_CLIENTS })}
-            onClick={() => {
-              toggle(TAB_CLIENTS);
-            }}
-          >
-            Clients
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === TAB_REQUESTS })}
-            onClick={() => {
-              toggle(TAB_REQUESTS);
-            }}
-          >
-            Coaching requests
-          </NavLink>
-        </NavItem>
+        {user.role === "Trainer" && (
+          <React.Fragment>
+            <NavItem>
+              <NavLink
+                className={classnames({ active: activeTab === TAB_CLIENTS })}
+                onClick={() => {
+                  toggle(TAB_CLIENTS);
+                }}
+              >
+                Clients
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={classnames({ active: activeTab === TAB_REQUESTS })}
+                onClick={() => {
+                  toggle(TAB_REQUESTS);
+                }}
+              >
+                Coaching requests
+              </NavLink>
+            </NavItem>
+          </React.Fragment>
+        )}
       </Nav>
       <TabContent activeTab={activeTab}>
         <TabPane tabId={TAB_COACH} className="p-3">
