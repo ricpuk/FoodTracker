@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import * as CoachingStore from "../../store/Coaching";
 import { UserProfile } from "../../store/User";
+import LinkButton from "../linkButton/LinkButton";
 
 interface CoachListProps {
   coaches: UserProfile[];
@@ -19,12 +20,10 @@ interface CoachListProps {
 const CoachList = (props: CoachListProps) => {
   const dispatch = useDispatch();
   const { coaches } = props;
-  const {
-    revokeCoachingRequest,
-    requestCoaching,
-  } = CoachingStore.actionCreators;
+  const { revokeCoachingRequest, requestCoaching } =
+    CoachingStore.actionCreators;
 
-  const handleClick = (coach: UserProfile) => {
+  const handleRequestClick = (coach: UserProfile) => {
     if (coach.coachingRequested) {
       return dispatch(revokeCoachingRequest(coach));
     }
@@ -55,11 +54,17 @@ const CoachList = (props: CoachListProps) => {
           <CardSubtitle className="text-muted font-size-lg text-center">
             {coach.numberOfClients ? coach.numberOfClients : "No"} clients
           </CardSubtitle>
+          <LinkButton
+            to={`coach/${coach.id}`}
+            color={"success"}
+            className="w-100 mt-2"
+            text="View profile"
+          />
           <Button
             color={coach.coachingRequested ? "warning" : "primary"}
             className="w-100 mt-2"
             outline
-            onClick={() => handleClick(coach)}
+            onClick={() => handleRequestClick(coach)}
           >
             {coach.coachingRequested ? "Revoke request" : "Request coaching"}
           </Button>

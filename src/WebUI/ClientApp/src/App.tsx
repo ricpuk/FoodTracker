@@ -18,6 +18,7 @@ import ProfilePage from "./components/profilePage/ProfilePage";
 import ClientDiary from "./components/clientPage/ClientDiary";
 import ProductsPage from "./components/admin/ProductsPage";
 import ReportsPage from "./components/admin/ReportsPage";
+import CoachPage from "./components/coachPage/CoachPage";
 
 export default () => {
   const dispatch = useDispatch();
@@ -48,6 +49,11 @@ export default () => {
       <Route exact path="/" component={Home} />
       <AuthorizeRoute exact path="/diary" component={Diary} />
       <AuthorizeRoute exact path="/coaching" component={Coaching} />
+      <AuthorizeRoute
+        exact
+        path="/coaching/coach/:coachId"
+        component={CoachPage}
+      />
       <AuthorizeRoute exact path="/profile" component={ProfilePage} />
       <AuthorizeRoute exact path="/coaching/:clientId" component={ClientPage} />
       <AuthorizeRoute
