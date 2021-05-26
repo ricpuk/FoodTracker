@@ -234,6 +234,7 @@ const ProductForm = (props: ProductFormProps) => {
               <Input
                 required
                 type="number"
+                step="any"
                 placeholder="Cals (required)"
                 className="border-0 no-hov p-0"
                 value={serving.calories}
@@ -245,6 +246,7 @@ const ProductForm = (props: ProductFormProps) => {
               <Input
                 required
                 type="number"
+                step="any"
                 placeholder="Protein (g) (required)"
                 className="border-0 no-hov p-0"
                 value={serving.protein}
@@ -256,6 +258,7 @@ const ProductForm = (props: ProductFormProps) => {
               <Input
                 required
                 type="number"
+                step="any"
                 placeholder="Fat (g) (required)"
                 className="border-0 no-hov p-0"
                 value={serving.fats}
@@ -267,6 +270,7 @@ const ProductForm = (props: ProductFormProps) => {
               <Input
                 required
                 type="number"
+                step="any"
                 placeholder="Carbs (g) (required)"
                 className="border-0 no-hov p-0"
                 value={serving.carbohydrates}
