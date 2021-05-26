@@ -17,12 +17,17 @@ import ProfilePicture from "./ProfilePicture";
 const MODE_COACH = "coach";
 const MODE_ME = "me";
 const MODE_CLIENT = "client";
+const COACH_PREVIEW = "coach-preview";
 
 interface ProfileProps {
   profile: UserProfile;
   primaryClick?: () => void;
   secondaryClick?: () => void;
-  viewMode: typeof MODE_COACH | typeof MODE_ME | typeof MODE_CLIENT;
+  viewMode:
+    | typeof MODE_COACH
+    | typeof MODE_ME
+    | typeof MODE_CLIENT
+    | typeof COACH_PREVIEW;
 }
 
 interface UserStat {
@@ -88,6 +93,9 @@ const Profile = (props: ProfileProps) => {
   };
 
   const renderButtons = () => {
+    if (viewMode == COACH_PREVIEW) {
+      return [];
+    }
     if (viewMode == MODE_ME) {
       return [
         <Button

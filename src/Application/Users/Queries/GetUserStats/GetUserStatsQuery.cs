@@ -52,10 +52,11 @@ namespace FoodTracker.Application.Users.Queries.GetUserStats
 
         private async Task ValidateAuthorization(int profileId)
         {
+            var isTrainer = await _identityService.IsInRoleAsync(profileId, "Trainer");
             var userProfile = await _identityService.GetCurrentUserProfileAsync();
             var profile = await _dbContext.UserProfiles.SingleOrDefaultAsync(x =>
                 x.Id == profileId &&
-                (userProfile.Id == x.Id || x.TrainerId == userProfile.Id || userProfile.TrainerId == x.Id));
+                (isTrainer || userProfile.Id == x.Id || x.TrainerId == userProfile.Id || userProfile.TrainerId == x.Id));
             if (profile == null)
             {
                 throw new ForbiddenAccessException();

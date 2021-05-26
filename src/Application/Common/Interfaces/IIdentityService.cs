@@ -17,6 +17,8 @@ namespace FoodTracker.Application.Common.Interfaces
 
         Task<bool> IsInRoleAsync(string userId, string role);
 
+        Task<bool> IsInRoleAsync(int profileId, string role);
+
         Task<bool> AuthorizeAsync(string userId, string policyName);
 
         Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);

@@ -87,6 +87,19 @@ namespace FoodTracker.Infrastructure.Identity
             return await _userManager.IsInRoleAsync(user, role);
         }
 
+        public async Task<bool> IsInRoleAsync(int profileId, string role)
+        {
+            var user = await _userManager.Users
+                .SingleOrDefaultAsync(x => x.UserProfileId == profileId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            return await _userManager.IsInRoleAsync(user, role);
+        }
+
         public async Task<bool> AuthorizeAsync(string userId, string policyName)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);

@@ -2,6 +2,7 @@
 using FoodTracker.Application.Coaches.Commands.CreateCoachingRequest;
 using FoodTracker.Application.Coaches.Commands.DeleteCoachingRequest;
 using FoodTracker.Application.Coaches.Commands.RemoveCoach;
+using FoodTracker.Application.Coaches.Queries;
 using FoodTracker.Application.Coaches.Queries.GetCoaches;
 using FoodTracker.Application.Common.DTOs;
 using FoodTracker.Application.Common.Models;
@@ -23,6 +24,16 @@ namespace FoodTracker.WebUI.Controllers
         {
             var command = new RemoveCoachCommand();
             return Ok(await Mediator.Send(command));
+        }
+
+        [HttpGet("{coachId}")]
+        public async Task<ActionResult<PaginatedList<CoachDto>>> CreateCoachingRequest(int coachId)
+        {
+            var query = new FetchCoachProfileQuery
+            {
+                CoachId = coachId
+            };
+            return Ok(await Mediator.Send(query));
         }
 
         [HttpPost("{coachId}")]
