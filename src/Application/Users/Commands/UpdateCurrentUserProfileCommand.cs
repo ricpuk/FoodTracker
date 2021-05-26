@@ -29,7 +29,9 @@ namespace FoodTracker.Application.Users.Commands
             var currentProfile = await _identityService.GetCurrentUserProfileAsync();
             UpdateUserProfile(request.Profile, currentProfile);
             await _identityService.UpdateCurrentUserProfileAsync(currentProfile);
-            return _mapper.Map<UserProfileDto>(currentProfile);
+            var profile = _mapper.Map<UserProfileDto>(currentProfile);
+            profile.Role = await _identityService.GetCurrentUserRole();
+            return profile;
         }
 
         private void UpdateUserProfile(UserProfileDto profile, UserProfile curerentProfile)
