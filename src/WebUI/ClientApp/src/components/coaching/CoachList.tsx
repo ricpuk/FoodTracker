@@ -13,6 +13,7 @@ import {
 import * as CoachingStore from "../../store/Coaching";
 import { UserProfile } from "../../store/User";
 import LinkButton from "../linkButton/LinkButton";
+import Image from "../image/Image";
 
 interface CoachListProps {
   coaches: UserProfile[];
@@ -35,15 +36,15 @@ const CoachList = (props: CoachListProps) => {
       <Card className="mb-3">
         <CardHeader style={{ height: 50 }} />
         <CardBody>
-          <img
-            src={
+          <Image
+            source={
               coach.profilePicture
                 ? coach.profilePicture
                 : require("../../assets/blank.png")
             }
-            style={{ width: 100, marginTop: -65 }}
             alt="User"
-            className="img-fluid img-thumbnail rounded-circle d-flex mr-auto ml-auto"
+            style={{ width: 100, marginTop: -65 }}
+            classes="img-fluid img-thumbnail rounded-circle d-flex mr-auto ml-auto"
           />
           <CardTitle tag="h4" className="text-center mt-2">
             {coach.firstName} {coach.lastName}

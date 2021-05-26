@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "../image/Image";
 
 interface ProfilePictureProps {
   url: string;
@@ -7,12 +8,12 @@ interface ProfilePictureProps {
 const ProfilePicture = (props: ProfilePictureProps) => {
   const { url } = props;
   return (
-    <img
-      src={url ? url : require("../../assets/blank.png")}
-      alt="Admin"
-      className="rounded-circle"
-      width="150"
-    ></img>
+    <Image
+      source={url ? url : require("../../assets/blank.png")}
+      alt="User"
+      style={{ width: 150 }}
+      classes="rounded-circle"
+    />
   );
 };
 
