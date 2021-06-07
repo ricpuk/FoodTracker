@@ -24,7 +24,7 @@ namespace FoodTracker.Application.DiaryEntries.Commands.UpdateDiaryEntry
         }
 
         public int ServingId { get; set; }
-        public int NumberOfServings { get; set; }
+        public double NumberOfServings { get; set; }
     }
 
     public class UpdateDiaryEntryCommandHandler : IRequestHandler<UpdateDiaryEntryCommand, DiaryEntryDto>

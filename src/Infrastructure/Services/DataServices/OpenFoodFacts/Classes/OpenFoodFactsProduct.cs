@@ -13,7 +13,7 @@ namespace FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts.Classes
         [JsonPropertyName("brands_tags")]
         public IEnumerable<string> BrandsTags { get; set; }
 
-        [JsonPropertyName("")]
+        [JsonPropertyName("product_name")]
         [JsonConverter(typeof(OpenFoodFactsProductStringConverter))]
         public string ProductName { get; set; }
 

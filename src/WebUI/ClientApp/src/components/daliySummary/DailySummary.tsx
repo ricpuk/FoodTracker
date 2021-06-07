@@ -29,7 +29,7 @@ const DailySummary = (props: DailySumamryProps) => {
     if (!goals) {
       return "Error";
     }
-    const result = goals.caloriesGoal - value;
+    const result = Math.round(goals.caloriesGoal - value);
     return (
       <span
         className={classnames({
@@ -47,7 +47,7 @@ const DailySummary = (props: DailySumamryProps) => {
     if (isLoading) {
       return <Spinner size="sm" color="primary" />;
     }
-    return value;
+    return Math.round(value);
   };
 
   return (

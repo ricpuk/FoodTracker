@@ -20,8 +20,10 @@ export default (props: CaloriesBreakdownProps) => {
   const remaining = props.remaining ? props.remaining : 0;
   const max = proteinCals + carbsCals + fatsCals + remaining;
 
-  const round = (num: number, precision: number) =>
-    Number(Math.round(Number(`${num}e+${precision}`)) + "e-" + precision);
+  const round = (num: number, precision: number) => {
+    const result = Math.round((num + Number.EPSILON) * 100) / 100;
+    return result;
+  };
 
   const relative = (value: number) => {
     if (max == 0) {
@@ -30,7 +32,7 @@ export default (props: CaloriesBreakdownProps) => {
     return value / max;
   };
 
-  const percentage = (value: number) => round(relative(value) * 100, 1);
+  const percentage = (value: number) => round(relative(value) * 100, 2);
   const percentageString = (value: number) => `${percentage(value)}%`;
 
   const proteinId = `${prefix}-protein-tt`;

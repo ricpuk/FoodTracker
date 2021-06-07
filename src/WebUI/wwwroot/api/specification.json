@@ -1852,8 +1852,8 @@
             "format": "int32"
           },
           "numberOfServings": {
-            "type": "integer",
-            "format": "int32"
+            "type": "number",
+            "format": "double"
           }
         }
       },

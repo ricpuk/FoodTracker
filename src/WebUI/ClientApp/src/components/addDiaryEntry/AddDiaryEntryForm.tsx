@@ -85,7 +85,7 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
         setServingId(value);
         break;
       case UpdateType.numberOfServings:
-        if (value > 999 || value < 1) {
+        if (value > 999 || value < 0) {
           return;
         }
         setNumberOfServings(value);
@@ -124,6 +124,7 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
       servingId: servingId,
       numberOfServings: numberOfServings,
     };
+    debugger;
     return API.put<DiariesStore.DiaryEntry>(
       `${API_DIARY_ENTRIES(props.diaryId)}${editedEntry.id}`,
       request

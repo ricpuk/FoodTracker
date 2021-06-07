@@ -56,6 +56,8 @@ const FinishEntry = (props: FinishEntryProps) => {
     props.onUpdate(updateType, Number(target.value));
   };
 
+  const isValid = () => numberOfServings > 0;
+
   const renderHeader = () => {
     return (
       <React.Fragment>
@@ -225,7 +227,7 @@ const FinishEntry = (props: FinishEntryProps) => {
             onClick={props.onSubmit}
             className="w-100 mx-1"
             color="primary"
-            disabled={props.blocked}
+            disabled={props.blocked || !isValid()}
           >
             {!props.blocked ? "Submit" : <Spinner color="light" />}
           </Button>

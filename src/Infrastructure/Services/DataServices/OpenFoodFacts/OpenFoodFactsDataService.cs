@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FoodTracker.Application.Common.Interfaces;
 using FoodTracker.Application.Common.Models;
 using FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts.Classes;
@@ -42,11 +43,11 @@ namespace FoodTracker.Infrastructure.Services.DataServices.OpenFoodFacts
                 Serving = new DataServiceProductServing
                 {
                     Calories = sourceNutritionValues.Calories,
-                    Carbohydrates = sourceNutritionValues.Carbohydrates,
-                    Fats = sourceNutritionValues.Fats,
-                    Fiber = sourceNutritionValues.Fiber,
-                    Protein = sourceNutritionValues.Protein,
-                    Sodium = sourceNutritionValues.Sodium,
+                    Carbohydrates = Math.Round(sourceNutritionValues.Carbohydrates),
+                    Fats = Math.Round(sourceNutritionValues.Fats, 2),
+                    Fiber = Math.Round(sourceNutritionValues.Fiber),
+                    Protein = Math.Round(sourceNutritionValues.Protein),
+                    Sodium = Math.Round(sourceNutritionValues.Sodium),
                     ServingSize = 100,
                     ServingSizeUnits = "grams"
                 }
