@@ -29,6 +29,7 @@ const ProductsPage = () => {
     const config: AxiosRequestConfig = {
       params: {
         query: search,
+        pageSize: 100,
       },
     };
     setIsLoading(true);
